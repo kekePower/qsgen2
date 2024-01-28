@@ -40,8 +40,6 @@
 # export blog_list=${project_dir}/templates/<theme>/blog_list.tpl
 # export blog_index=${project_dir}/templates/<theme>/blog_index.tpl
 ###################################################################################################
-# export today=$( date "+%Y-%m-%d - %T" )
-# export blogdate=$( date +%a-%Y-%b-%d )
 # export blog_in_index=false
 
 VERSION="1.9.9.1 alpha" # Sun-2024-01-28
@@ -102,8 +100,6 @@ if (${debug}); then
     echo "${yellow} - theme=${theme}${end}"
     echo "${yellow} - project_dir=${project_dir}${end}"
     echo "${yellow} - www_root=${www_root}${end}"
-    echo "${yellow} - today=${today}${end}"
-    echo "${yellow} - blogdate=${blogdate}${end}"
     echo "${yellow} - blog_in_index=${blog_in_index}${end}"
     echo "${yellow} - generator=${generator}${end}"
 fi
@@ -127,6 +123,10 @@ blog_cache_file="${project_dir}/.blog_cache"
 pages_cache_file="${project_dir}/.pages_cache"
 
 builtin cd ${project_dir}
+
+# Let's put these here for now.
+export today=$( date "+%Y-%m-%d - %T" )
+export blogdate=$( date +%a-%Y-%b-%d )
 
 # Let's create arrays of all the files we'll be working on
 
