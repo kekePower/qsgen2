@@ -1,3 +1,5 @@
+# Place this file in your project directory
+
 # This is the name of your site
 export site_name="The Site Name"
 # At the moment, there is only 1 theme - minimal
