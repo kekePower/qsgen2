@@ -67,15 +67,16 @@ function include () {
 
 include common/colors
 
+echo "${magenta}${QSGEN} ${VERSION}${end}"
+
 # Pre-release exit
 if (${debug}); then
-    echo "${purple}${QSGEN} ${VERSION}${end}"
     # echo "${red}Not yet ready. Exiting.${end}"
     # exit
 fi
 
 if [[ ${1} == "version" ]] || [[ ${1} == "-v" ]] || [[ ${1} == "--version" ]]; then
-    echo "${purple}${QSGEN} ${VERSION}${end}"
+    # echo "${purple}${QSGEN} ${VERSION}${end}"
     echo "${yellow}- Created by kekePower - 2018-2024${end}"
     echo "${yellow}- https://github.com/kekePower/qsgen2/${end}"
     exit
