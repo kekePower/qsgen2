@@ -1,0 +1,560 @@
+#!/usr/bin/zsh
+
+# Quick Site Generator 2 is a static website generator inspired by Nikola.
+# It is written for the Z shell (zsh) because that's what I use and also because I like it better than Bash.
+#
+# This script is an almost complete rewrite of my old script because it became overly complicated and
+# had way too many bugs, even though it worked on simple sites.
+#
+# qsgen2 uses different templates and its own formattings tags to generate the static HTML pages.
+#
+# The file structure in the project directory should look like this:
+#
+# .blog_cache
+# .pages_cache
+# config
+# index.tpl
+# templates/
+# templates/<theme>/pages.tpl
+# templates/<theme>/blogs.tpl
+# templates/<theme>/blog_index.tpl
+# blog/
+# blog/2024-01-26-1.blog
+#
+# Explanation of the file structure.
+# The file 'config' contains the settings for this specific project.
+# The file 'index.tpl' is what becomes index.html that is served to the public.
+# The 'templates/' directory contains the templates used to generate the pages and blog posts.
+# The 'blog/' directory contains the blog posts. The date format of the files are used to create a blog/index.html with the newest post first.
+#
+# Contents of the file 'config' --> CHANGE THESE <--
+# export site_name="The name of the website"
+# - This is the project directory
+# export project_dir=${HOME}/www/vikingo
+# - This is where the generated files will be put
+# export www_root=${HOME}/www_root/smelror.com
+# #################################################################################################
+# I don't think these need to be here as they'll always be in the same place with the same names
+# export pages=${project_dir}/templates/<theme>/pages.tpl
+# export blogs=${project_dir}/templates/<theme>/blogs.tpl
+# export blog_list=${project_dir}/templates/<theme>/blog_list.tpl
+# export blog_index=${project_dir}/templates/<theme>/blog_index.tpl
+###################################################################################################
+# export today=$( date "+%Y-%m-%d - %T" )
+# export blogdate=$( date +%a-%Y-%b-%d )
+# export blog_in_index=false
+
+VERSION="1.9.9.1 alpha" # Sun-2024-01-28
+QSGEN="Quick Site Generator"
+
+# Set to true or false
+# This will show debug information from almost every function in this script
+debug=true
+
+function include () {
+
+        local inc_file
+        # Edit this path to reflect your installation
+        inc_file=${HOME}/bin/include/${1}.inc
+        if [[ ! -f ${inc_file} ]]; then
+                local inc_opt
+                inc_opt=$( echo ${1} | cut -d\/ -f2 )
+                echo "Supplied option \"${inc_opt}\" is not valid."
+                echo "Not critical. Will continue and use the default \"--with=clean,addons\"."
+        else
+                builtin source ${inc_file} ${2}
+        fi
+
+}
+
+include common/colors
+
+# Pre-release exit
+if (${debug}); then
+    echo "${purple}${QSGEN} ${VERSION}${end}"
+    # echo "${red}Not yet ready. Exiting.${end}"
+    # exit
+fi
+
+if [[ ${1} == "help" ]]; then
+    echo "${yellow}${QSGEN} ${VERSION}${end}"
+	echo "This is where I'll write the Help documentation."
+	exit
+fi
+
+# Loading Zsh modules
+zmodload zsh/files
+
+# Check for, an source, the config file for this specific website
+if [[ -f $(pwd)/config ]]; then
+    if (${debug}) echo "${red}Config file found and sourced${end}\n${yellow} - $(pwd)/config${end}"
+	# CONFIG=$(pwd)/config
+	builtin source $(pwd)/config
+else
+	echo "${red}Cannot find configuration file.${end}"
+	echo "${yellow} - Please create the file 'config' in your project directory.${end}"
+	exit
+fi
+
+if (${debug}); then
+	echo "${red}Contents of Config file:${end}"
+    echo "${yellow} - site_name=${site_name}${end}"
+    echo "${yellow} - theme=${theme}${end}"
+    echo "${yellow} - project_dir=${project_dir}${end}"
+    echo "${yellow} - www_root=${www_root}${end}"
+    echo "${yellow} - today=${today}${end}"
+    echo "${yellow} - blogdate=${blogdate}${end}"
+    echo "${yellow} - blog_in_index=${blog_in_index}${end}"
+    echo "${yellow} - generator=${generator}${end}"
+fi
+
+if [[ ${generator} == "native" ]]; then
+    # Usage: ${engine} ${1} - Where 1 is the file you want to convert
+    if (${debug}) echo "${red}Using the ${generator} engine${end}"
+        engine=_html
+elif [[ ${generator} == "markdown" ]]; then
+    if [[ ! -f /usr/bin/markdown ]]; then
+        echo "Please install the 'discount' package to use Markdown."
+        exit
+    fi
+    # Usage: ${engine} ${1} ${2} - Where 1 is the input file and 2 is the html www_root file and location
+    if (${debug}) echo "${red}Using the ${generator} engine${end}"
+        engine=$( /usr/bin/markdown -o ${2} ${1} )
+fi
+
+# Define cache files
+blog_cache_file="${project_dir}/.blog_cache"
+pages_cache_file="${project_dir}/.pages_cache"
+
+builtin cd ${project_dir}
+
+# Let's create arrays of all the files we'll be working on
+
+function _list_blog_idx() {
+    ls -har blog/*.idx | while read -r file; do
+    blog_idx_array+=($file)
+    done
+}
+function _list_blog_tmp_idx() {
+    ls -har blog/*.tmp.html | while read -r file; do
+    blog_tmp_idx_array+=($file)
+    done
+}
+function _list_blog() {
+    ls -1btar blog/*.blog | while read -r file; do
+    blog_index_file_array+=($file)
+    done
+}
+
+# BLOG CACHE
+function _blog_cache() {
+local debug=false
+# Create an associative array for the blog cache
+typeset -A blog_cache
+
+# Load the existing blog cache
+if [[ -f $blog_cache_file ]]; then
+    while IFS=':' read -r name hash; do
+        blog_cache[$name]=$hash
+		if (${debug}) echo "${red}HASH VALUE: ${blog_cache[${name}]}${end}"
+    done < "$blog_cache_file"
+fi
+
+# Initialize the array for storing blog files to process
+make_blog_array=()
+
+# Process blog files
+for blog_file in $(ls -har blog/*.blog); do
+    # Compute the current blog file hash
+    current_hash=$(md5sum "$blog_file" | awk '{print $1}')
+	
+	if (${debug}) echo "${red}1. blog_cache: ${blog_file}${end}"
+	if (${debug}) echo "${red}1. current_cache: ${current_hash}${end}"
+
+    # Check if the blog file is new or has changed
+    if [[ ${blog_cache[$blog_file]} != "$current_hash" ]]; then
+		if (${debug}) echo "${red}2. new_cache_file: ${blog_file}${end}"
+		if (${debug}) echo "${red}2. new_current_cache: ${current_hash}${end}"
+        # Blog file is new or has changed; add it to the processing array
+        make_blog_array+=("$blog_file")
+
+        # Update the blog cache with the new hash
+        blog_cache[$blog_file]=$current_hash
+    fi
+done
+
+# Rebuild the blog cache file from scratch
+: >| "$blog_cache_file"  # Truncate the file before writing
+for name in "${(@k)blog_cache}"; do
+    echo "$name:${blog_cache[$name]}" >> "$blog_cache_file"
+done
+}
+
+
+# PAGES CACHE
+function _pages_cache() {
+local debug=false
+# Create an associative array for the pages cache
+typeset -A pages_cache
+
+# Load the existing pages cache
+if [[ -f $pages_cache_file ]]; then
+    while IFS=':' read -r name hash; do
+        pages_cache[$name]=$hash
+		if (${debug}) echo "${red}PAGES HASH VALUE: ${pages_cache[${name}]}${end}"
+    done < "$pages_cache_file"
+fi
+
+# Initialize the array for storing pages files to process
+tpl_array=()
+
+# Process pages files
+for file in $(ls -1bt *tpl); do
+    # Compute the current blog file hash
+    current_hash=$(md5sum "$file" | awk '{print $1}')
+	
+	if (${debug}) echo "${red}1. pages_cache: ${pages_cache[$file]}${end}"
+	if (${debug}) echo "${red}1. current_cache: ${current_hash}${end}"
+
+    # Check if the pages file is new or has changed
+    if [[ ${pages_cache[$file]} != "$current_hash" ]]; then
+		if (${debug}) echo "${red}2. pages_file: ${pages_cache[$file]}${end}"
+		if (${debug}) echo "${red}2. current_cache: ${current_hash}${end}"
+        # Pages file is new or has changed; add it to the processing array
+        tpl_array+=("$file")
+
+        # Update the pages cache with the new hash
+        pages_cache[$file]=$current_hash
+    fi
+done
+
+# Rebuild the pages cache file from scratch
+: >| "$pages_cache_file"  # Truncate the file before writing
+for name in "${(@k)pages_cache}"; do
+    echo "$name:${pages_cache[$name]}" >> "$pages_cache_file"
+done
+}
+
+function _last_updated() {
+    tee < ${1} | sed -e "s|#updated|${TODAY}|" | sed -e "s|\#version|${QSGEN} ${VERSION}|" > ${1}
+}
+
+function _pages() {
+    # This function generates all the pages
+    
+    local debug=false
+    
+    local pages=${project_dir}/templates/${theme}/pages.tpl
+    
+}
+
+function _blogs() {
+    # This function generates the blog files
+    
+    local debug=true
+    
+    # Running function _list_blog
+    # It returns the array: blog_index_file_array
+    echo "_blogs: Running function _list_blog"
+    _list_blog
+    # Running function _blog_cache
+    # It returns the array: make_blog_array
+    echo "_blogs: Running function _blog_cache"
+    _blog_cache
+    
+    if (( ${#make_blog_array[@]} > 0 )); then
+        
+        local blog_tpl=${project_dir}/templates/${theme}/blogs.tpl
+        local sdate btitle ingress body blog_index blog_dir blog_url
+    
+    	echo "_blogs: _blog_list_for_index: Just before the for loop: make_blog_array"
+    	for blog in ${make_blog_array[@]}
+    	do
+    		if (${debug}) echo "0001: ${red}_blogs: _blog_list_for_index: Processing ${blog}${end}"
+
+            # Read the file once
+            if (${debug}) echo "0002: ${red}_blogs: _blog_list_for_index: Reading blog from array into content: ${blog}${end}"
+            local content="$(<${blog})"
+		
+    		sed -i "s/GETDATE/${BLOGDATE}/" ${blog}
+            # Array sdate = Name day=4, Year=2, Month=3, Number day=1
+            sdate=( $( echo ${content} | grep DATE | sed "s|DATE\ ||" | sed "s|\-|\ |g" ) )
+            btitle=$( echo ${content} | grep BLOG_TITLE | cut -d' ' -f2- )
+            ingress=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#INGRESS_START\K(.*?)#INGRESS_STOP" | sed "s|\ \#INGRESS_STOP||" | sed "s|^\ ||" )
+            body=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#BODY_START\K(.*?)#BODY_STOP" | sed "s|\ \#BODY_STOP||" | sed "s|^\ ||" )
+            blog_index=$( echo ${btitle:l} | sed -e "s|-|_|" | sed -e "s|\ |-|g" | sed -e "s|\,||g" | sed -e "s|\.||" )
+            blog_dir="/blog/${sdate[2]}/${sdate[3]}/${sdate[4]}"
+            blog_url="${blog_dir}/${blog_index}.html"
+
+    				if [[ ! -d ${www_root}${blog_dir} ]]; then
+    					if (${debug}) echo "0003: ${red}_blogs: Creating blog directory: ${www_root}${blog_dir}${end}"
+    					mkdir -p ${www_root}${blog_dir}
+    				fi
+
+    				if (${debug}) echo "0004: ${cyan}_blogs: blog_index: ${blog_tpl}${end}"
+    				tee < ${blog_tpl} | sed	        			\
+                        -e "s|BLOGTITLE|${btitle}|"				\
+                        -e "s|CALADAY|${sdate[1]}|"				\
+                        -e "s|CALNDAY|${sdate[4]}|"				\
+                        -e "s|CALMONTH|${sdate[3]}|"			\
+                        -e "s|CALYEAR|${sdate[2]}|"				\
+                        -e "s|BLOGURL|${blog_url}|"				\
+                        -e "s|INGRESS|${ingress}|"				\
+                        -e "s|DATE ||"							\
+                        > ${blog%.*}.idx
+                    if (${debug}) echo "0005: ---------- ${lightred}_blogs: TO_IDX_FILE: ${blog%.*}.idx${end}"
+
+                    if (${debug}) echo "0006: ${cyan}_blogs: BLOG_URL_TPL: ${www_root}${blog_url}${end}"
+    				tee < ${blog_tpl} | sed 			\
+    					-e "s|BLOGTITLE|${btitle}|"		\
+    					-e "s|CALADAY|${sdate[1]}|"		\
+    					-e "s|CALNDAY|${sdate[4]}|"		\
+    					-e "s|CALMONTH|${sdate[3]}|"	\
+    					-e "s|CALYEAR|${sdate[2]}|"		\
+    					-e "s|INGRESS|${ingress}|"		\
+    					-e "s|BODY|${body}|"			\
+    					-e "s|DATE ||"					\
+    					-e "s|\#title||"				\
+    					>> ${www_root}${blog_url}
+    					if (${debug}) echo "0007: ---------- ${lightred}_blogs: ${blog_tpl} -- TO_BLOG_URL_FILE: ${www_root}${blog_url}${end}"
+            
+                echo "_blogs: _last_updated: Updating footer for ${www_root}${blog_url}"
+                _last_updated ${www_root}${blog_url}
+                echo "_blogs: Running HTML engine: ${engine}"
+                ${engine} ${blog_url}
+                if [[ $( grep \#link ${www_root}${blog_url} ) ]]; then
+                    echo "If #link is present, run _link: ${www_root}${blog_url}"
+                    _link ${blog_url}
+                elif [[ $( grep \#showimg ${www_root}${blog_url} ) ]]; then
+                    echo "If #showimg is present, run _image: ${www_root}${blog_url}"
+                    _image ${blog_url}
+                elif [[ $( grep \#ytvideo ${www_root}${blog_url} ) ]]; then
+                    echo "If #ytvideo is present, run _youtube: ${www_root}${blog_url}"
+                    _youtube ${blog_url}
+                fi
+                _cleanup ${blog_url}
+        done
+    else
+        echo "${yellow}No new or updated Blogs detected.${end}"
+    fi
+    
+}
+
+function _blog_idx_for_index() {
+    # This function generates the file blog/index.idx
+    
+    local debug=false
+    
+    if [[ -f ${project_dir}/blog/index.tmp.html ]]; then
+        echo "Remove temporary file: ${project_dir}/blog/index.tmp.html"
+        rm -f ${project_dir}/blog/index.tmp.html
+    fi
+
+}
+
+function _blog_index() {
+    # This function generates the /blog/index.html file that gets its data from _blog_list_for_index()
+    
+    local debug=false
+    local pages=${project_dir}/templates/${theme}/pages.tpl
+    local blog_index_title="Blog"
+    
+    # Running function _list_blog_idx
+    # It returns the array: blog_tmp_idx_array
+    _list_blog_tmp_idx
+    
+    if (( ${#blog_tmp_idx_array[@]} > 0 )); then    
+
+        local blog_list=${project_dir}/templates/blog_list.tpl
+
+        for blog_files in ${blog_tmp_idx_array[@]}
+        do
+            local content="$(<${blog_files})"
+    		sed -i "s/GETDATE/${BLOGDATE}/" ${blog_files}
+            # Array sdate = Name day=4, Year=2, Month=3, Number day=1
+            sdate=( $( echo ${content} | grep DATE | sed "s|DATE\ ||" | sed "s|\-|\ |g" ) )
+            ingress=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#INGRESS_START\K(.*?)#INGRESS_STOP" | sed "s|\ \#INGRESS_STOP||" | sed "s|^\ ||" )
+            body=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#BODY_START\K(.*?)#BODY_STOP" | sed "s|\ \#BODY_STOP||" | sed "s|^\ ||" )
+            blog_date="${sdate[1]} ${sdate[4]}-${sdate[3]}-${sdate[2]}"
+            
+            sed \
+                -e "s|BLOGDATE|${blog_date}|"	\
+                -e "s|BLOGURL|${blog_url}|"				\
+                -e "s|INGRESS|${ingress}|"
+            > ${project_dir}/blog/index.tmp.x
+        done
+
+    fi
+    
+    tee < ${pages} | sed                            \
+        -e "s|BODY|$(cat ${project_dir}/blog/index.tmp.x)|"          \
+        -s "s|#pagetitle|${blog_index_title}|g"     \
+        > ${www_root}/blog/index.html
+    _last_updated ${www_root}/blog/index.html
+    ${engine} ${www_root}/blog/index.html
+    
+}
+
+function _link() {
+    # This converts #link tags to actual clickable links
+
+    local debug=false
+    
+    if (${debug}) echo "${red}_link: Generating links for ${1}${end}"
+
+    # Process the file line by line
+    while IFS= read -r line; do
+        if [[ ${line} == *"#link"* ]]; then
+            if (${debug}) echo "${red}URL_MAIN(line): (${1}) ${line}${end}"
+
+            # Extract the URL and the link text
+            local url_full=$(echo "$line" | awk -F'#link ' '{print $2}' | awk -F'¤' '{print $1 "¤" $2}')
+            local url_dest=$(echo "$url_full" | awk -F'¤' '{print $1}')
+            local url_txt=$(echo "$url_full" | awk -F'¤' '{print $2}')
+            
+            if (${debug}) echo "${red}URL: ${url_dest}${end}"
+            if (${debug}) echo "${red}Text: ${url_txt}${end}"
+
+            # Form the replacement HTML link
+            local modified_link="<a href=\"${url_dest}\">${url_txt}"
+            if [[ ${url_dest} =~ ^https?:// ]]; then
+                # Add external link icon for external URLs
+                modified_link+="<img class=\"exticon\" alt=\"External site icon\" src=\"/images/ext-url.png\" width=\"16\" />"
+            fi
+            modified_link+="</a>"
+            line=${line//"#link $url_full"/$modified_link}
+        fi
+        echo "$line" >> "${www_root}/${1%.*}.tmp.html"
+    done < "${www_root}/${1%.*}.html"
+
+    # Replace the original file with the modified one
+    builtin mv "${www_root}/${1%.*}.tmp.html" "${www_root}/${1%.*}.html"
+
+}
+
+function _image() {
+    # This replaces #showimg to actual HTML img tag
+
+	local get_img img_link image img_alt
+	local debug=false
+    
+    if (${debug}) echo "${red}_image: Generating image tags for ${1}${end}"
+
+	cat ${www_root}/${1%.*}.html | sed "s/\.\ /\.\\n/g" | sed "s/\,/\,\\n/g" | sed "s/\#/\\n\#/g" | grep -P '(?=.*?#showimg)' |\
+		while read img
+		do
+		if [[ ${img} != "" ]]; then
+			get_img=$( echo "${img}" | awk '/#showimg/' | cut -d# -f2- )
+			if (${debug}) echo "${red}GET_IMG: ${get_img}${end}"
+			img_link=$( echo ${get_img} | cut -d' ' -f2- )
+			if (${debug}) echo "${red}IMG_LINK: ${img_link}${end}"
+			image=$( echo ${img_link} | cut -d¤ -f1 | cut -d¤ -f1- )
+			if (${debug}) echo "${red}IMAGE: ${image}${end}"
+            img_alt=$( echo ${img_link} | cut -d¤ -f2- | cut -d¤ -f1- )
+            if (${debug}) echo "${red}IMAGE_ALT: ${image_alt}${end}"
+			if [[ ${image} =~ ^https* ]]; then
+                # Images on another server
+				real_image=${image}
+				if (${debug}) echo "${red}HTTPS REAL_IMAGE: ${real_image}${end}"
+			elif [[ ${image} =~ ^\/ ]]; then
+				# This is for images in another directory and the image link begins with a /
+				real_image=${image}
+				if (${debug}) echo "${red}SLASH REAL_IMAGE: ${real_image}${end}"
+			else
+                # This is for images in the '/images/' directory
+				real_image="/images/${image}"
+				if (${debug}) echo "${red}IMAGES REAL_IMAGE: ${real_image}${end}"
+			fi
+			if (${debug}) echo "${red}REAL_IMAGE: $real_image${end}"
+			if (${debug}) echo "${red}IMG_ALT: $img_alt${end}"
+			echo ${img_link} |\
+				sed -i -- "s|${image}|<img src=\"${real_image}\"|" ${www_root}/${1%.*}.html
+				sed -i -- 's|'${img_alt}'| alt=\"'${img_alt}'\" width=\"500\" \/>|' ${www_root}/${1%.*}.html
+		fi
+		done
+}
+
+function _youtube() {
+    # This embeds a YouTube video on a page or a blog
+
+	local yt_id
+	local debug=false
+	
+	if (${debug}) echo "${red}_youtube: Creating YouTube player embed${end}"
+
+	cat ${www_root}/${1%.*}.html | sed "s/\.\ /\.\\n/g" | sed "s/\,/\,\\n/g" | sed "s/\#/\\n\#/g" | grep -P '(?=.*?#ytvideo)' |\
+		while read video
+		do
+		if [[ ${video} != "" ]]; then
+			yt_id=$( echo "${video}" | awk '/#ytvideo/' | cut -d" " -f2 )
+			if (${debug}) echo "${red}YT VIDEO ID: ${yt_id}${end}"
+			sed -i -- "s|${yt_id}|<iframe width=\"560\" height=\"315\" src=\"https:\/\/www.youtube.com\/embed\/${yt_id}\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" allowfullscreen><\/iframe>|" ${www_root}/${1%.*}.html
+		fi
+		done
+
+}
+
+function _cleanup() {
+    # This removes tags used in the templates that may be left over for some reason
+
+	local debug=false
+
+	if (${debug}) echo "${red}_cleanup: Cleaning up links in: ${www_root}/${1%.*}.html${end}"
+	sed -i -- "s|¤||g" ${www_root}/${1%.*}.html
+	sed -i -- "s|#showimg\ ||g" ${www_root}/${1%.*}.html
+	sed -i -- "s|#ytvideo\ ||g" ${www_root}/${1%.*}.html
+	sed -i -- "s|#link\ ||g" ${www_root}/${1%.*}.html
+
+}
+
+function _html() {
+    # This converts the formatting tags into their HTML equivalents
+	
+	local debug=true
+	if (${debug}) echo "${red}_html: Generating HTML for ${1}${end}"
+
+	sed -i -- "s|\#BR|<br/>\n|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#BD|<b>|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#EBD|</b>|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#UN|<u>|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#EUN|</u>\n|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#P|<p>\n|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#EP|</p>\n|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#Q|<blockquote>|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#EQ|</blockquote>|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#STRONG|<strong>|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#ESTRONG|</strong>|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#I|<i>|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#EI|</i>|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#C|<code>\n|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#EC|</code>\n|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#EM|<em>|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#SEM|</em>|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#OT|\&quot;|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#UL|\n<ul>\n|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#OL|<ol>\n|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#LI|<li class=\"libody\">|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#ELI|</li>\n|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#EUL|\n</ul>\n|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#EOL|</ol>\n|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#H1|<h1>|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#H2|<h2>|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#H3|<h3>|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#H4|<h4>|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#H5|<h5>|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#H6|<h6>|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#EH1|</h1>\n|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#EH2|</h2>\n|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#EH3|</h3>\n|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#EH4|</h4>\n|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#EH5|</h5>\n|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#EH6|</h6>\n|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#LT|\&lt;|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#GT|\&gt;|g" ${www_root}/${1%.*}.html
+	sed -i -- "s|\#NUM|\&num;|g" ${www_root}/${1%.*}.html
+
+}
+
+# Time to test the first function
+echo "${green}Running function _blogs${end}"
+_blogs
