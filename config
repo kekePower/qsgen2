@@ -1,0 +1,14 @@
+# This is the name of your site
+export site_name="The Site Name"
+# At the moment, there is only 1 theme - minimal
+export theme=minimal
+# This is the directory where you create your pages and blogs.
+# Your project working directory
+export project_dir=/path/to/your/project
+# This is where qsgen2 outputs the parsed and generated files
+export www_root=/path/to/output/directory
+# Do you want the blog on your front page or not?
+# Values are true for yes and false for no
+export blog_in_index=false
+# Expected values are 'native' or 'markdown'
+export generator=native
