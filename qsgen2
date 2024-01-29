@@ -283,7 +283,7 @@ function _pages() {
     
     local debug=true
     
-    if (${debug}) echo "_pages: Setting template"
+    if (${debug}) echo "_pages: Setting Pages template"
     local pages=${project_dir}/templates/${theme}/pages.tpl
     
     # Let's check if we can access the pages.tpl file.
@@ -293,6 +293,7 @@ function _pages() {
         exit
     else
         # Read template once
+        if (${debug}) echo "_pages: Reading Pages template into pages_tpl"
         pages_tpl="$(<${pages})"
     fi
     
@@ -331,28 +332,13 @@ function _pages() {
         if (${debug}) echo "_pages: Replacing #pagetitle in pages_tpl"
         pages_tpl=$( echo ${pages_tpl} | sed -e "s|#pagetitle|${page_title}|g" )
         
-        #echo "${pages_tpl}"
-        #exit
-        
         # Replace every #tagline in pages_tpl
         if (${debug}) echo "_pages: Replacing tagline"
         pages_tpl=$( echo ${pages_tpl} | sed -e "s|#tagline|${site_tagline}|g" )
         
-        #echo "${magenta}AFTER REPLACING TAGLINE${end}"
-        #echo ${pages_tpl}
-        #exit
-              
-        #echo "${magenta}AFTER _last_updated${end}"
-        #echo ${pages_tpl}
-        #exit
-        
         # Insert page_content into pages_tpl by replacing the BODY tag present there
         #if (${debug}) echo "_pages: Replacing BODY with page_content in pages_tpl"
         #pages_tpl=$( echo ${pages_tpl} | sed "s|BODY|${page_content}|g" )
-        
-        #echo "${magenta}AFTER BODY HAS BEEN REPLACED${end}"
-        #echo ${pages_tpl}
-        #exit
                 
         # Always use lowercase for file names
         pages_title_lower=$( _file_to_lower "${pages_in_array}" )
@@ -382,6 +368,10 @@ function _pages() {
         # Run a cleanup if in case something was left out
         # _cleanup ${pages_tpl}
       done
+      
+    else
+
+        echo "${yellow}No new or updated Pages${end}"
 
     fi
     
