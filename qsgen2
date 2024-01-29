@@ -648,7 +648,7 @@ function _html() {
 	local debug=true
 	if (${debug}) echo "${red}_html: Generating HTML for ${1}${end}"
 
-	echo ${1} | sed \
+	cat ${1} | sed \
     -e "s|\#BR|<br/>\n|g" \
 	-e "s|\#BD|<b>|g" \
 	-e "s|\#EBD|</b>|g" \
