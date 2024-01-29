@@ -357,9 +357,6 @@ function _pages() {
         #echo "${magenta}AFTER BODY HAS BEEN REPLACED${end}"
         #echo ${pages_tpl}
         #exit
-        
-        # Run a cleanup if in case something was left out
-        _cleanup ${pages_tpl}
                 
         # Always use lowercase for file names
         pages_title_lower=$( _file_to_lower "${pages_in_array}" )
@@ -374,17 +371,19 @@ function _pages() {
         
         # Look for links, images and videos and convert them if present.
         if (${debug}) echo "_pages: Checking for #link, #showimg and #ytvideo in page_content"
-        if [[ $( echo ${page_content} | grep \#link > /dev/null ) ]]; then
+        if [[ $( cat ${www_root}/${pages_title_lower%.*}.html | grep \#link > /dev/null ) ]]; then
             echo "If #link is present, run _link: ${page_content}"
             #_link ${www_root}/${pages_in_array%.*}.html
-        elif [[ $( echo ${page_content} | grep \#showimg > /dev/null ) ]]; then
+        elif [[ $( cat ${www_root}/${pages_title_lower%.*}.html | grep \#showimg > /dev/null ) ]]; then
             echo "If #showimg is present, run _image: ${page_content}"
             #_image ${www_root}/${pages_in_array%.*}.html
-        elif [[ $( echo ${page_content} | grep \#ytvideo > /dev/null ) ]]; then
+        elif [[ $( cat ${www_root}/${pages_title_lower%.*}.html | grep \#ytvideo > /dev/null ) ]]; then
             echo "If #ytvideo is present, run _youtube: ${page_content}"
             #_youtube ${www_root}/${pages_in_array%.*}.html
         fi
         
+        # Run a cleanup if in case something was left out
+        # _cleanup ${pages_tpl}
       done
 
     fi
