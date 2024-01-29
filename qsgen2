@@ -343,6 +343,15 @@ function _pages() {
                 
         # Always use lowercase for file names
         pages_title_lower=$( _file_to_lower "${pages_in_array}" )
+        
+        echo "PAGES TEMPLATE"
+        echo ${pages_tpl}
+        echo "#######################################################################################"
+        echo "PAGE CONTENT"
+        echo ${page_content}
+        exit
+        
+        
         # Write pages_tpl to disk
         echo "${green}Writing ${www_root}/${pages_title_lower%.*}.html to disk.${end}"
         tee < ${pages_tpl} | sed \
