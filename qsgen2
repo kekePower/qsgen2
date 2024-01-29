@@ -73,7 +73,7 @@ echo "${magenta}${QSGEN} ${VERSION}${end}"
 if [[ ${1} == "version" ]] || [[ ${1} == "-v" ]] || [[ ${1} == "--version" ]]; then
     echo "${yellow}- Created by kekePower - 2018-2024${end}"
     echo "${yellow}- https://github.com/kekePower/qsgen2/${end}"
-    echo "\n${yellow}- See '${0:t} help' for more information."
+    echo "${yellow}- See '${0:t} help' for more information."
     exit
 fi
 
@@ -99,6 +99,7 @@ fi
 if (${debug}); then
 	echo "${red}Contents of Config file:${end}"
     echo "${yellow} - site_name=${site_name}${end}"
+    echo "${yellow} - site_tagline=${site_tagline}${end}"
     echo "${yellow} - theme=${theme}${end}"
     echo "${yellow} - project_dir=${project_dir}${end}"
     echo "${yellow} - www_root=${www_root}${end}"
@@ -171,12 +172,12 @@ for blog_file in $(ls -har blog/*.blog); do
     current_hash=$(md5sum "$blog_file" | awk '{print $1}')
 	
 	if (${debug}) echo "${red}1. blog_cache: ${blog_file}${end}"
-	if (${debug}) echo "${red}1. current_cache: ${current_hash}${end}"
+	if (${debug}) echo "${red}2. current_cache: ${current_hash}${end}"
 
     # Check if the blog file is new or has changed
     if [[ ${blog_cache[$blog_file]} != "$current_hash" ]]; then
-		if (${debug}) echo "${red}2. new_cache_file: ${blog_file}${end}"
-		if (${debug}) echo "${red}2. new_current_cache: ${current_hash}${end}"
+		if (${debug}) echo "${red}3. new_cache_file: ${blog_file}${end}"
+		if (${debug}) echo "${red}4. new_current_cache: ${current_hash}${end}"
         # Blog file is new or has changed; add it to the processing array
         make_blog_array+=("$blog_file")
 
@@ -248,6 +249,11 @@ function _pages() {
     
     local pages=${project_dir}/templates/${theme}/pages.tpl
     
+    if [[ ! -f ${pages} ]]; then
+        echo "Unable to find the Pages template: ${pages}"
+        exit
+    fi
+    
 }
 
 function _blogs() {
@@ -267,6 +273,12 @@ function _blogs() {
     if (( ${#make_blog_array[@]} > 0 )); then
         
         local blog_tpl=${project_dir}/templates/${theme}/blogs.tpl
+        
+        if [[ ! -f ${blog_tpl} ]]; then
+            echo "Unable to find the Blog template: ${blog_tpl}"
+            exit
+        fi
+        
         local sdate btitle ingress body blog_index blog_dir blog_url
     
     	echo "_blogs: _blog_list_for_index: Just before the for loop: make_blog_array"
@@ -359,6 +371,12 @@ function _blog_index() {
     
     local debug=false
     local pages=${project_dir}/templates/${theme}/pages.tpl
+
+    if [[ ! -f ${pages} ]]; then
+        echo "Unable to find the Pages template: ${pages}"
+        exit
+    fi
+
     local blog_index_title="Blog"
     
     # Running function _list_blog_idx
@@ -367,7 +385,12 @@ function _blog_index() {
     
     if (( ${#blog_tmp_idx_array[@]} > 0 )); then    
 
-        local blog_list=${project_dir}/templates/blog_list.tpl
+        local blog_list=${project_dir}/templates/${theme}/blog_list.tpl
+        
+        if [[ ! -f ${blog_list} ]]; then
+            echo "Unable to find the Pages template: ${blog_list}"
+            exit
+        fi
 
         for blog_files in ${blog_tmp_idx_array[@]}
         do
