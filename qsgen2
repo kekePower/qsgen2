@@ -363,7 +363,7 @@ function _pages() {
         # Write pages_tpl to disk
         echo "Writing ${www_root}/${pages_title_lower%.*}.html to disk."
         tee < ${pages_tpl} | sed \
-            -e "s|BODY|${page_content}|" \
+            -e "s|BODY|$( echo ${page_content} )|" \
         > ${www_root}/${pages_title_lower%.*}.html
         #echo ${pages_tpl}
         #exit
