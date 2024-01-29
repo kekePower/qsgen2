@@ -312,6 +312,7 @@ function _pages() {
         
         echo "PAGE CONTENT"
         echo "$page_content"
+        exit
         
         # Grab the title from the Page
         if (${debug}) echo "_pages: Grepping for page_title"
