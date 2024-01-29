@@ -73,7 +73,7 @@ echo "${magenta}${QSGEN} ${VERSION}${end}"
 function _version() {
     echo "${yellow}- Created by kekePower - 2018-$(date +%Y)${end}"
     echo "${yellow}- https://github.com/kekePower/qsgen2/${end}"
-    echo "${yellow}- See '${0:t} help' for more information."
+    echo "${yellow}- See '${1} help' for more information."
     exit
 }
 
@@ -84,7 +84,7 @@ function _help() {
 
 case ${1} in
     version || -v || --version)
-        _version
+        _version ${0:t}
     ;;
     help || -h || --help)
         _help
