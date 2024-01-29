@@ -339,12 +339,14 @@ function _pages() {
         pages_tpl=$( _last_updated ${pages_tpl} )
         
         # Run a cleanup if in case something was left out
-        #_cleanup ${pages_tpl}
+        _cleanup ${pages_tpl}
                 
         # Always use lowercase for file names
         pages_title_lower=$( _file_to_lower "${pages_in_array}" )
         # Write pages_tpl to disk
         echo "Writing ${www_root}/${pages_title_lower%.*}.html to disk."
+        echo ${pages_tpl}
+        exit
         echo "${pages_tpl}" > ${www_root}/${pages_title_lower%.*}.html
         
         # Look for links, images and videos and convert them if present.
@@ -361,7 +363,7 @@ function _pages() {
         fi
         
         # Run a cleanup if in case something was left out
-        _cleanup ${www_root}/${pages_title_lower%.*}.html
+        # _cleanup ${www_root}/${pages_title_lower%.*}.html
         
       done
 
