@@ -348,8 +348,8 @@ function _pages() {
         pages_title_lower=$( _file_to_lower "${pages_in_array}" )
         # Write pages_tpl to disk
         echo "Writing ${www_root}/${pages_title_lower%.*}.html to disk."
-        echo ${pages_tpl}
-        exit
+        #echo ${pages_tpl}
+        #exit
         echo "${pages_tpl}" > ${www_root}/${pages_title_lower%.*}.html
         
         # Look for links, images and videos and convert them if present.
@@ -364,9 +364,6 @@ function _pages() {
             echo "If #ytvideo is present, run _youtube: ${page_content}"
             #_youtube ${www_root}/${pages_in_array%.*}.html
         fi
-        
-        # Run a cleanup if in case something was left out
-        # _cleanup ${www_root}/${pages_title_lower%.*}.html
         
       done
 
