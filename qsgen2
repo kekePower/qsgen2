@@ -76,14 +76,12 @@ if (${debug}); then
 fi
 
 if [[ ${1} == "version" ]] || [[ ${1} == "-v" ]] || [[ ${1} == "--version" ]]; then
-    # echo "${magenta}${QSGEN} ${VERSION}${end}"
     echo "${yellow}- Created by kekePower - 2018-2024${end}"
     echo "${yellow}- https://github.com/kekePower/qsgen2/${end}"
     exit
 fi
 
 if [[ ${1} == "help" ]]; then
-    echo "${yellow}${QSGEN} ${VERSION}${end}"
 	echo "This is where I'll write the Help documentation."
 	exit
 fi
@@ -310,7 +308,7 @@ function _blogs() {
                         -e "s|INGRESS|${ingress}|"				\
                         -e "s|DATE ||"							\
                         > ${blog%.*}.idx
-                    if (${debug}) echo "0005: ---------- ${lightred}_blogs: TO_IDX_FILE: ${blog%.*}.idx${end}"
+                    if (${debug}) echo "0005: ---------- ${red}_blogs: TO_IDX_FILE: ${blog%.*}.idx${end}"
 
                     if (${debug}) echo "0006: ${cyan}_blogs: BLOG_URL_TPL: ${www_root}${blog_url}${end}"
     				tee < ${blog_tpl} | sed 			\
@@ -324,7 +322,7 @@ function _blogs() {
     					-e "s|DATE ||"					\
     					-e "s|\#title||"				\
     					>> ${www_root}${blog_url}
-    					if (${debug}) echo "0007: ---------- ${lightred}_blogs: ${blog_tpl} -- TO_BLOG_URL_FILE: ${www_root}${blog_url}${end}"
+    					if (${debug}) echo "0007: ---------- ${red}_blogs: ${blog_tpl} -- TO_BLOG_URL_FILE: ${www_root}${blog_url}${end}"
             
                 echo "_blogs: _last_updated: Updating footer for ${www_root}${blog_url}"
                 _last_updated ${www_root}${blog_url}
