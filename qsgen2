@@ -353,7 +353,7 @@ function _pages() {
         
         # Always use lowercase for file names
         pages_title_lower=$( _file_to_lower "${page_title}" )
-        echo "${pages_tpl}" > ${www_root}/${pages_title_lower%.}.html
+        echo "${pages_tpl}" > ${www_root}/${pages_title_lower%.*}.html
       done
 
     fi
