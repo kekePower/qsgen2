@@ -89,6 +89,8 @@ case ${1} in
     help || -h || --help)
         _help ${0:t}
     ;;
+    *)
+    continue
 esac
 
 # Loading Zsh modules
