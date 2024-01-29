@@ -338,18 +338,18 @@ function _pages() {
         #echo "${magenta}AFTER REPLACING TAGLINE${end}"
         #echo ${pages_tpl}
         #exit
-        
-        # Replace #updated with today's date and #version with Name and Version to footer
-        if (${debug}) echo "_pages: _last_updated in pages_tpl"
-        pages_tpl=$( _last_updated ${pages_tpl} )
-        
+              
         #echo "${magenta}AFTER _last_updated${end}"
         #echo ${pages_tpl}
         #exit
         
         # Insert page_content into pages_tpl by replacing the BODY tag present there
         if (${debug}) echo "_pages: Replacing BODY with page_content in pages_tpl"
-        pages_tpl=$( echo ${pages_tpl} | sed -e "s|BODY|${page_content}|g" )
+        pages_tpl=$( echo ${pages_tpl} | sed "s|BODY|${page_content}|g" )
+        
+        # Replace #updated with today's date and #version with Name and Version to footer
+        if (${debug}) echo "_pages: _last_updated in pages_tpl"
+        pages_tpl=$( _last_updated ${pages_tpl} )
         
         echo "${magenta}AFTER BODY HAS BEEN REPLACED${end}"
         echo ${pages_tpl}
