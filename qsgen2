@@ -260,7 +260,7 @@ function _pages_cache() {
 }
 
 function _last_updated() {
-    tee < ${1} | sed -e "s|#updated|${TODAY}|" | sed -e "s|\#version|${QSGEN} ${VERSION}|" > ${1}
+    sed -e "s|#updated|${TODAY}|" | sed -e "s|\#version|${QSGEN} ${VERSION}|" ${1}
 }
 
 function _file_to_lower() {
