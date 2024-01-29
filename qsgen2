@@ -42,7 +42,7 @@
 ###################################################################################################
 # export blog_in_index=false
 
-VERSION="1.9.9.1 alpha" # Sun-2024-01-28
+VERSION="1.9.9.1 alpha" # Mon-2024-01-29
 QSGEN="Quick Site Generator"
 
 # Set to true or false
@@ -50,34 +50,30 @@ QSGEN="Quick Site Generator"
 debug=true
 
 function include () {
+    
+    # This function is used to include other functions that will normally be in
+    # ${HOME}/bin/include/
 
-        local inc_file
         # Edit this path to reflect your installation
-        inc_file=${HOME}/bin/include/${1}.inc
+        local inc_file=${HOME}/bin/include/${1}.inc
         if [[ ! -f ${inc_file} ]]; then
-                local inc_opt
-                inc_opt=$( echo ${1} | cut -d\/ -f2 )
-                echo "Supplied option \"${inc_opt}\" is not valid."
-                echo "Not critical. Will continue and use the default \"--with=clean,addons\"."
+                local inc_opt=$( echo ${1} | cut -d\/ -f2 )
+                echo "Supplied option \"${inc_opt}\" is not a valid include."
         else
                 builtin source ${inc_file} ${2}
         fi
 
 }
 
+# Including some colors to the script
 include common/colors
 
 echo "${magenta}${QSGEN} ${VERSION}${end}"
 
-# Pre-release exit
-if (${debug}); then
-    # echo "${red}Not yet ready. Exiting.${end}"
-    # exit
-fi
-
 if [[ ${1} == "version" ]] || [[ ${1} == "-v" ]] || [[ ${1} == "--version" ]]; then
     echo "${yellow}- Created by kekePower - 2018-2024${end}"
     echo "${yellow}- https://github.com/kekePower/qsgen2/${end}"
+    echo "\n${yellow} - See '${0:t} help' for more information."
     exit
 fi
 
