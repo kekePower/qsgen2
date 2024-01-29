@@ -118,7 +118,6 @@ fi
 
 if [[ ${generator} == "native" ]]; then
     # Usage: ${engine} ${1} - Where 1 is the file you want to convert
-    if (${debug}) echo "${red}Using the ${generator} engine${end}"
         engine=_html
 elif [[ ${generator} == "markdown" ]]; then
     if [[ ! -f /usr/bin/markdown ]]; then
@@ -126,12 +125,12 @@ elif [[ ${generator} == "markdown" ]]; then
         exit
     else
     # Usage: ${engine} ${1} ${2} - Where 1 is the input file and 2 is the html www_root file and location
-    if (${debug}) echo "${red}Using the ${generator} engine${end}"
         engine=$( /usr/bin/markdown -o ${2} ${1} )
     fi
 fi
+if (${debug}) echo "${red}Using the ${generator} engine${end}"
 
-# Define cache files
+# Define cache files for blogs and pages
 blog_cache_file="${project_dir}/.blog_cache"
 pages_cache_file="${project_dir}/.pages_cache"
 
