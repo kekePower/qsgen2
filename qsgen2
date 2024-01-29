@@ -310,6 +310,9 @@ function _pages() {
         if (${debug}) echo "_pages: Loading page_content"
         local page_content="$(<${pages_in_array})"
         
+        echo "PAGE CONTENT"
+        echo "$page_content"
+        
         # Grab the title from the Page
         if (${debug}) echo "_pages: Grepping for page_title"
         page_title=$( head -2 ${page_content} | grep '#title' | cut -d= -f2 )
