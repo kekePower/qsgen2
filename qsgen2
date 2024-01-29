@@ -344,8 +344,8 @@ function _pages() {
         # Always use lowercase for file names
         pages_title_lower=$( _file_to_lower "${pages_in_array}" )
         # Write pages_tpl to disk
-        echo "Writing ${www_root}/${page_title_lower%.*}.html to disk."
-        echo "${pages_tpl}" > ${www_root}/${page_title_lower%.*}.html
+        echo "Writing ${www_root}/${pages_title_lower%.*}.html to disk."
+        echo "${pages_tpl}" > ${www_root}/${pages_title_lower%.*}.html
         
         # Look for links, images and videos and convert them if present.
         if (${debug}) echo "_pages: Checking for #link, #showimg and #ytvideo in page_content"
