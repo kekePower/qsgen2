@@ -301,8 +301,6 @@ function _pages() {
     if (( ${#pages_array[@]} > 0 )); then
       # If pages_array is not empty, we do work
       
-      local out="${www_root}"
-      
       for pages_in_array in ${pages_array[@]}
       do
         echo "${green}Generating Page: ${pages_in_array}${end}"
@@ -355,8 +353,8 @@ function _pages() {
         echo "Writing ${pages_in_array} to disk."
         
         # Always use lowercase for file names
-        pages_title_lower=$( _file_to_lower "${page_title}" )
-        echo "${pages_tpl}" > ${www_root}/${pages_title_lower%.*}.html
+        pages_title_lower=$( _file_to_lower "${pages_in_array}" )
+        echo "${pages_tpl}" > ${www_root}/${pages_in_array%.*}.html
       done
 
     fi
