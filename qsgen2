@@ -341,6 +341,10 @@ function _pages() {
         if (${debug}) echo "_pages: Replacing BODY with page_content in pages_tpl"
         pages_tpl=$( echo ${pages_tpl} | sed -e 's|BODY|${page_content}|g' > /dev/null )
         
+        echo "${magenta}AFTER BODY HAS BEEN REPLACED${end}"
+        echo ${pages_tpl}
+        exit
+        
         # Run a cleanup if in case something was left out
         _cleanup ${pages_tpl}
                 
