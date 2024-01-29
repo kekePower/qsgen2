@@ -316,24 +316,11 @@ function _pages() {
         
         # Remove the #title line from the buffer. No longer needed.
         if (${debug}) echo "_pages: Removing #title line from page_content"
-        page_content=$( grep -v \#title ${page_content} )
+        page_content=$( echo ${page_content} | grep -v \#title )
         
         # HTML'ify the page content
         if (${debug}) echo "_pages: Running engine on page_content"
         page_content=$( ${engine} ${page_content} )
-        
-        # Look for links, images and videos and convert them if present.
-        if (${debug}) echo "_pages: Checking for #link, #showimg and #ytvideo in page_content"
-        if [[ $( grep \#link ${page_content} ) ]]; then
-            echo "If #link is present, run _link: ${page_content}"
-            _link ${page_content}
-        elif [[ $( grep \#showimg ${page_content} ) ]]; then
-            echo "If #showimg is present, run _image: ${page_content}"
-            _image ${page_content}
-        elif [[ $( grep \#ytvideo ${page_content} ) ]]; then
-            echo "If #ytvideo is present, run _youtube: ${page_content}"
-            _youtube ${page_content}
-        fi
         
         # Insert page_content into pages_tpl by replacing the BODY tag present there
         pages_tpl=$( sed -e "s|BODY|${page_content}|" ${pages_tpl} )
@@ -348,7 +335,7 @@ function _pages() {
         pages_tpl=$( _last_updated ${pages_tpl} )
         
         # Run a cleanup if in case something was left out
-        _cleanup ${pages_tpl}
+        #_cleanup ${pages_tpl}
         
         # Write pages_tpl to disk
         echo "Writing ${pages_in_array} to disk."
@@ -356,6 +343,23 @@ function _pages() {
         # Always use lowercase for file names
         pages_title_lower=$( _file_to_lower "${pages_in_array}" )
         echo "${pages_tpl}" > ${www_root}/${pages_in_array%.*}.html
+        
+        # Look for links, images and videos and convert them if present.
+        if (${debug}) echo "_pages: Checking for #link, #showimg and #ytvideo in page_content"
+        if [[ $( grep \#link ${page_content} ) ]]; then
+            echo "If #link is present, run _link: ${page_content}"
+            _link ${www_root}/${pages_in_array%.*}.html
+        elif [[ $( grep \#showimg ${page_content} ) ]]; then
+            echo "If #showimg is present, run _image: ${page_content}"
+            _image ${www_root}/${pages_in_array%.*}.html
+        elif [[ $( grep \#ytvideo ${page_content} ) ]]; then
+            echo "If #ytvideo is present, run _youtube: ${page_content}"
+            _youtube ${www_root}/${pages_in_array%.*}.html
+        fi
+        
+        # Run a cleanup if in case something was left out
+        _cleanup ${www_root}/${pages_in_array%.*}.html
+        
       done
 
     fi
