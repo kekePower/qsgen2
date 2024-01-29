@@ -641,7 +641,8 @@ function _html() {
 	local debug=true
 	if (${debug}) echo "${red}_html: Generating HTML for ${1}${end}"
 
-	sed -i -- "s|\#BR|<br/>\n|g" \
+	echo ${1} | sed \
+    -e "s|\#BR|<br/>\n|g" \
 	-e "s|\#BD|<b>|g" \
 	-e "s|\#EBD|</b>|g" \
 	-e "s|\#UN|<u>|g" \
@@ -679,8 +680,7 @@ function _html() {
 	-e "s|\#EH6|</h6>\n|g" \
 	-e "s|\#LT|\&lt;|g" \
 	-e "s|\#GT|\&gt;|g" \
-	-e "s|\#NUM|\&num;|g" \
-    ${1}
+	-e "s|\#NUM|\&num;|g"
 
 }
 
