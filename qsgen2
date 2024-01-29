@@ -642,13 +642,12 @@ function _cleanup() {
 
 	local debug=true
 
-	if (${debug}) echo "${red}_cleanup: Cleaning up tags in: ${1}${end}"
+	if (${debug}) echo "${red}_cleanup: Cleaning up tags${end}"
 	echo ${1} | sed \
     -e "s|¤||g" \
 	-e "s|#showimg\ ||g" \
 	-e "s|#ytvideo\ ||g" \
-	-e "s|#link\ ||g" \
-    > /dev/null
+	-e "s|#link\ ||g"
 
 }
 
