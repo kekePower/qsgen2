@@ -313,7 +313,7 @@ function _pages() {
         page_title=$( echo ${page_content} | head -2 | grep '#title' | cut -d= -f2 )
         
         # Remove the #title line from the buffer. No longer needed.
-        page_content=$( echo ${page_content} | grep -v #title )
+        page_content=$( echo ${page_content} | grep -v '#title' )
         
         # HTML'ify the page content
         page_content=$( ${engine} ${page_content} )
@@ -339,11 +339,8 @@ function _pages() {
         # Replace every #tagline in pages_tpl
         pages_tpl=$( echo ${pages_tpl} | sed -e "s|#tagline|${site_tagline}|g" )
         
-        # Replace #updated with today's date
+        # Replace #updated with today's date and #version with Name and Version to footer
         pages_tpl=$( _last_updated ${pages_tpl} )
-        
-        # Replace #version with the Name and Version of the script
-        pages_tpl=$( echo ${pages_tpl} | sed -e "s|#version|${QSGEN} ${VERSION}|" )
         
         # Run a cleanup if in case something was left out
         _cleanup ${pages_tpl}
