@@ -656,7 +656,7 @@ function _html() {
     # This converts the formatting tags into their HTML equivalents
 	
 	local debug=true
-	if (${debug}) echo "${red}_html: Generating HTML for ${1}${end}"
+	if (${debug}) echo "${red}_html: Generating HTML${end}"
 
 	echo ${1} | sed \
     -e "s|\#BR|<br/>\n|g" \
