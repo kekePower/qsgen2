@@ -338,7 +338,7 @@ function _pages() {
         #_cleanup ${pages_tpl}
         
         # Write pages_tpl to disk
-        echo "Writing ${pages_in_array} to disk."
+        echo "Writing ${www_root}/${pages_in_array%.*}.html to disk."
         
         # Always use lowercase for file names
         pages_title_lower=$( _file_to_lower "${pages_in_array}" )
