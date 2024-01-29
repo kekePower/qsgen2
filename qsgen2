@@ -349,7 +349,7 @@ function _pages() {
         
         # Insert page_content into pages_tpl by replacing the BODY tag present there
         if (${debug}) echo "_pages: Replacing BODY with page_content in pages_tpl"
-        pages_tpl=$( echo ${pages_tpl} | sed -e 's|BODY|${page_content}|g' > /dev/null )
+        pages_tpl=$( echo ${pages_tpl} | sed -e 's|BODY|${page_content}|g' )
         
         echo "${magenta}AFTER BODY HAS BEEN REPLACED${end}"
         echo ${pages_tpl}
