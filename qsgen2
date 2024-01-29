@@ -319,15 +319,19 @@ function _pages() {
         page_content=$( echo ${page_content} | grep -v \#title )
         
         # Insert page_content into pages_tpl by replacing the BODY tag present there
+        if (${debug}) echo "_pages: Replacing BODY with page_content in pages_tpl"
         pages_tpl=$( sed -e "s|BODY|${page_content}|" ${pages_tpl} )
         
         # Replace every #pagetitle in pages_tpl
+        if (${debug}) echo "_pages: Replacing #pagetitle in pages_tpl"
         pages_tpl=$( sed -e "s|#pagetitle|${page_title}|g" ${pages_tpl} )
         
         # Replace every #tagline in pages_tpl
+        if (${debug}) echo "_pages: Replacing tagline"
         pages_tpl=$( sed -e "s|#tagline|${site_tagline}|g" ${pages_tpl} )
         
         # Replace #updated with today's date and #version with Name and Version to footer
+        if (${debug}) echo "_pages: _last_updated in pages_tpl"
         pages_tpl=$( _last_updated ${pages_tpl} )
         
         # Run a cleanup if in case something was left out
