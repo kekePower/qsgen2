@@ -691,7 +691,8 @@ function _html() {
 	-e "s|\#EH6|</h6>\n|g" \
 	-e "s|\#LT|\&lt;|g" \
 	-e "s|\#GT|\&gt;|g" \
-	-e "s|\#NUM|\&num;|g"
+	-e "s|\#NUM|\&num;|g" \
+    > /dev/null
 
 }
 
