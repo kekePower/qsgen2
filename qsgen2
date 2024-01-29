@@ -47,7 +47,7 @@ QSGEN="Quick Site Generator 2"
 
 # Set to true or false
 # This will show debug information from almost every function in this script
-debug=true
+debug=false
 
 function include () {
     
