@@ -316,13 +316,13 @@ function _pages() {
         if (${debug}) echo "_pages: Grepping for page_title"
         page_title=$( echo ${page_content} | head -1 | grep \#title | cut -d= -f2 )
         
-        # Remove the #title line from the buffer. No longer needed.
-        if (${debug}) echo "_pages: Removing #title line from page_content"
-        page_content=$( echo ${page_content} | grep -v \#title )
-        
         # HTML'ify the page content
         if (${debug}) echo "_pages: Running engine on ${pages_in_array}"
         page_content=$( ${engine} ${page_content} )
+        
+        # Remove the #title line from the buffer. No longer needed.
+        if (${debug}) echo "_pages: Removing #title line from page_content"
+        page_content=$( echo ${page_content} | grep -v \#title )
         
         #if (${debug}) echo "_pages: Writing page_content to disk"
         #echo ${page_content} > ${project_dir}/${pages_in_array%.*}.idx
