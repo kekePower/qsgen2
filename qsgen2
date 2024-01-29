@@ -684,3 +684,5 @@ function _html() {
 # Time to test the first function
 echo "${green}Running function _blogs${end}"
 _blogs
+echo "${green}Running function _pages${end}"
+_pages
