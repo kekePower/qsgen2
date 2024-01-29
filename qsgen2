@@ -642,44 +642,44 @@ function _html() {
 	if (${debug}) echo "${red}_html: Generating HTML for ${1}${end}"
 
 	sed -i -- "s|\#BR|<br/>\n|g" \
-	-i -- "s|\#BD|<b>|g" \
-	-i -- "s|\#EBD|</b>|g" \
-	-i -- "s|\#UN|<u>|g" \
-	-i -- "s|\#EUN|</u>\n|g" \
-	-i -- "s|\#P|<p>\n|g" \
-	-i -- "s|\#EP|</p>\n|g" \
-	-i -- "s|\#Q|<blockquote>|g" \
-	-i -- "s|\#EQ|</blockquote>|g" \
-	-i -- "s|\#STRONG|<strong>|g" \
-	-i -- "s|\#ESTRONG|</strong>|g" \
-	-i -- "s|\#I|<i>|g" \
-	-i -- "s|\#EI|</i>|g" \
-	-i -- "s|\#C|<code>\n|g" \
-	-i -- "s|\#EC|</code>\n|g" \
-	-i -- "s|\#EM|<em>|g" \
-	-i -- "s|\#SEM|</em>|g" \
-	-i -- "s|\#OT|\&quot;|g" \
-	-i -- "s|\#UL|\n<ul>\n|g" \
-	-i -- "s|\#OL|<ol>\n|g" \
-	-i -- "s|\#LI|<li class=\"libody\">|g" \
-	-i -- "s|\#ELI|</li>\n|g" \
-	-i -- "s|\#EUL|\n</ul>\n|g" \
-	-i -- "s|\#EOL|</ol>\n|g" \
-	-i -- "s|\#H1|<h1>|g" \
-	-i -- "s|\#H2|<h2>|g" \
-	-i -- "s|\#H3|<h3>|g" \
-	-i -- "s|\#H4|<h4>|g" \
-	-i -- "s|\#H5|<h5>|g" \
-	-i -- "s|\#H6|<h6>|g" \
-	-i -- "s|\#EH1|</h1>\n|g" \
-	-i -- "s|\#EH2|</h2>\n|g" \
-	-i -- "s|\#EH3|</h3>\n|g" \
-	-i -- "s|\#EH4|</h4>\n|g" \
-	-i -- "s|\#EH5|</h5>\n|g" \
-	-i -- "s|\#EH6|</h6>\n|g" \
-	-i -- "s|\#LT|\&lt;|g" \
-	-i -- "s|\#GT|\&gt;|g" \
-	-i -- "s|\#NUM|\&num;|g" \
+	-e "s|\#BD|<b>|g" \
+	-e "s|\#EBD|</b>|g" \
+	-e "s|\#UN|<u>|g" \
+	-e "s|\#EUN|</u>\n|g" \
+	-e "s|\#P|<p>\n|g" \
+	-e "s|\#EP|</p>\n|g" \
+	-e "s|\#Q|<blockquote>|g" \
+	-e "s|\#EQ|</blockquote>|g" \
+	-e "s|\#STRONG|<strong>|g" \
+	-e "s|\#ESTRONG|</strong>|g" \
+	-e "s|\#I|<i>|g" \
+	-e "s|\#EI|</i>|g" \
+	-e "s|\#C|<code>\n|g" \
+	-e "s|\#EC|</code>\n|g" \
+	-e "s|\#EM|<em>|g" \
+	-e "s|\#SEM|</em>|g" \
+	-e "s|\#OT|\&quot;|g" \
+	-e "s|\#UL|\n<ul>\n|g" \
+	-e "s|\#OL|<ol>\n|g" \
+	-e "s|\#LI|<li class=\"libody\">|g" \
+	-e "s|\#ELI|</li>\n|g" \
+	-e "s|\#EUL|\n</ul>\n|g" \
+	-e "s|\#EOL|</ol>\n|g" \
+	-e "s|\#H1|<h1>|g" \
+	-e "s|\#H2|<h2>|g" \
+	-e "s|\#H3|<h3>|g" \
+	-e "s|\#H4|<h4>|g" \
+	-e "s|\#H5|<h5>|g" \
+	-e "s|\#H6|<h6>|g" \
+	-e "s|\#EH1|</h1>\n|g" \
+	-e "s|\#EH2|</h2>\n|g" \
+	-e "s|\#EH3|</h3>\n|g" \
+	-e "s|\#EH4|</h4>\n|g" \
+	-e "s|\#EH5|</h5>\n|g" \
+	-e "s|\#EH6|</h6>\n|g" \
+	-e "s|\#LT|\&lt;|g" \
+	-e "s|\#GT|\&gt;|g" \
+	-e "s|\#NUM|\&num;|g" \
     ${1}
 
 }
