@@ -322,12 +322,12 @@ function _pages() {
         if (${debug}) echo "_pages: Running engine on ${pages_in_array}"
         page_content=$( ${engine} ${page_content} )
         
-        echo "${page_content}"
-        exit
-        
         # Replace every #pagetitle in pages_tpl
         if (${debug}) echo "_pages: Replacing #pagetitle in pages_tpl"
         pages_tpl=$( echo ${pages_tpl} | sed -e "s|#pagetitle|${page_title}|g" > /dev/null )
+        
+        #echo "${pages_tpl}"
+        #exit
         
         # Replace every #tagline in pages_tpl
         if (${debug}) echo "_pages: Replacing tagline"
