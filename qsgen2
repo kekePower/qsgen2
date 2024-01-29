@@ -273,7 +273,7 @@ function _file_to_lower() {
     # Convert to lowercase and remove invalid characters
     filename=$(echo "${filename}" | sed -e 's/^[^a-zA-Z0-9_.]+//g' -e 's/[^a-zA-Z0-9_-]+/-/g')
 
-    return ${filename}
+    echo ${filename}
 
 }
 
