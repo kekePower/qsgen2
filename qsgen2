@@ -635,13 +635,14 @@ function _youtube() {
 function _cleanup() {
     # This removes tags used in the templates that may be left over for some reason
 
-	local debug=false
+	local debug=true
 
-	if (${debug}) echo "${red}_cleanup: Cleaning up links in: ${www_root}/${1%.*}.html${end}"
-	sed -i -- "s|¤||g" ${www_root}/${1%.*}.html
-	sed -i -- "s|#showimg\ ||g" ${www_root}/${1%.*}.html
-	sed -i -- "s|#ytvideo\ ||g" ${www_root}/${1%.*}.html
-	sed -i -- "s|#link\ ||g" ${www_root}/${1%.*}.html
+	if (${debug}) echo "${red}_cleanup: Cleaning up links in: ${1}${end}"
+	echo ${1} | sed \
+    -e "s|¤||g" \
+	-e "s|#showimg\ ||g" \
+	-e "s|#ytvideo\ ||g" \
+	-e "s|#link\ ||g"
 
 }
 
