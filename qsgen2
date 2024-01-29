@@ -315,6 +315,9 @@ function _pages() {
         # Remove the #title line from the buffer. No longer needed.
         page_content=$( grep -v '#title' ${page_content} )
         
+        echo "${page_content}"
+        exit
+        
         # HTML'ify the page content
         page_content=$( ${engine} ${page_content} )
         
