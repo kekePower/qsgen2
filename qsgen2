@@ -82,16 +82,11 @@ function _help() {
 	exit
 }
 
-case ${1} in
-    version || -v || --version)
-        _version ${0:t}
-    ;;
-    help || -h || --help)
-        _help ${0:t}
-    ;;
-    *)
-    continue
-esac
+if [[ "$1" == "version" || "$1" == "-v" || "$1" == "--version" ]]; then
+  _version ${0:t}
+elif [[ "$1" == "help" || "$1" == "-h" || "$1" == "--help" ]]; then
+  _help ${0:t}
+fi
 
 # Loading Zsh modules
 zmodload zsh/files
