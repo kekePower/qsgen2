@@ -333,7 +333,11 @@ function _pages() {
         
         # Replace every #tagline in pages_tpl
         if (${debug}) echo "_pages: Replacing tagline"
-        pages_tpl=$( echo ${pages_tpl} | sed -e "s|#tagline|${site_tagline}|g" > /dev/null )
+        pages_tpl=$( echo ${pages_tpl} | sed -e "s|#tagline|${site_tagline}|g" )
+        
+        echo "${magenta}AFTER REPLACING TAGLINE${end}"
+        echo ${pages_tpl}
+        exit
         
         # Replace #updated with today's date and #version with Name and Version to footer
         if (${debug}) echo "_pages: _last_updated in pages_tpl"
