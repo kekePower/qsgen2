@@ -283,6 +283,12 @@ function _pages() {
     
     local debug=true
     
+    # Load the cache for Pages
+    if (${debug}) echo "_pages: Running function _pages_cache"
+    _pages_cache
+    
+    if (( ${#pages_array[@]} > 0 )); then
+        
     if (${debug}) echo "_pages: Setting Pages template"
     local pages=${project_dir}/templates/${theme}/pages.tpl
     
@@ -297,11 +303,6 @@ function _pages() {
         pages_tpl="$(<${pages})"
     fi
     
-    # Load the cache for Pages
-    if (${debug}) echo "_pages: Running function _pages_cache"
-    _pages_cache
-    
-    if (( ${#pages_array[@]} > 0 )); then
       # If pages_array is not empty, we do work
       if (${debug}) echo "_pages: pages_array is not empty"
       for pages_in_array in ${pages_array[@]}
