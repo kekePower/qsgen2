@@ -312,6 +312,9 @@ function _pages() {
         # Grab the title from the Page
         page_title=$( grep '#title' ${page_content} | head -2 | cut -d= -f2 )
         
+        echo "Page Title: ${page_title}"
+        exit
+        
         # Remove the #title line from the buffer. No longer needed.
         page_content=$( grep -v '#title' ${page_content} )
         
