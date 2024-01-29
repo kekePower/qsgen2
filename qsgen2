@@ -42,8 +42,8 @@
 ###################################################################################################
 # export blog_in_index=false
 
-VERSION="1.9.9.1 alpha" # Mon-2024-01-29
-QSGEN="Quick Site Generator"
+VERSION="0.0.1 alpha" # Mon-2024-01-29
+QSGEN="Quick Site Generator 2"
 
 # Set to true or false
 # This will show debug information from almost every function in this script
