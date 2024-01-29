@@ -281,8 +281,9 @@ function _file_to_lower() {
 function _pages() {
     # This function generates all the new and updated Pages
     
-    local debug=false
+    local debug=true
     
+    if (${debug}) echo "_pages: Setting template"
     local pages=${project_dir}/templates/${theme}/pages.tpl
     
     # Let's check if we can access the pages.tpl file.
@@ -296,18 +297,21 @@ function _pages() {
     fi
     
     # Load the cache for Pages
+    if (${debug}) echo "_pages: Running function _pages_cache"
     _pages_cache
     
     if (( ${#pages_array[@]} > 0 )); then
       # If pages_array is not empty, we do work
-      
+      if (${debug}) echo "_pages: pages_array is not empty"
       for pages_in_array in ${pages_array[@]}
       do
         echo "${green}Generating Page: ${pages_in_array}${end}"
         # Read the file once
+        if (${debug}) echo "_pages: Loading page_content"
         local page_content="$(<${pages_in_array})"
         
         # Grab the title from the Page
+        if (${debug}) echo "_pages: Grepping for page_title"
         page_title=$( grep '#title' ${page_content} | head -2 | cut -d= -f2 > /dev/null )
         
         echo "Page Title: ${page_title}"
