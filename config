@@ -2,6 +2,8 @@
 
 # This is the name of your site
 export site_name="The Site Name"
+# This is the site tag or subtitle
+export site_tagline="The Site Tagline"
 # At the moment, there is only 1 theme - minimal
 export theme=minimal
 # This is the directory where you create your pages and blogs.
