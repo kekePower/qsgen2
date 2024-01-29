@@ -667,7 +667,7 @@ function _cleanup() {
 function _html() {
     # This converts the formatting tags into their HTML equivalents
 	
-	local debug=true
+	local debug=false
 	if (${debug}) echo "${red}_html: Generating HTML${end}"
 
 	echo ${1} | sed \
