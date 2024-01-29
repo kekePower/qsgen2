@@ -322,11 +322,11 @@ function _pages() {
         if (${debug}) echo "_pages: Running engine on ${pages_in_array}"
         page_content=$( ${engine} ${page_content} )
         
-        local pages_tpl="$(<${pages})"
+        # local pages_tpl="$(<${pages})"
         
         # Replace every #pagetitle in pages_tpl
         if (${debug}) echo "_pages: Replacing #pagetitle in pages_tpl"
-        pages_tpl=$( echo ${pages_tpl} | sed -e "s|#pagetitle|${page_title}|g" > /dev/null )
+        pages_tpl=$( echo ${pages_tpl} | sed -e "s|#pagetitle|${page_title}|g" )
         
         #echo "${pages_tpl}"
         #exit
