@@ -318,12 +318,12 @@ function _pages() {
         if (${debug}) echo "_pages: Removing #title line from page_content"
         page_content=$( echo ${page_content} | grep -v \#title )
         
-        echo "${page_content}"
-        exit
-        
         # HTML'ify the page content
         if (${debug}) echo "_pages: Running engine on ${pages_in_array}"
         page_content=$( ${engine} ${page_content} )
+        
+        echo "${page_content}"
+        exit
         
         # Replace every #pagetitle in pages_tpl
         if (${debug}) echo "_pages: Replacing #pagetitle in pages_tpl"
