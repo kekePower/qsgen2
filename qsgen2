@@ -339,7 +339,7 @@ function _pages() {
         
         # Insert page_content into pages_tpl by replacing the BODY tag present there
         if (${debug}) echo "_pages: Replacing BODY with page_content in pages_tpl"
-        final_page=$( echo ${pages_tpl} | sed "s|BODY|${page_content}|g" )
+        final_page=$( sed -i "s|BODY|${page_content}|g" ${pages_tpl} )
                 
         # Always use lowercase for file names
         pages_title_lower=$( _file_to_lower "${pages_in_array}" )
