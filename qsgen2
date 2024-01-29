@@ -312,7 +312,7 @@ function _pages() {
         
         # Grab the title from the Page
         if (${debug}) echo "_pages: Grepping for page_title"
-        page_title=$( grep '#title' ${page_content} | head -2 | cut -d= -f2 > /dev/null )
+        page_title=$( head -2 ${page_content} | grep '#title' | cut -d= -f2 )
         
         echo "Page Title: ${page_title}"
         exit
