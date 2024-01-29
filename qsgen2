@@ -76,7 +76,7 @@ if (${debug}); then
 fi
 
 if [[ ${1} == "version" ]] || [[ ${1} == "-v" ]] || [[ ${1} == "--version" ]]; then
-    # echo "${purple}${QSGEN} ${VERSION}${end}"
+    # echo "${magenta}${QSGEN} ${VERSION}${end}"
     echo "${yellow}- Created by kekePower - 2018-2024${end}"
     echo "${yellow}- https://github.com/kekePower/qsgen2/${end}"
     exit
