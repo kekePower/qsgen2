@@ -73,7 +73,7 @@ echo "${magenta}${QSGEN} ${VERSION}${end}"
 if [[ ${1} == "version" ]] || [[ ${1} == "-v" ]] || [[ ${1} == "--version" ]]; then
     echo "${yellow}- Created by kekePower - 2018-2024${end}"
     echo "${yellow}- https://github.com/kekePower/qsgen2/${end}"
-    echo "\n${yellow} - See '${0:t} help' for more information."
+    echo "\n${yellow}- See '${0:t} help' for more information."
     exit
 fi
 
