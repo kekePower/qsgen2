@@ -70,17 +70,26 @@ include common/colors
 
 echo "${magenta}${QSGEN} ${VERSION}${end}"
 
-if [[ ${1} == "version" ]] || [[ ${1} == "-v" ]] || [[ ${1} == "--version" ]]; then
-    echo "${yellow}- Created by kekePower - 2018-2024${end}"
+function _version() {
+    echo "${yellow}- Created by kekePower - 2018-$(date +%Y)${end}"
     echo "${yellow}- https://github.com/kekePower/qsgen2/${end}"
     echo "${yellow}- See '${0:t} help' for more information."
     exit
-fi
+}
 
-if [[ ${1} == "help" ]]; then
-	echo "This is where I'll write the Help documentation."
+function _help() {
+    echo "This is where I'll write the Help documentation."
 	exit
-fi
+}
+
+case ${1} in
+    version || -v || --version)
+        _version
+    ;;
+    help || -h || --help)
+        _help
+    ;;
+esac
 
 # Loading Zsh modules
 zmodload zsh/files
