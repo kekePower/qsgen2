@@ -87,7 +87,7 @@ case ${1} in
         _version ${0:t}
     ;;
     help || -h || --help)
-        _help
+        _help ${0:t}
     ;;
 esac
 
@@ -124,10 +124,11 @@ elif [[ ${generator} == "markdown" ]]; then
     if [[ ! -f /usr/bin/markdown ]]; then
         echo "Please install the 'discount' package to use Markdown."
         exit
-    fi
+    else
     # Usage: ${engine} ${1} ${2} - Where 1 is the input file and 2 is the html www_root file and location
     if (${debug}) echo "${red}Using the ${generator} engine${end}"
         engine=$( /usr/bin/markdown -o ${2} ${1} )
+    fi
 fi
 
 # Define cache files
