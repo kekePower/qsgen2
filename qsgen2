@@ -343,9 +343,9 @@ function _pages() {
         if (${debug}) echo "_pages: _last_updated in pages_tpl"
         pages_tpl=$( _last_updated ${pages_tpl} )
         
-        echo "${magenta}AFTER _last_updated${end}"
-        echo ${pages_tpl}
-        exit
+        #echo "${magenta}AFTER _last_updated${end}"
+        #echo ${pages_tpl}
+        #exit
         
         # Insert page_content into pages_tpl by replacing the BODY tag present there
         if (${debug}) echo "_pages: Replacing BODY with page_content in pages_tpl"
