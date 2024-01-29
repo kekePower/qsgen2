@@ -260,7 +260,7 @@ function _pages_cache() {
 }
 
 function _last_updated() {
-    echo ${1} | sed -e "s|#updated|${TODAY}|" | sed -e "s|\#version|${QSGEN} ${VERSION}|"
+    cat ${1} | sed -e "s|#updated|${TODAY}|" | sed -e "s|\#version|${QSGEN} ${VERSION}|" > ${1}
 }
 
 function _file_to_lower() {
@@ -350,10 +350,6 @@ function _pages() {
         #if (${debug}) echo "_pages: Replacing BODY with page_content in pages_tpl"
         #pages_tpl=$( echo ${pages_tpl} | sed "s|BODY|${page_content}|g" )
         
-        # Replace #updated with today's date and #version with Name and Version to footer
-        if (${debug}) echo "_pages: _last_updated in pages_tpl"
-        pages_tpl=$( _last_updated ${pages_tpl} )
-        
         #echo "${magenta}AFTER BODY HAS BEEN REPLACED${end}"
         #echo ${pages_tpl}
         #exit
@@ -365,9 +361,10 @@ function _pages() {
         tee < ${pages_tpl} | sed \
             -e "s|BODY|$( echo ${page_content} )|" \
         > ${www_root}/${pages_title_lower%.*}.html
-        #echo ${pages_tpl}
-        #exit
-        #echo "${pages_tpl}" > ${www_root}/${pages_title_lower%.*}.html
+        
+        # Replace #updated with today's date and #version with Name and Version to footer
+        if (${debug}) echo "_pages: _last_updated in pages_tpl"
+        _last_updated ${www_root}/${pages_title_lower%.*}.html
         
         # Look for links, images and videos and convert them if present.
         if (${debug}) echo "_pages: Checking for #link, #showimg and #ytvideo in page_content"
