@@ -116,16 +116,30 @@ if (${debug}); then
     echo "${yellow} - generator=${generator}${end}"
 fi
 
+# Let's check if qsgen2 can generate this site by checking if 'generator' is available
+if [[ ! ${generator} ]]; then
+    echo "${0:t} cannot parse this site. Exiting."
+    exit
+fi
+
+# We define the variable 'engine' based on what's in the 'config' file.
 if [[ ${generator} == "native" ]]; then
-    # Usage: ${engine} ${1} - Where 1 is the file you want to convert
+        # Usage: ${engine} ${1} - Where 1 is the file you want to convert
         engine=_html
 elif [[ ${generator} == "markdown" ]]; then
     if [[ ! -f /usr/bin/markdown ]]; then
         echo "Please install the 'discount' package to use Markdown."
         exit
     else
-    # Usage: ${engine} ${1} ${2} - Where 1 is the input file and 2 is the html www_root file and location
-        engine=$( /usr/bin/markdown -o ${2} ${1} )
+        # Let's make sure that the Markdown executable gets all its variables: 1 and 2
+        if [[ ! ${2} ]] || [[ ${2} == "" ]]; then
+            echo "Engine: To use Markdown, please provide a second variable, the output file."
+            echo "Engine: Example: engine file.tpl www_root/file.html"
+            exit
+        else
+            # Usage: ${engine} ${1} - Where 1 is the file you want parsed
+            engine=$( /usr/bin/markdown ${1} -d )
+        fi
     fi
 fi
 if (${debug}) echo "${red}Using the ${generator} engine${end}"
@@ -160,107 +174,191 @@ function _list_blog() {
 
 # BLOG CACHE
 function _blog_cache() {
-local debug=false
-# Create an associative array for the blog cache
-typeset -A blog_cache
+    local debug=false
+    # Create an associative array for the blog cache
+    typeset -A blog_cache
 
-# Load the existing blog cache
-if [[ -f $blog_cache_file ]]; then
-    while IFS=':' read -r name hash; do
-        blog_cache[$name]=$hash
-		if (${debug}) echo "${red}HASH VALUE: ${blog_cache[${name}]}${end}"
-    done < "$blog_cache_file"
-fi
-
-# Initialize the array for storing blog files to process
-make_blog_array=()
-
-# Process blog files
-for blog_file in $(ls -har blog/*.blog); do
-    # Compute the current blog file hash
-    current_hash=$(md5sum "$blog_file" | awk '{print $1}')
-	
-	if (${debug}) echo "${red}1. blog_cache: ${blog_file}${end}"
-	if (${debug}) echo "${red}2. current_cache: ${current_hash}${end}"
-
-    # Check if the blog file is new or has changed
-    if [[ ${blog_cache[$blog_file]} != "$current_hash" ]]; then
-		if (${debug}) echo "${red}3. new_cache_file: ${blog_file}${end}"
-		if (${debug}) echo "${red}4. new_current_cache: ${current_hash}${end}"
-        # Blog file is new or has changed; add it to the processing array
-        make_blog_array+=("$blog_file")
-
-        # Update the blog cache with the new hash
-        blog_cache[$blog_file]=$current_hash
+    # Load the existing blog cache
+    if [[ -f $blog_cache_file ]]; then
+        while IFS=':' read -r name hash; do
+            blog_cache[$name]=$hash
+    		if (${debug}) echo "${red}HASH VALUE: ${blog_cache[${name}]}${end}"
+        done < "$blog_cache_file"
     fi
-done
 
-# Rebuild the blog cache file from scratch
-: >| "$blog_cache_file"  # Truncate the file before writing
-for name in "${(@k)blog_cache}"; do
-    echo "$name:${blog_cache[$name]}" >> "$blog_cache_file"
-done
+    # Initialize the array for storing blog files to process
+    make_blog_array=()
+
+    # Process blog files
+    for blog_file in $(ls -har blog/*.blog); do
+        # Compute the current blog file hash
+        current_hash=$(md5sum "$blog_file" | awk '{print $1}')
+	
+    	if (${debug}) echo "${red}1. blog_cache: ${blog_file}${end}"
+    	if (${debug}) echo "${red}2. current_cache: ${current_hash}${end}"
+
+        # Check if the blog file is new or has changed
+        if [[ ${blog_cache[$blog_file]} != "$current_hash" ]]; then
+    		if (${debug}) echo "${red}3. new_cache_file: ${blog_file}${end}"
+    		if (${debug}) echo "${red}4. new_current_cache: ${current_hash}${end}"
+            # Blog file is new or has changed; add it to the processing array
+            make_blog_array+=("$blog_file")
+
+            # Update the blog cache with the new hash
+            blog_cache[$blog_file]=$current_hash
+        fi
+    done
+
+    # Rebuild the blog cache file from scratch
+    : >| "$blog_cache_file"  # Truncate the file before writing
+    for name in "${(@k)blog_cache}"; do
+        echo "$name:${blog_cache[$name]}" >> "$blog_cache_file"
+    done
 }
 
 
 # PAGES CACHE
+# Returns the array pages_array()
 function _pages_cache() {
-local debug=false
-# Create an associative array for the pages cache
-typeset -A pages_cache
+    local debug=false
+    # Create an associative array for the pages cache
+    typeset -A pages_cache
 
-# Load the existing pages cache
-if [[ -f $pages_cache_file ]]; then
-    while IFS=':' read -r name hash; do
-        pages_cache[$name]=$hash
-		if (${debug}) echo "${red}PAGES HASH VALUE: ${pages_cache[${name}]}${end}"
-    done < "$pages_cache_file"
-fi
-
-# Initialize the array for storing pages files to process
-tpl_array=()
-
-# Process pages files
-for file in $(ls -1bt *tpl); do
-    # Compute the current blog file hash
-    current_hash=$(md5sum "$file" | awk '{print $1}')
-	
-	if (${debug}) echo "${red}1. pages_cache: ${pages_cache[$file]}${end}"
-	if (${debug}) echo "${red}1. current_cache: ${current_hash}${end}"
-
-    # Check if the pages file is new or has changed
-    if [[ ${pages_cache[$file]} != "$current_hash" ]]; then
-		if (${debug}) echo "${red}2. pages_file: ${pages_cache[$file]}${end}"
-		if (${debug}) echo "${red}2. current_cache: ${current_hash}${end}"
-        # Pages file is new or has changed; add it to the processing array
-        tpl_array+=("$file")
-
-        # Update the pages cache with the new hash
-        pages_cache[$file]=$current_hash
+    # Load the existing pages cache
+    if [[ -f $pages_cache_file ]]; then
+        while IFS=':' read -r name hash; do
+            pages_cache[$name]=$hash
+    		if (${debug}) echo "${red}PAGES HASH VALUE: ${pages_cache[${name}]}${end}"
+        done < "$pages_cache_file"
     fi
-done
 
-# Rebuild the pages cache file from scratch
-: >| "$pages_cache_file"  # Truncate the file before writing
-for name in "${(@k)pages_cache}"; do
-    echo "$name:${pages_cache[$name]}" >> "$pages_cache_file"
-done
+    # Initialize the array for storing pages files to process
+    pages_array=()
+
+    # Process pages files
+    for file in $(ls -1bt *tpl); do
+        # Compute the current blog file hash
+        current_hash=$(md5sum "$file" | awk '{print $1}')
+    	
+    	if (${debug}) echo "${red}1. pages_cache: ${pages_cache[$file]}${end}"
+    	if (${debug}) echo "${red}1. current_cache: ${current_hash}${end}"
+
+        # Check if the pages file is new or has changed
+        if [[ ${pages_cache[$file]} != "$current_hash" ]]; then
+    		if (${debug}) echo "${red}2. pages_file: ${pages_cache[$file]}${end}"
+    		if (${debug}) echo "${red}2. current_cache: ${current_hash}${end}"
+            # Pages file is new or has changed; add it to the processing array
+            pages_array+=("$file")
+    
+            # Update the pages cache with the new hash
+            pages_cache[$file]=$current_hash
+        fi
+    done
+
+    # Rebuild the pages cache file from scratch
+    : >| "$pages_cache_file"  # Truncate the file before writing
+    for name in "${(@k)pages_cache}"; do
+        echo "$name:${pages_cache[$name]}" >> "$pages_cache_file"
+    done
 }
 
 function _last_updated() {
     tee < ${1} | sed -e "s|#updated|${TODAY}|" | sed -e "s|\#version|${QSGEN} ${VERSION}|" > ${1}
 }
 
+function _file_to_lower() {
+    
+    local filename=${1}
+
+    # Replace spaces with dashes
+    filename="${filename// /-}"
+
+    # Convert to lowercase and remove invalid characters
+    filename=$(echo "${filename}" | sed -e 's/^[^a-zA-Z0-9_.]+//g' -e 's/[^a-zA-Z0-9_-]+/-/g')
+
+    return ${filename}
+
+}
+
+
 function _pages() {
-    # This function generates all the pages
+    # This function generates all the new and updated Pages
     
     local debug=false
     
     local pages=${project_dir}/templates/${theme}/pages.tpl
     
+    # Let's check if we can access the pages.tpl file.
+    # It not, exit script.
     if [[ ! -f ${pages} ]]; then
         echo "Unable to find the Pages template: ${pages}"
         exit
+    else
+        # Read template once
+        pages_tpl="$(<${pages})"
+    fi
+    
+    # Load the cache for Pages
+    _pages_cache
+    
+    if (( ${#pages_array[@]} > 0 )); then
+      # If pages_array is not empty, we do work
+      
+      local out="${www_root}"
+      
+      for pages_in_array in ${pages_array[@]}
+      do
+        echo "${green}Generating Page: ${pages_in_array}${end}"
+        # Read the file once
+        local page_content="$(<${pages_in_array})"
+        
+        # Grab the title from the Page
+        page_title=$( echo ${page_content} | head -2 | grep '#title' | cut -d= -f2 )
+        
+        # Remove the #title line from the buffer. No longer needed.
+        page_content=$( echo ${page_content} | grep -v #title )
+        
+        # HTML'ify the page content
+        page_content=$( ${engine} ${page_content} )
+        
+        # Look for links, images and videos and convert them if present.
+        if [[ $( grep \#link ${page_content} ) ]]; then
+            echo "If #link is present, run _link: ${page_content}"
+            _link ${page_content}
+        elif [[ $( grep \#showimg ${page_content} ) ]]; then
+            echo "If #showimg is present, run _image: ${page_content}"
+            _image ${page_content}
+        elif [[ $( grep \#ytvideo ${page_content} ) ]]; then
+            echo "If #ytvideo is present, run _youtube: ${page_content}"
+            _youtube ${page_content}
+        fi
+        
+        # Insert page_content into pages_tpl by replacing the BODY tag present there
+        page_tpl=$( echo ${page_tpl} | sed -e "s|BODY|${page_content}|" )
+        
+        # Replace every #pagetitle in pages_tpl
+        pages_tpl=$( echo ${pages_tpl} | sed -e "s|#pagetitle|${page_title}|g" )
+        
+        # Replace every #tagline in pages_tpl
+        pages_tpl=$( echo ${pages_tpl} | sed -e "s|#tagline|${site_tagline}|g" )
+        
+        # Replace #updated with today's date
+        pages_tpl=$( _last_updated ${pages_tpl} )
+        
+        # Replace #version with the Name and Version of the script
+        pages_tpl=$( echo ${pages_tpl} | sed -e "s|#version|${QSGEN} ${VERSION}|" )
+        
+        # Run a cleanup if in case something was left out
+        _cleanup ${pages_tpl}
+        
+        # Write pages_tpl to disk
+        echo "Writing ${pages_in_array} to disk."
+        
+        # Always use lowercase for file names
+        pages_title_lower=$( _file_to_lower "${page_title}" )
+        echo "${pages_tpl}" > ${www_root}/${pages_title_lower%.}.html
+      done
+
     fi
     
 }
@@ -290,7 +388,7 @@ function _blogs() {
         
         local sdate btitle ingress body blog_index blog_dir blog_url
     
-    	echo "_blogs: _blog_list_for_index: Just before the for loop: make_blog_array"
+    	if (${debug}) echo "_blogs: _blog_list_for_index: Just before the for loop: make_blog_array"
     	for blog in ${make_blog_array[@]}
     	do
     		if (${debug}) echo "0001: ${red}_blogs: _blog_list_for_index: Processing ${blog}${end}"
