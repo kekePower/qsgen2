@@ -496,9 +496,9 @@ function _blogs() {
                 BLOG_META_STR_ARRAY=()
 
                 # Iterate over make_blog_array
-                for blog in "${make_blog_array[@]}"
+                for blog in "$( cat ${blog_cache_file} )"
                 do
-                    
+                    local blog=$( echo ${blog} | cut -d: -f1 )
                     local content="$(<"${blog}")"
                     sdate=( $( echo ${content} | grep DATE | sed "s|DATE\ ||" | sed "s|\-|\ |g" ) )
                     btitle=$( echo ${content} | grep BLOG_TITLE | cut -d' ' -f2- )
@@ -533,7 +533,7 @@ function _blog_idx_for_index() {
     # This function generates the file blog/index.tmp.html
     
     # We use _blogs to get the data to create the blog index
-    _blogs get_index
+    #_blogs get_index
     
     local debug=true
     
