@@ -430,7 +430,12 @@ function _blogs() {
             # Regular blog creation process
             if [[ ! ${mode} ]]; then
                 
-                local blog_tpl=$(<"${project_dir}/templates/${theme}/blogs.tpl")
+                if [[ -f ${project_dir}/templates/${theme}/blogs.tpl ]]; then
+                    local blog_tpl=$(<"${project_dir}/templates/${theme}/blogs.tpl")
+                else
+                    echo "Unable to find theme template for Blogs."
+                    exit
+                fi
                 
                 for blog in "${make_blog_array[@]}"; do
                    if (${debug}) echo "_blogs: Processing ${blog}"
@@ -451,9 +456,20 @@ function _blogs() {
 
                    # Apply transformations
                    blog_content="$(_html "${blog_content}")"
-                   blog_content="$(_link "${blog_content}")"
-                   blog_content="$(_image "${blog_content}")"
-                   blog_content="$(_youtube "${blog_content}")"
+                   # Look for links, images and videos and convert them if present.
+                   if (${debug}) echo "_pages: Checking for #link, #showimg and #ytvideo in blog_content"
+                   if [[ $( echo ${blog_content} | grep \#link ) ]]; then
+                       if (${debug}) echo "_blogs: If #link is present, run _link: blog_content"
+                       blog_content="$(_link "${blog_content}")"
+                   fi
+                   if [[ $( echo ${blog_content} | grep \#showimg ) ]]; then
+                       if (${debug}) echo "_blogs: If #showimg is present, run _link: blog_content"
+                       blog_content="$(_image "${blog_content}")"
+                   fi
+                   if [[ $( echo ${blog_content} | grep \#ytvideo ) ]]; then
+                       if (${debug}) echo "_blogs: If #ytvideo is present, run _link: blog_content"
+                       blog_content="$(_youtube "${blog_content}")"
+                   fi                   
                    blog_content="$(_cleanup "${blog_content}")"
                    blog_content="$(_last_updated "${blog_content}")"
                 
