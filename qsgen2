@@ -427,13 +427,13 @@ function _blogs() {
                     # Extract blog information
                     sed -i "s/GETDATE/${blogdate}/" ${blog}
                     # Array sdate = Name day=1, Year=2, Month=3, Number day=4
-                    export sdate=( $( echo ${content} | grep DATE | sed "s|DATE\ ||" | sed "s|\-|\ |g" ) )
-                    export btitle=$( echo ${content} | grep BLOG_TITLE | cut -d' ' -f2- )
-                    export ingress=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#INGRESS_START\K(.*?)#INGRESS_STOP" | sed "s|\ \#INGRESS_STOP||" | sed "s|^\ ||" )
+                    sdate=( $( echo ${content} | grep DATE | sed "s|DATE\ ||" | sed "s|\-|\ |g" ) )
+                    btitle=$( echo ${content} | grep BLOG_TITLE | cut -d' ' -f2- )
+                    ingress=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#INGRESS_START\K(.*?)#INGRESS_STOP" | sed "s|\ \#INGRESS_STOP||" | sed "s|^\ ||" )
                     body=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#BODY_START\K(.*?)#BODY_STOP" | sed "s|\ \#BODY_STOP||" | sed "s|^\ ||" )
 
                     blog_index="${btitle:l}"
-                    export blog_index=$(echo "${blog_index}" | sed 's/ /_/g; s/,//g; s/\.//g; s/://g; s/[()]//g')
+                    blog_index=$(echo "${blog_index}" | sed 's/ /_/g; s/,//g; s/\.//g; s/://g; s/[()]//g')
 
                     blog_dir="/blog/${sdate[2]}/${sdate[3]:l}/${sdate[4]}"
                     blog_url="${blog_dir}/${blog_index}.html"
@@ -496,6 +496,16 @@ function _blogs() {
 
                 # Iterate over make_blog_array
                 for blog in "${make_blog_array[@]}"; do
+                    
+                    local content="$(<"${blog}")"
+                    sdate=( $( echo ${content} | grep DATE | sed "s|DATE\ ||" | sed "s|\-|\ |g" ) )
+                    btitle=$( echo ${content} | grep BLOG_TITLE | cut -d' ' -f2- )
+                    ingress=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#INGRESS_START\K(.*?)#INGRESS_STOP" | sed "s|\ \#INGRESS_STOP||" | sed "s|^\ ||" )
+                    blog_index="${btitle:l}"
+                    blog_index=$(echo "${blog_index}" | sed 's/ /_/g; s/,//g; s/\.//g; s/://g; s/[()]//g')
+                    blog_dir="/blog/${sdate[2]}/${sdate[3]:l}/${sdate[4]}"
+                    blog_url="${blog_dir}/${blog_index}.html"
+                    
                     if ${debug}; then echo "_blogs: Adding data for ${blog} to array"; fi
 
                     # Concatenate all metadata into a single string for the current blog
