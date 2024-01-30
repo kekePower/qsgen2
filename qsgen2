@@ -522,6 +522,7 @@ function _blog_idx_for_index() {
     
     for blogs in ${BLOG_META_STR_ARRAY[@]}
     do
+        echo "0. ${blogs}"
         local index_array=("${(@s/||/)blogs}")
         echo "1. ${index_array[URL]}"
         echo "2. ${index_array[BTITLE]}"
