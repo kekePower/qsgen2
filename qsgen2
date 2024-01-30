@@ -616,15 +616,24 @@ function _generate_sitemap() {
 
     # Start of the XML file
     echo '<?xml version="1.0" encoding="UTF-8"?>' > "${sitemap_file}"
-    echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' >> "${sitemap_file}"
+    echo '<?xml-stylesheet type="text/xsl" href="/css/default-sitemap.xsl?sitemap=page"?>' >> "${sitemap_file}"
+    echo '<urlset' >> "${sitemap_file}"
+    echo '  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"' >> "${sitemap_file}"
+    echo '  xmlns:xhtml="http://www.w3.org/1999/xhtml"' >> "${sitemap_file}"
+    echo '  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"' >> "${sitemap_file}"
+    echo '>' >> "${sitemap_file}"
 
     # Add each URL to the sitemap
     for file in "${html_files[@]}"; do
         # Remove www_root from the path and prepend site_url
         local url="${site_url}${file#$www_root}"
+        local lastmod=$(stat -c %y "${file}" 2>/dev/null | cut -d' ' -f1,2 | sed 's/ /T/' | sed 's/\..*$//')
 
         echo "  <url>" >> "${sitemap_file}"
         echo "    <loc>${url}</loc>" >> "${sitemap_file}"
+        echo "    <lastmod><![CDATA[${lastmod}+01:00]]></lastmod>" >> "${sitemap_file}"
+        echo "    <changefreq><![CDATA[always]]></changefreq>" >> "${sitemap_file}"
+        echo "    <priority><![CDATA[1]]></priority>" >> "${sitemap_file}"
         echo "  </url>" >> "${sitemap_file}"
     done
 
