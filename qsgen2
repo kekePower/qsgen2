@@ -445,7 +445,9 @@ function _blogs() {
                    blog_content="${blog_content//CALYEAR/${sdate[2]}}"
                    blog_content="${blog_content//BLOGURL/${blog_url}}"
                    blog_content="${blog_content//INGRESS/${ingress}}"
-                   blog_content="${blog_content//BODY/${body}}"
+                   # Replace BODY placeholder with actual content using Perl
+                   blog_content=$(echo "${blog_content}" | perl -pe "s|\QBODY\E|${body}|g")
+
 
                    # Apply transformations
                    blog_content="$(_html "${blog_content}")"
