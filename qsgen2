@@ -399,7 +399,6 @@ function _blogs() {
 
     local debug=false
     local mode=${1} # If <something>", exports metadata; otherwise, creates blog posts
-    export updated_blogs=false
 
     # Running function _list_blog
     if (${debug})  echo "_blogs: Running function _list_blog"
@@ -409,8 +408,6 @@ function _blogs() {
     _blog_cache
 
     if (( ${#make_blog_array[@]} > 0 )); then
-        
-        export updated_blogs=true
 
             # Regular blog creation process
             if [[ ! ${mode} ]]; then
