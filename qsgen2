@@ -294,7 +294,7 @@ function _file_to_lower() {
 function _pages() {
     # This function generates all the new and updated Pages
     
-    local debug=false
+    local debug=true
     
     # Load the cache for Pages
     if (${debug}) echo "_pages: Running function _pages_cache"
