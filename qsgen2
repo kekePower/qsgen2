@@ -489,8 +489,6 @@ function _blogs() {
                 done
             
             else
-        
-                export updated_blogs=true
 
                 # Declare the array to hold metadata strings for each blog
                 BLOG_META_STR_ARRAY=()
@@ -519,6 +517,7 @@ function _blogs() {
 
                 # Now BLOG_META_STR_ARRAY contains the metadata string for each blog post
                 export BLOG_META_STR_ARRAY
+                export updated_blogs=true
             
             fi
 
@@ -535,6 +534,9 @@ function _blog_idx_for_index() {
     _blogs get_index
     
     local debug=false
+    
+if [[ ${updated_blogs} = "true" ]]; then
+    
     local blog_list=$(<${project_dir}/templates/${theme}/blog_list.tpl)
     
     # Truncate file before writing new one
@@ -570,6 +572,7 @@ function _blog_idx_for_index() {
         done
             echo ${blog_list_content} >> ${project_dir}/blog/index.tmp.html
     done
+fi
 
 }
 
