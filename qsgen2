@@ -314,7 +314,7 @@ function _pages() {
               
         # Grab the title from the Page
         if (${debug}) echo "_pages: Grepping for page_title"
-        page_title=$( echo ${page_content} | head -1 | grep \#title | cut -d= -f2 )
+        page_title=$( echo ${page_content} | head -2 | grep \#title | cut -d= -f2 )
         
         # Remove the #title line from the buffer. No longer needed.
         if (${debug}) echo "_pages: Removing #title line from page_content"
