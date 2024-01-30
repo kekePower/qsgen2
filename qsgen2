@@ -397,7 +397,7 @@ function _blogs() {
     # Rewritten _blogs function
     # This function either generates blog files or exports metadata based on the argument
 
-    local debug=true
+    local debug=false
     local mode=${1} # If <something>", exports metadata; otherwise, creates blog posts
 
     # Running function _list_blog
@@ -525,7 +525,7 @@ function _blog_idx_for_index() {
     # We use _blogs to get the data to create the blog index
     #_blogs get_index
     
-    local debug=true
+    local debug=false
     
     echo "${yellow}_blog_idx_for_index: Initiating function${end}"
     
