@@ -276,6 +276,22 @@ function _last_updated() {
     echo "${updated_content}"
 }
 
+function _f_last_updated() {
+    # This function updates #updated and #version tags in the provided string
+
+    local content="${1}"
+    local debug=false
+
+    if (${debug}) echo "${red}_f_last_updated: Setting date and version in footer of file ${1}${end}"
+
+    # Perform the replacements
+    tee < ${content} | sed \
+        -e "s|#updated|${TODAY}|" \
+        -e "s|#version|${QSGEN} ${VERSION}|") \
+        > ${content}
+
+}
+
 function _file_to_lower() {
     
     local filename=${1}
@@ -464,7 +480,6 @@ function _blogs() {
                    blog_content=$(echo "${blog_content}" | perl -pe "s|BLOGURL|${blog_url}|g")
                    # Replace INGRESS placeholder with actual content using Perl
                    blog_content=$(echo "${blog_content}" | perl -pe "s|\QINGRESS\E|${ingress}|g")
-                   # blog_content="${blog_content//INGRESS/${ingress}}"
                    # Replace BODY placeholder with actual content using Perl
                    blog_content=$(echo "${blog_content}" | perl -pe "s|\QBODY\E|${body}|g")
 
@@ -495,20 +510,6 @@ function _blogs() {
                    # Write to file
                    if (${debug}) echo "_blogs: Writing ${blog} to disk: ${www_root}${blog_url}"
                    echo "${blog_content}" > "${www_root}${blog_url}"
-            
-            #else
-
-                # Iterate over make_blog_array
-                #for blog_to_index in "${#make_blog_array[@]}"
-                #do
-                    #local index_content="$(<"${blog_to_index}")"
-                    #sdate=( $( echo ${content} | grep DATE | sed "s|DATE\ ||" | sed "s|\-|\ |g" ) )
-                    #btitle=$( echo ${content} | grep BLOG_TITLE | cut -d' ' -f2- )
-                    #ingress=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#INGRESS_START\K(.*?)#INGRESS_STOP" | sed "s|\ \#INGRESS_STOP||" | sed "s|^\ ||" )
-                    #blog_index="${btitle:l}"
-                    #blog_index=$(echo "${blog_index}" | sed 's/ /_/g; s/,//g; s/\.//g; s/://g; s/[()]//g')
-                    #blog_dir="/blog/${sdate[2]}/${sdate[3]:l}/${sdate[4]}"
-                    #blog_url="${blog_dir}/${blog_index}.html"
                 
                 done
             # Now BLOG_META_STR_ARRAY contains the metadata string for each blog post
@@ -596,6 +597,7 @@ function _blog_index() {
         echo "${green}Updating the Blog Index file${end}"
         blog_index_content=$(echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g")
         echo ${blog_index_content} > ${www_root}/blog/index.html
+        _f_last_updated ${www_root}/blog/index.html
     
     
 }
