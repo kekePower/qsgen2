@@ -495,7 +495,7 @@ function _blogs() {
                 # Iterate over make_blog_array
                 for blog in "$( cat ${blog_cache_file} )"
                 do
-                    local blog=$( echo ${blog} | cut -d: -f1 )
+                    local blog=$( echo ${blog[@]} | cut -d: -f1 )
                     local content="$(<"${blog}")"
                     sdate=( $( echo ${content} | grep DATE | sed "s|DATE\ ||" | sed "s|\-|\ |g" ) )
                     btitle=$( echo ${content} | grep BLOG_TITLE | cut -d' ' -f2- )
@@ -779,11 +779,11 @@ function _html() {
 }
 
 # Time to test the first function
-echo "${green}Running function _blogs${end}"
+echo "1. ${green}Running function _blogs${end}"
 _blogs
-echo "Running _blog_idx_for_index"
+echo "2. Running _blog_idx_for_index"
 _blog_idx_for_index
-#echo "${green}Running function _blog_index"
+echo "3. ${green}Running function _blog_index"
 _blog_index
-echo "${green}Running function _pages${end}"
+echo "4. ${green}Running function _pages${end}"
 _pages
