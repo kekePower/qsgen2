@@ -488,7 +488,7 @@ function _blogs() {
             else
         
                 # Declare the array to hold metadata strings for each blog
-                declare -a BLOG_META_STR_ARRAY
+                BLOG_META_STR_ARRAY=()
 
                 # Iterate over make_blog_array
                 for blog in "${make_blog_array[@]}"; do
