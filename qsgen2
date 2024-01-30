@@ -556,6 +556,7 @@ if [[ ${updated_blogs} = "true" ]]; then
         local url=""
 
         # Iterate over each component and extract information
+        if (${debug}) echo "${red}_blog_idx_for_index: Iterate over each component and extract information${end}"
         for component in "${meta_array[@]}"; do
             case "${component}" in
                 SDATE:*) sdate=${component#SDATE: } ;;
@@ -572,6 +573,8 @@ if [[ ${updated_blogs} = "true" ]]; then
             blog_list_content=$(echo "${blog_list_content}" | perl -pe "s|BLOGDATE|${bdate}|g")    
         
         done
+            if (${debug}) echo "${red}_blog_idx_for_index: Writing _blog_idx_for_index to file: ${project_dir}/blog/index.tmp.html${end}"
+            if (${debug}) echo "${red}_blog_idx_for_index: blog_list_content = ${blog_list_content}${end}"
             echo ${blog_list_content} >> ${project_dir}/blog/index.tmp.html
     done
 fi
