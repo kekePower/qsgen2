@@ -541,7 +541,7 @@ function _blog_idx_for_index() {
     do
         echo "${yellow}_blog_idx_for_index: meta_str from BLOG_META_STR_ARRAY from _blogs${end}"
         echo "${yellow}:: _blog_idx_for_index: ${meta_str}${end}"
-        local debug=true
+        local debug=false
         # Split meta_str into individual metadata components
         local -a meta_array=("${(@s/||/)meta_str}")
 
@@ -554,7 +554,7 @@ function _blog_idx_for_index() {
         # Iterate over each component and extract information
         if (${debug}) echo "${red}_blog_idx_for_index: Iterate over each component and extract information${end}"
         for component in "${meta_array[@]}"; do
-            local debug=true
+            local debug=false
             case "${component}" in
                 SDATE:*) sdate=${component#SDATE: } ;;
                 BTITLE:*) btitle=${component#BTITLE: } ;;
