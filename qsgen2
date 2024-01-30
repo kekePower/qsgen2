@@ -519,7 +519,7 @@ function _blogs() {
                 done
 
                 # Now BLOG_META_STR_ARRAY contains the metadata string for each blog post
-                echo ${BLOG_META_STR_ARRAY[@]}
+                export BLOG_META_STR_ARRAY
             
             fi
 
