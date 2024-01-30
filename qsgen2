@@ -631,7 +631,7 @@ function _generate_sitemap() {
 
         echo "  <url>" >> ${sitemap_file}
         echo "    <loc>${url}</loc>" >> ${sitemap_file}
-        echo "    <lastmod><![CDATA[${lastmod}+01:00]]></lastmod>" >> ${sitemap_file}
+        echo "    <lastmod><![CDATA[${lastmod}+01:00]]></lastmod>" >> "${sitemap_file}"
         echo "    <changefreq><![CDATA[always]]></changefreq>" >> ${sitemap_file}
         echo "    <priority><![CDATA[1]]></priority>" >> ${sitemap_file}
         echo "  </url>" >> ${sitemap_file}
