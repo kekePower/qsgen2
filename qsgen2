@@ -547,6 +547,7 @@ function _blog_idx_for_index() {
             echo "2. BTITLE=${item[2]}"
             echo "3. DATE=${item[1]}"
             echo "4. INGRESS=${item[3]}"
+            echo "5. EVERYTHING: ${item}"
         done
     done
 
