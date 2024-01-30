@@ -335,7 +335,7 @@ function _pages() {
         
         # HTML'ify the page content
         if (${debug}) echo "_pages: Running engine on ${pages_in_array}"
-        pages_content=$( ${engine} ${page_content} )
+        page_content=$( ${engine} ${page_content} )
         
         # Look for links, images and videos and convert them if present.
         if (${debug}) echo "_pages: Checking for #link, #showimg and #ytvideo in page_content"
