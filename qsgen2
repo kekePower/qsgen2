@@ -392,101 +392,86 @@ function _pages() {
 }
 
 function _blogs() {
-    # This function generates the blog files
-    
+    # Rewritten _blogs function
+    # This function either generates blog files or exports metadata based on the argument
+
     local debug=true
-    
+    local mode=${1} # If <something>", exports metadata; otherwise, creates blog posts
+
     # Running function _list_blog
-    # It returns the array: blog_index_file_array
-    echo "_blogs: Running function _list_blog"
+    if (${debug})  echo "_blogs: Running function _list_blog"
     _list_blog
     # Running function _blog_cache
-    # It returns the array: make_blog_array
-    echo "_blogs: Running function _blog_cache"
+    if (${debug})  echo "_blogs: Running function _blog_cache"
     _blog_cache
-    
-    if (( ${#make_blog_array[@]} > 0 )); then
-        
-        local blog_tpl=${project_dir}/templates/${theme}/blogs.tpl
-        
-        if [[ ! -f ${blog_tpl} ]]; then
-            echo "Unable to find the Blog template: ${blog_tpl}"
-            exit
-        fi
-        
-        local sdate btitle ingress body blog_index blog_dir blog_url
-    
-    	if (${debug}) echo "_blogs: _blog_list_for_index: Just before the for loop: make_blog_array"
-    	for blog in ${make_blog_array[@]}
-    	do
-    		if (${debug}) echo "0001: ${red}_blogs: _blog_list_for_index: Processing ${blog}${end}"
 
-            # Read the file once
-            if (${debug}) echo "0002: ${red}_blogs: _blog_list_for_index: Reading blog from array into content: ${blog}${end}"
-            local content="$(<${blog})"
-		
-    		sed -i "s/GETDATE/${BLOGDATE}/" ${blog}
-            # Array sdate = Name day=4, Year=2, Month=3, Number day=1
+    if (( ${#make_blog_array[@]} > 0 )); then
+        local blog_tpl=$(<"${project_dir}/templates/${theme}/blogs.tpl")
+
+        for blog in "${make_blog_array[@]}"; do
+            if (${debug}) echo "_blogs: Processing ${blog}"
+                
+            local content="$(<"${blog}")"
+            local sdate btitle ingress body blog_index blog_dir blog_url
+
+            # Extract blog information
+            sed -i "s/GETDATE/${BLOGDATE}/" ${blog}
+            # Array sdate = Name day=1, Year=2, Month=3, Number day=4
             sdate=( $( echo ${content} | grep DATE | sed "s|DATE\ ||" | sed "s|\-|\ |g" ) )
             btitle=$( echo ${content} | grep BLOG_TITLE | cut -d' ' -f2- )
             ingress=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#INGRESS_START\K(.*?)#INGRESS_STOP" | sed "s|\ \#INGRESS_STOP||" | sed "s|^\ ||" )
             body=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#BODY_START\K(.*?)#BODY_STOP" | sed "s|\ \#BODY_STOP||" | sed "s|^\ ||" )
-            blog_index=$( echo ${btitle:l} | sed -e "s|-|_|" | sed -e "s|\ |-|g" | sed -e "s|\,||g" | sed -e "s|\.||" )
+
+            blog_index="${btitle,,}"
+            blog_index="${blog_index// /_}"
+            blog_index="${blog_index//,/}"
+            blog_index="${blog_index//./}"
+
             blog_dir="/blog/${sdate[2]}/${sdate[3]}/${sdate[4]}"
             blog_url="${blog_dir}/${blog_index}.html"
 
-    				if [[ ! -d ${www_root}${blog_dir} ]]; then
-    					if (${debug}) echo "0003: ${red}_blogs: Creating blog directory: ${www_root}${blog_dir}${end}"
-    					mkdir -p ${www_root}${blog_dir}
-    				fi
+            # Regular blog creation process
+            if [[ -z "${mode}" ]]; then
+                
+                for blog in "${make_blog_array[@]}"; do
+                if (${debug}) echo "_blogs: Processing ${blog}"
 
-    				if (${debug}) echo "0004: ${cyan}_blogs: blog_index: ${blog_tpl}${end}"
-    				tee < ${blog_tpl} | sed	        			\
-                        -e "s|BLOGTITLE|${btitle}|"				\
-                        -e "s|CALADAY|${sdate[1]}|"				\
-                        -e "s|CALNDAY|${sdate[4]}|"				\
-                        -e "s|CALMONTH|${sdate[3]}|"			\
-                        -e "s|CALYEAR|${sdate[2]}|"				\
-                        -e "s|BLOGURL|${blog_url}|"				\
-                        -e "s|INGRESS|${ingress}|"				\
-                        -e "s|DATE ||"							\
-                        > ${blog%.*}.idx
-                    if (${debug}) echo "0005: ---------- ${red}_blogs: TO_IDX_FILE: ${blog%.*}.idx${end}"
+                # Prepare the blog template
+                local blog_content="${blog_tpl//BLOGTITLE/${btitle}}"
+                blog_content="${blog_content//CALADAY/${sdate[1]}}"
+                blog_content="${blog_content//CALNDAY/${sdate[4]}}"
+                blog_content="${blog_content//CALMONTH/${sdate[3]}}"
+                blog_content="${blog_content//CALYEAR/${sdate[2]}}"
+                blog_content="${blog_content//BLOGURL/${blog_url}}"
+                blog_content="${blog_content//INGRESS/${ingress}}"
+                blog_content="${blog_content//BODY/${body}}"
 
-                    if (${debug}) echo "0006: ${cyan}_blogs: BLOG_URL_TPL: ${www_root}${blog_url}${end}"
-    				tee < ${blog_tpl} | sed 			\
-    					-e "s|BLOGTITLE|${btitle}|"		\
-    					-e "s|CALADAY|${sdate[1]}|"		\
-    					-e "s|CALNDAY|${sdate[4]}|"		\
-    					-e "s|CALMONTH|${sdate[3]}|"	\
-    					-e "s|CALYEAR|${sdate[2]}|"		\
-    					-e "s|INGRESS|${ingress}|"		\
-    					-e "s|BODY|${body}|"			\
-    					-e "s|DATE ||"					\
-    					-e "s|\#title||"				\
-    					>> ${www_root}${blog_url}
-    					if (${debug}) echo "0007: ---------- ${red}_blogs: ${blog_tpl} -- TO_BLOG_URL_FILE: ${www_root}${blog_url}${end}"
+                # Apply transformations
+                blog_content="$(_html "${blog_content}")"
+                blog_content="$(_link "${blog_content}")"
+                blog_content="$(_image "${blog_content}")"
+                blog_content="$(_youtube "${blog_content}")"
+                blog_content="$(_cleanup "${blog_content}")"
+                blog_content="$(_last_updated "${blog_content}")"
+                
+                # Create directory if it doesn't exist
+                [[ ! -d "${www_root}${blog_dir}" ]] && mkdir -p "${www_root}${blog_dir}"
+
+                # Write to file
+                echo "${blog_content}" > "${www_root}${blog_url}"
             
-                echo "_blogs: _last_updated: Updating footer for ${www_root}${blog_url}"
-                _last_updated ${www_root}${blog_url}
-                echo "_blogs: Running HTML engine: ${engine}"
-                ${engine} ${blog_url}
-                if [[ $( grep \#link ${www_root}${blog_url} ) ]]; then
-                    echo "If #link is present, run _link: ${www_root}${blog_url}"
-                    _link ${blog_url}
-                elif [[ $( grep \#showimg ${www_root}${blog_url} ) ]]; then
-                    echo "If #showimg is present, run _image: ${www_root}${blog_url}"
-                    _image ${blog_url}
-                elif [[ $( grep \#ytvideo ${www_root}${blog_url} ) ]]; then
-                    echo "If #ytvideo is present, run _youtube: ${www_root}${blog_url}"
-                    _youtube ${blog_url}
-                fi
-                _cleanup ${blog_url}
+            elif [[ "${mode}" ]] || [[ "${mode}" != "" ]]; then
+                # Export metadata mode
+                if (${debug}) echo "_blogs: Exporting metadata for ${blog}"
+                export BLOG_SDATE="${sdate[@]}"
+                export BLOG_BTITLE="${btitle}"
+                export BLOG_INGRESS="${ingress}"
+                export BLOG_URL="${www_root}${blog_url}"
+            fi
         done
     else
         echo "${yellow}No new or updated Blogs detected.${end}"
     fi
-    
 }
 
 function _blog_idx_for_index() {
