@@ -535,7 +535,7 @@ function _blog_idx_for_index() {
     # We use _blogs to get the data to create the blog index
     _blogs get_index
     
-    debug=true
+    local debug=true
     
 #if [[ ${updated_blogs} = "true" ]]; then
     
@@ -546,6 +546,7 @@ function _blog_idx_for_index() {
     
     for meta_str in ${BLOG_META_STR_ARRAY[@]}
     do
+        local debug=true
         # Split meta_str into individual metadata components
         local -a meta_array=("${(@s/||/)meta_str}")
 
@@ -558,6 +559,7 @@ function _blog_idx_for_index() {
         # Iterate over each component and extract information
         if (${debug}) echo "${red}_blog_idx_for_index: Iterate over each component and extract information${end}"
         for component in "${meta_array[@]}"; do
+            local debug=true
             case "${component}" in
                 SDATE:*) sdate=${component#SDATE: } ;;
                 BTITLE:*) btitle=${component#BTITLE: } ;;
