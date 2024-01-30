@@ -35,10 +35,10 @@
 # export www_root=${HOME}/www_root/smelror.com
 # #################################################################################################
 # I don't think these need to be here as they'll always be in the same place with the same names
-# export pages=${project_dir}/templates/<theme>/pages.tpl
-# export blogs=${project_dir}/templates/<theme>/blogs.tpl
-# export blog_list=${project_dir}/templates/<theme>/blog_list.tpl
-# export blog_index=${project_dir}/templates/<theme>/blog_index.tpl
+# export pages=${project_dir}/themes/<theme>/pages.tpl
+# export blogs=${project_dir}/themes/<theme>/blogs.tpl
+# export blog_list=${project_dir}/themes/<theme>/blog_list.tpl
+# export blog_index=${project_dir}/themes/<theme>/blog_index.tpl
 ###################################################################################################
 # export blog_in_index=false
 
@@ -324,7 +324,7 @@ function _pages() {
       do
           
         if (${debug}) echo "_pages: Setting Pages template"
-        local pages=${project_dir}/templates/${theme}/pages.tpl
+        local pages=${project_dir}/themes/${theme}/pages.tpl
         
         # Let's check if we can access the pages.tpl file.
         # It not, exit script.
@@ -431,8 +431,8 @@ function _blogs() {
             # Regular blog creation process
             #if [[ ! ${mode} ]]; then
                 
-                if [[ -f ${project_dir}/templates/${theme}/blogs.tpl ]]; then
-                    local blog_tpl=$(<"${project_dir}/templates/${theme}/blogs.tpl")
+                if [[ -f ${project_dir}/themes/${theme}/blogs.tpl ]]; then
+                    local blog_tpl=$(<"${project_dir}/themes/${theme}/blogs.tpl")
                 else
                     echo "Unable to find theme template for Blogs."
                     exit
@@ -530,7 +530,7 @@ function _blog_idx_for_index() {
     
     echo "${yellow}_blog_idx_for_index: Initiating function${end}"
     
-    local blog_list_tpl=$(<${project_dir}/templates/${theme}/blog_list.tpl)
+    local blog_list_tpl=$(<${project_dir}/themes/${theme}/blog_list.tpl)
     
     # Truncate file before writing new one
     : >| "${project_dir}/blog/index.tmp.html"
@@ -583,7 +583,7 @@ function _blog_index() {
     # This function generates the /blog/index.html file that gets its data from _blog_list_for_index()
     
     local debug=false
-    local blog_index_file=${project_dir}/templates/${theme}/blog_index.tpl
+    local blog_index_file=${project_dir}/themes/${theme}/blog_index.tpl
     local blog_index=$(<${blog_index_file})
     local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
 
