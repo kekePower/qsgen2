@@ -301,25 +301,26 @@ function _pages() {
     _pages_cache
     
     if (( ${#pages_array[@]} > 0 )); then
-        
-    if (${debug}) echo "_pages: Setting Pages template"
-    local pages=${project_dir}/templates/${theme}/pages.tpl
-    
-    # Let's check if we can access the pages.tpl file.
-    # It not, exit script.
-    if [[ ! -f ${pages} ]]; then
-        echo "Unable to find the Pages template: ${pages}"
-        exit
-    else
-        # Read template once
-        if (${debug}) echo "_pages: Reading Pages template into pages_tpl"
-        pages_tpl="$(<${pages})"
-    fi
     
       # If pages_array is not empty, we do work
       if (${debug}) echo "_pages: pages_array is not empty"
       for pages_in_array in ${pages_array[@]}
       do
+          
+        if (${debug}) echo "_pages: Setting Pages template"
+        local pages=${project_dir}/templates/${theme}/pages.tpl
+        
+        # Let's check if we can access the pages.tpl file.
+        # It not, exit script.
+        if [[ ! -f ${pages} ]]; then
+            echo "Unable to find the Pages template: ${pages}"
+            exit
+        else
+            # Read template once
+            if (${debug}) echo "_pages: Reading Pages template into pages_tpl"
+            pages_tpl="$(<${pages})"
+        fi
+        
         echo "${green}Generating Page: ${pages_in_array}${end}"
         # Read the file once
         if (${debug}) echo "_pages: Loading page_content once - ${pages_in_array}"
@@ -341,15 +342,15 @@ function _pages() {
         # Look for links, images and videos and convert them if present.
         if (${debug}) echo "_pages: Checking for #link, #showimg and #ytvideo in page_content"
         if [[ $( echo ${page_content} | grep \#link ) ]]; then
-            if (${debug}) echo "_pages: If #link is present, run _link: page_content"
+            if (${debug}) echo "_pages: #link is present, run _link: page_content"
             page_content=$( _link "${page_content}" )
         fi
         if [[ $( echo ${page_content} | grep \#showimg ) ]]; then
-            if (${debug}) echo "_pages: If #showimg is present, run _image: page_content"
+            if (${debug}) echo "_pages: #showimg is present, run _image: page_content"
             page_content=$( _image "${page_content}" )
         fi
         if [[ $( echo ${page_content} | grep \#ytvideo ) ]]; then
-            if (${debug}) echo "_pages: If #ytvideo is present, run _youtube: page_content"
+            if (${debug}) echo "_pages: #ytvideo is present, run _youtube: page_content"
             page_content=$( _youtube "${page_content}" )
         fi
         
