@@ -475,8 +475,8 @@ function _blogs() {
                    blog_content="$(_last_updated "${blog_content}")"
                 
                    # Create directory if it doesn't exist
-                   if (${debug}) echo "_blogs: Creating ${blog_dir}"
-                   [[ ! -d "${www_root}${blog_dir}" ]] && mkdir -p "${www_root}${blog_dir}"
+                   if (${debug}) echo "_blogs: Creating directoty ${www_root}/${blog_dir}"
+                   [[ ! -d "${www_root}/${blog_dir}" ]] && mkdir -p "${www_root}/${blog_dir}"
 
                    # Write to file
                    if (${debug}) echo "_blogs: Writing ${blog} to disk: ${www_root}${blog_url}"
