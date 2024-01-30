@@ -337,8 +337,11 @@ function _pages() {
         #exit
         
         # Insert page_content into pages_tpl by replacing the BODY tag present there
-        if (${debug}) echo "_pages: Replacing BODY with page_content in pages_tpl"
-        pages_tpl=$( echo ${pages_tpl} | sed -e "s|BODY|${page_content}|g" )
+        if (${debug}) echo "_pages: Replacing BODY with page_content in pages_tpl using Perl"
+        # Use Perl for multi-line and special character handling
+        pages_tpl=$( echo "${pages_tpl}" | perl -pe "s|BODY|${page_content}|gs" )
+
+        # pages_tpl=$( echo ${pages_tpl} | sed -e "s|BODY|${page_content}|g" )
         
         #echo ${pages_tpl}
         #exit
