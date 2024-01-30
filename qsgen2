@@ -775,9 +775,9 @@ function _html() {
 # Time to test the first function
 echo "${green}Running function _blogs${end}"
 _blogs
-echo "Running _blog_idx_for_index"
-_blog_idx_for_index
-echo "${green}Running function _blog_index"
-_blog_index
+#echo "Running _blog_idx_for_index"
+#_blog_idx_for_index
+#echo "${green}Running function _blog_index"
+#_blog_index
 echo "${green}Running function _pages${end}"
 _pages
