@@ -346,10 +346,10 @@ function _pages() {
         if [[ $( grep \#link ${page_content} ) ]]; then
             echo "If #link is present, run _link: page_content"
             page_content=$( _link "${page_content}" )
-        elif [[ $( echo ${page_content} | grep \#showimg ) ]]; then
+        elif [[ $( grep \#showimg ${page_content} ) ]]; then
             echo "If #showimg is present, run _image: page_content"
             page_content=$( _image "${page_content}" )
-        elif [[ $( echo ${page_content} | grep \#ytvideo ) ]]; then
+        elif [[ $( grep \#ytvideo ${page_content} ) ]]; then
             echo "If #ytvideo is present, run _youtube: page_content"
             page_content=$( _youtube "${page_content}" )
         fi
