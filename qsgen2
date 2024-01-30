@@ -586,6 +586,8 @@ function _blog_index() {
         exit
     fi
     
+    blogs get_index
+    
     if [[ ${updated_blogs} == "true" ]]; then
         echo "${green}Updating the Blog Index file${end}"
         blog_index_content=$(echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g")
