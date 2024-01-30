@@ -528,7 +528,7 @@ function _blog_idx_for_index() {
     # This function generates the file blog/index.tmp.html
     
     # We use _blogs to get the data to create the blog index
-    #_blogs get_index
+    _blogs get_index
     
     local debug=true
     
@@ -541,6 +541,8 @@ function _blog_idx_for_index() {
     
     for meta_str in ${BLOG_META_STR_ARRAY[@]}
     do
+        echo "${yellow}_blog_idx_for_index: meta_str from BLOG_META_STR_ARRAY from _blogs${end}"
+        echo "${yellow}:: _blog_idx_for_index: ${meta_str}${end}"
         local debug=true
         # Split meta_str into individual metadata components
         local -a meta_array=("${(@s/||/)meta_str}")
