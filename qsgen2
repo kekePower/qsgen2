@@ -338,10 +338,10 @@ function _pages() {
         
         # Insert page_content into pages_tpl by replacing the BODY tag present there
         if (${debug}) echo "_pages: Replacing BODY with page_content in pages_tpl"
-        pages_tpl=$( echo ${pages_tpl} | sed -e "s/BODY/${page_content}/g" )
+        pages_tpl=$( echo ${pages_tpl} | sed -e "s|BODY|${page_content}|g" )
         
-        echo ${pages_tpl}
-        exit
+        #echo ${pages_tpl}
+        #exit
         
         # HTML'ify the page content
         if (${debug}) echo "_pages: Running engine on ${pages_in_array}"
