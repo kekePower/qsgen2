@@ -421,10 +421,8 @@ function _blogs() {
             ingress=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#INGRESS_START\K(.*?)#INGRESS_STOP" | sed "s|\ \#INGRESS_STOP||" | sed "s|^\ ||" )
             body=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#BODY_START\K(.*?)#BODY_STOP" | sed "s|\ \#BODY_STOP||" | sed "s|^\ ||" )
 
-            blog_index="${btitle,,}"
-            blog_index="${blog_index// /_}"
-            blog_index="${blog_index//,/}"
-            blog_index="${blog_index//./}"
+            blog_index="${btitle:l}"
+            blog_index=$(echo "${blog_index}" | sed 's/ /_/g; s/,//g; s/\.//g')
 
             blog_dir="/blog/${sdate[2]}/${sdate[3]:l}/${sdate[4]}"
             blog_url="${blog_dir}/${blog_index:l}.html"
