@@ -519,13 +519,11 @@ function _blogs() {
 
                 # Now BLOG_META_STR_ARRAY contains the metadata string for each blog post
                 export BLOG_META_STR_ARRAY
-                export updated_blogs=true
             
             fi
 
     else
         echo "${yellow}No new or updated Blogs detected.${end}"
-        export updated_blogs=false
     fi
 }
 
@@ -536,8 +534,6 @@ function _blog_idx_for_index() {
     #_blogs get_index
     
     local debug=true
-    
-#if [[ ${updated_blogs} = "true" ]]; then
     
     local blog_list_tpl=$(<${project_dir}/templates/${theme}/blog_list.tpl)
     
@@ -579,7 +575,6 @@ function _blog_idx_for_index() {
             if (${debug}) echo "${red}_blog_idx_for_index: blog_list_content = ${blog_list_content}${end}"
             echo ${blog_list_content} >> ${project_dir}/blog/index.tmp.html
     done
-#fi
 
 }
 
@@ -598,11 +593,10 @@ function _blog_index() {
     
     _blogs get_index
     
-    if [[ ${updated_blogs} == "true" ]]; then
         echo "${green}Updating the Blog Index file${end}"
         blog_index_content=$(echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g")
         echo ${blog_index_content} > ${www_root}/blog/index.html
-    fi
+    
     
 }
 
@@ -785,6 +779,6 @@ _blogs
 echo "Running _blog_idx_for_index"
 _blog_idx_for_index
 #echo "${green}Running function _blog_index"
-#_blog_index
+_blog_index
 echo "${green}Running function _pages${end}"
 _pages
