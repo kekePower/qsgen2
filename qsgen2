@@ -552,7 +552,7 @@ function _blog_idx_for_index() {
                 BTITLE:*) btitle=${component#BTITLE: } ;;
                 INGRESS:*) ingress=${component#INGRESS: } ;;
                 URL:*) url=${component#URL: } ;;
-            
+            esac
 
         local adate=( $( echo ${sdate} ) )
         local bdate="${adate[1]} - ${adate[4]}/${adate[3]}/${adate[2]}"
@@ -563,7 +563,7 @@ function _blog_idx_for_index() {
         
         echo ${blog_list_content} >> ${project_dir}/blog/index.tmp.html
         
-            esac
+            
         
         done
     done
