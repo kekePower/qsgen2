@@ -316,10 +316,6 @@ function _pages() {
         if (${debug}) echo "_pages: Grepping for page_title"
         page_title=$( echo ${page_content} | head -1 | grep \#title | cut -d= -f2 )
         
-        # HTML'ify the page content
-        if (${debug}) echo "_pages: Running engine on ${pages_in_array}"
-        page_content=$( ${engine} ${page_content} )
-        
         # Remove the #title line from the buffer. No longer needed.
         if (${debug}) echo "_pages: Removing #title line from page_content"
         page_content=$( echo ${page_content} | grep -v \#title )
@@ -339,28 +335,20 @@ function _pages() {
         
         # Insert page_content into pages_tpl by replacing the BODY tag present there
         if (${debug}) echo "_pages: Replacing BODY with page_content in pages_tpl"
-        echo ${pages_tpl} | sed -e 's/BODY/"${page_content}"/g;'
-        # >> ${www_root}/${pages_title_lower%.*}.html
+        pages_tpl=$( echo ${pages_tpl} | sed -e "s/BODY/${page_content}/g" )
+        
+        # HTML'ify the page content
+        if (${debug}) echo "_pages: Running engine on ${pages_in_array}"
+        pages_tpl=$( ${engine} ${pages_tpl} )
                 
         # Always use lowercase for file names
         pages_title_lower=$( _file_to_lower "${pages_in_array}" )
         
-        #echo "PAGES TEMPLATE"
-        #echo ${pages_tpl}
-        #echo "#######################################################################################"
-        #echo "PAGE CONTENT"
-        #echo ${page_content}
-        #echo "#######################################################################################"
-        #echo "FINAL PAGE: ${pages_title_lower%.*}.html"
-        #cat ${www_root}/${pages_title_lower%.*}.html
-        exit
-        
-        
         # Write pages_tpl to disk
         echo "${green}Writing ${www_root}/${pages_title_lower%.*}.html to disk.${end}"
-        tee < ${pages_tpl} | sed \
-            -e "s|BODY|$( echo ${page_content} )|" \
-        > ${www_root}/${pages_title_lower%.*}.html
+        #tee < ${pages_tpl} | sed \
+        #    -e "s|BODY|$( echo ${page_content} )|" 
+        echo "${pages_tpl}" > ${www_root}/${pages_title_lower%.*}.html
         
         # Replace #updated with today's date and #version with Name and Version to footer
         if (${debug}) echo "_pages: _last_updated in pages_tpl"
