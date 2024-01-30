@@ -553,7 +553,7 @@ function _blog_idx_for_index() {
                 INGRESS:*) ingress=${component#INGRESS: } ;;
                 URL:*) url=${component#URL: } ;;
             esac
-        done
+
         bdate="${sdate[1]} - ${sdate[4]}/${sdate[3]}/${sdate[2]}"
         blog_list_content=$(echo "${blog_list}" | perl -pe "s|BLOGURL|${url}|g")
         blog_list_content=$(echo "${blog_list}" | perl -pe "s|BLOGTITLE|${btitle}|g")
@@ -561,6 +561,8 @@ function _blog_idx_for_index() {
         blog_list_content=$(echo "${blog_list}" | perl -pe "s|BLOGDATE|${bdate}|g")
         
         echo ${blog_list_content} >> ${project_dir}/blog/index.tmp.html
+        
+        done
     done
 
 }
