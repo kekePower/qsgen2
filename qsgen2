@@ -492,8 +492,8 @@ function _blogs() {
                 BLOG_META_STR_ARRAY=()
 
                 # Iterate over make_blog_array
-                for blog_to_index in "${#make_blog_array[@]}"
-                do
+                #for blog_to_index in "${#make_blog_array[@]}"
+                #do
                     #local index_content="$(<"${blog_to_index}")"
                     #sdate=( $( echo ${content} | grep DATE | sed "s|DATE\ ||" | sed "s|\-|\ |g" ) )
                     #btitle=$( echo ${content} | grep BLOG_TITLE | cut -d' ' -f2- )
@@ -503,14 +503,14 @@ function _blogs() {
                     #blog_dir="/blog/${sdate[2]}/${sdate[3]:l}/${sdate[4]}"
                     #blog_url="${blog_dir}/${blog_index}.html"
                     
-                    if ${debug}; then echo "_blogs: Adding data for ${blog_to_index} to array"; fi
+                    if ${debug}; then echo "_blogs: Adding data for ${blog} to array"; fi
 
                     # Concatenate all metadata into a single string for the current blog
                     local metadata_str="SDATE: ${sdate[@]}||BTITLE: ${btitle}||INGRESS: ${ingress}||URL: ${blog_url}"
 
                     # Append this metadata string to the array
                     BLOG_META_STR_ARRAY+=("${metadata_str}")
-                done
+                #done
             
                 # Now BLOG_META_STR_ARRAY contains the metadata string for each blog post
                 export BLOG_META_STR_ARRAY
