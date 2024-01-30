@@ -543,11 +543,8 @@ function _blog_idx_for_index() {
         local index_array=("${(@s/||/)blogs}")
         for item in ${index_array[@]}
         do
-            #echo "1. URL=${item[4]}"
-            #echo "2. BTITLE=${item[2]}"
-            #echo "3. DATE=${item[1]}"
-            #echo "4. INGRESS=${item[3]}"
-            echo ". EVERYTHING: ${item}"
+            local -a split_item=$( echo ${item[@]} | cut -f: )
+            echo "${split_item[1]} = ${split_item[2]}"
         done
     done
 
