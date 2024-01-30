@@ -533,7 +533,7 @@ function _blog_idx_for_index() {
     # This function generates the file blog/index.tmp.html
     
     # We use _blogs to get the data to create the blog index
-    #_blogs get_index
+    _blogs get_index
     
     debug=true
     
