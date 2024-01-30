@@ -434,31 +434,31 @@ function _blogs() {
             if [[ ! ${mode} ]]; then
                 
                 for blog in "${make_blog_array[@]}"; do
-                if (${debug}) echo "_blogs: Processing ${blog}"
+                   if (${debug}) echo "_blogs: Processing ${blog}"
 
-                # Prepare the blog template
-                local blog_content="${blog_tpl//BLOGTITLE/${btitle}}"
-                blog_content="${blog_content//CALADAY/${sdate[1]}}"
-                blog_content="${blog_content//CALNDAY/${sdate[4]}}"
-                blog_content="${blog_content//CALMONTH/${sdate[3]}}"
-                blog_content="${blog_content//CALYEAR/${sdate[2]}}"
-                blog_content="${blog_content//BLOGURL/${blog_url}}"
-                blog_content="${blog_content//INGRESS/${ingress}}"
-                blog_content="${blog_content//BODY/${body}}"
+                   # Prepare the blog template
+                   local blog_content="${blog_tpl//BLOGTITLE/${btitle}}"
+                   blog_content="${blog_content//CALADAY/${sdate[1]}}"
+                   blog_content="${blog_content//CALNDAY/${sdate[4]}}"
+                   blog_content="${blog_content//CALMONTH/${sdate[3]}}"
+                   blog_content="${blog_content//CALYEAR/${sdate[2]}}"
+                   blog_content="${blog_content//BLOGURL/${blog_url}}"
+                   blog_content="${blog_content//INGRESS/${ingress}}"
+                   blog_content="${blog_content//BODY/${body}}"
 
-                # Apply transformations
-                blog_content="$(_html "${blog_content}")"
-                blog_content="$(_link "${blog_content}")"
-                blog_content="$(_image "${blog_content}")"
-                blog_content="$(_youtube "${blog_content}")"
-                blog_content="$(_cleanup "${blog_content}")"
-                blog_content="$(_last_updated "${blog_content}")"
+                   # Apply transformations
+                   blog_content="$(_html "${blog_content}")"
+                   blog_content="$(_link "${blog_content}")"
+                   blog_content="$(_image "${blog_content}")"
+                   blog_content="$(_youtube "${blog_content}")"
+                   blog_content="$(_cleanup "${blog_content}")"
+                   blog_content="$(_last_updated "${blog_content}")"
                 
-                # Create directory if it doesn't exist
-                [[ ! -d "${www_root}${blog_dir}" ]] && mkdir -p "${www_root}${blog_dir}"
+                   # Create directory if it doesn't exist
+                   [[ ! -d "${www_root}${blog_dir}" ]] && mkdir -p "${www_root}${blog_dir}"
 
-                # Write to file
-                echo "${blog_content}" > "${www_root}${blog_url}"
+                   # Write to file
+                   echo "${blog_content}" > "${www_root}${blog_url}"
                 done
             
             else
@@ -471,8 +471,8 @@ function _blogs() {
                 export BLOG_URL="${www_root}${blog_url}"
             
             fi
-    else
-        echo "${yellow}No new or updated Blogs detected.${end}"
+        else
+            echo "${yellow}No new or updated Blogs detected.${end}"
     fi
 }
 
