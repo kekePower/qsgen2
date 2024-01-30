@@ -621,7 +621,7 @@ function _generate_sitemap() {
     # Add each URL to the sitemap
     for file in "${html_files[@]}"; do
         # Remove www_root from the path and prepend site_url
-        local url="${site_url}/${file#$www_root}"
+        local url="${site_url}${file#$www_root}"
 
         echo "  <url>" >> "${sitemap_file}"
         echo "    <loc>${url}</loc>" >> "${sitemap_file}"
