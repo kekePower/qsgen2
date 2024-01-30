@@ -459,8 +459,9 @@ function _blogs() {
 
                 # Write to file
                 echo "${blog_content}" > "${www_root}${blog_url}"
+                done
             
-        else
+            else
         
                 # Export metadata mode
                 if (${debug}) echo "_blogs: Exporting metadata for ${blog}"
@@ -470,7 +471,6 @@ function _blogs() {
                 export BLOG_URL="${www_root}${blog_url}"
             
             fi
-        done
     else
         echo "${yellow}No new or updated Blogs detected.${end}"
     fi
