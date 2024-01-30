@@ -485,7 +485,6 @@ function _blogs() {
                    # Write to file
                    if (${debug}) echo "_blogs: Writing ${blog} to disk: ${www_root}${blog_url}"
                    echo "${blog_content}" > "${www_root}${blog_url}"
-                done
             
             #else
 
@@ -513,6 +512,9 @@ function _blogs() {
                     BLOG_META_STR_ARRAY+=("${metadata_str}")
                 done
 
+                done
+            
+            
                 # Now BLOG_META_STR_ARRAY contains the metadata string for each blog post
                 export BLOG_META_STR_ARRAY
             
