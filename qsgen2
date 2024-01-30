@@ -548,13 +548,14 @@ function _blog_idx_for_index() {
         # Iterate over each component and extract information
         for component in "${meta_array[@]}"; do
             case "${component}" in
-                SDATE:*) sdate=(${component#SDATE: }) ;;
+                SDATE:*) sdate=${component#SDATE: } ;;
                 BTITLE:*) btitle=${component#BTITLE: } ;;
                 INGRESS:*) ingress=${component#INGRESS: } ;;
                 URL:*) url=${component#URL: } ;;
             esac
 
-        bdate="${sdate[1]} - ${sdate[4]}/${sdate[3]}/${sdate[2]}"
+        adate=( echo ${sdate} )
+        bdate="${adate[1]} - ${adate[4]}/${adate[3]}/${adate[2]}"
         blog_list_content=$(echo "${blog_list}" | perl -pe "s|BLOGURL|${url}|g")
         blog_list_content=$(echo "${blog_list}" | perl -pe "s|BLOGTITLE|${btitle}|g")
         blog_list_content=$(echo "${blog_list}" | perl -pe "s|INGRESS|${ingress}|g")
