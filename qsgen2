@@ -471,8 +471,9 @@ function _blogs() {
                 export BLOG_URL="${www_root}${blog_url}"
             
             fi
-        else
-            echo "${yellow}No new or updated Blogs detected.${end}"
+        done
+    else
+        echo "${yellow}No new or updated Blogs detected.${end}"
     fi
 }
 
