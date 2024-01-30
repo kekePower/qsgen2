@@ -486,11 +486,7 @@ function _blogs() {
                 done
             
             else
-                echo "_blogs: get_index: Date = ${sdate[@]}"
-                echo "_blogs: get_index: URL = ${blog_url}"
-                echo "_blogs: get_index: Title = ${btitle}"
-                echo "_blogs: get_index: Ingress = ${ingress}"
-                exit
+
                 # Declare the array to hold metadata strings for each blog
                 BLOG_META_STR_ARRAY=()
 
@@ -505,6 +501,12 @@ function _blogs() {
                     blog_index=$(echo "${blog_index}" | sed 's/ /_/g; s/,//g; s/\.//g; s/://g; s/[()]//g')
                     blog_dir="/blog/${sdate[2]}/${sdate[3]:l}/${sdate[4]}"
                     blog_url="${blog_dir}/${blog_index}.html"
+                    
+                    echo "_blogs: get_index: Date = ${sdate[@]}"
+                    echo "_blogs: get_index: URL = ${blog_url}"
+                    echo "_blogs: get_index: Title = ${btitle}"
+                    echo "_blogs: get_index: Ingress = ${ingress}"
+                    exit
                     
                     if ${debug}; then echo "_blogs: Adding data for ${blog} to array"; fi
 
