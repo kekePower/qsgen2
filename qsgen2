@@ -417,10 +417,10 @@ function _blogs() {
     local mode=${1} # If <something>", exports metadata; otherwise, creates blog posts
 
     # Running function _list_blog
-    if (${debug})  echo "_blogs: Running function _list_blog"
+    if (${debug}) echo "_blogs: Running function _list_blog"
     _list_blog
     # Running function _blog_cache
-    if (${debug})  echo "_blogs: Running function _blog_cache"
+    if (${debug}) echo "_blogs: Running function _blog_cache"
     _blog_cache
 
     if (( ${#make_blog_array[@]} > 0 )); then
@@ -528,19 +528,19 @@ function _blog_idx_for_index() {
     
     local debug=false
     
-    echo "${yellow}_blog_idx_for_index: Initiating function${end}"
+    if (${debug}) echo "${yellow}_blog_idx_for_index: Initiating function${end}"
     
     local blog_list_tpl=$(<${project_dir}/themes/${theme}/blog_list.tpl)
     
     # Truncate file before writing new one
     : >| "${project_dir}/blog/index.tmp.html"
     
-    echo ":: _blog_idx_for_index: BLOG_META_STR_ARRAY: ${BLOG_META_STR_ARRAY[@]}"
+    if (${debug}) echo "${red}:: _blog_idx_for_index: BLOG_META_STR_ARRAY: ${BLOG_META_STR_ARRAY[@]}${end}"
     
     for meta_str in ${BLOG_META_STR_ARRAY[@]}
     do
-        echo "${yellow}_blog_idx_for_index: meta_str from BLOG_META_STR_ARRAY from _blogs${end}"
-        echo "${yellow}:: _blog_idx_for_index: ${meta_str}${end}"
+        if (${debug}) echo "${yellow}_blog_idx_for_index: meta_str from BLOG_META_STR_ARRAY from _blogs${end}"
+        if (${debug}) echo "${yellow}:: _blog_idx_for_index: ${meta_str}${end}"
         local debug=false
         # Split meta_str into individual metadata components
         local -a meta_array=("${(@s/||/)meta_str}")
@@ -594,12 +594,45 @@ function _blog_index() {
     
     _blogs get_index
     
+    if [[ ${blog_in_index} == "false" ]]; then
         echo "${green}Updating the Blog Index file${end}"
         blog_index_content=$(echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g")
         echo ${blog_index_content} > ${www_root}/blog/index.html
         _f_last_updated ${www_root}/blog/index.html
+    elif [[ ${blog_in_index} == "true" ]]; then
+        # Write blog list to /index.html
+    fi
     
+}
+
+function _generate_sitemap() {
     
+    echo "${bold_yellow}Generating sitemap.xml${end}"
+
+    local sitemap_file="${www_root}/sitemap.xml"
+
+    # Find all HTML files and store them in an array
+    local -a html_files=("${(@f)$(find "${www_root}" -type f -name "*.html")}")
+
+    # Start of the XML file
+    echo '<?xml version="1.0" encoding="UTF-8"?>' > "${sitemap_file}"
+    echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' >> "${sitemap_file}"
+
+    # Add each URL to the sitemap
+    for file in "${html_files[@]}"; do
+        # Remove www_root from the path and prepend site_url
+        local url="${site_url}/${file#$www_root}"
+
+        echo "  <url>" >> "${sitemap_file}"
+        echo "    <loc>${url}</loc>" >> "${sitemap_file}"
+        echo "  </url>" >> "${sitemap_file}"
+    done
+
+    # End of the XML file
+    echo '</urlset>' >> "${sitemap_file}"
+
+    echo "Sitemap generated at ${sitemap_file}"
+
 }
 
 function _link() {
@@ -784,3 +817,4 @@ echo "3. ${green}Running function _blog_index"
 _blog_index
 echo "4. ${green}Running function _pages${end}"
 _pages
+_generate_sitemap
