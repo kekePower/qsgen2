@@ -426,8 +426,8 @@ function _blogs() {
             blog_index="${blog_index//,/}"
             blog_index="${blog_index//./}"
 
-            blog_dir="/blog/${sdate[2]}/${sdate[3]}/${sdate[4]}"
-            blog_url="${blog_dir}/${blog_index}.html"
+            blog_dir="/blog/${sdate[2]}/${sdate[3]:l}/${sdate[4]}"
+            blog_url="${blog_dir}/${blog_index:l}.html"
 
             # Regular blog creation process
             if [[ ! ${mode} ]]; then
@@ -444,7 +444,9 @@ function _blogs() {
                    blog_content="${blog_content//CALMONTH/${sdate[3]}}"
                    blog_content="${blog_content//CALYEAR/${sdate[2]}}"
                    blog_content="${blog_content//BLOGURL/${blog_url}}"
-                   blog_content="${blog_content//INGRESS/${ingress}}"
+                   # Replace INGRESS placeholder with actual content using Perl
+                   blog_content=$(echo "${blog_content}" | perl -pe "s|\QINGRESS\E|${ingress}|g")
+                   # blog_content="${blog_content//INGRESS/${ingress}}"
                    # Replace BODY placeholder with actual content using Perl
                    blog_content=$(echo "${blog_content}" | perl -pe "s|\QBODY\E|${body}|g")
 
