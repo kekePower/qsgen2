@@ -439,6 +439,8 @@ function _blogs() {
                     blog_url="${blog_dir}/${blog_index}.html"
                     
                    if (${debug}) echo "_blogs: Processing ${blog}"
+                       
+                   echo "${green}Generating blog ${blog_index}.html${end}"
 
                    # Prepare the blog template
                    if (${debug}) echo "_blogs: Processing substitutes in ${blog}"
@@ -485,12 +487,22 @@ function _blogs() {
             
             else
         
-                # Export metadata mode
-                if (${debug}) echo "_blogs: Exporting metadata for ${blog}"
-                export BLOG_SDATE="${sdate[@]}"
-                export BLOG_BTITLE="${btitle}"
-                export BLOG_INGRESS="${ingress}"
-                export BLOG_URL="${www_root}${blog_url}"
+                # Declare the array to hold metadata strings for each blog
+                declare -a BLOG_META_STR_ARRAY
+
+                # Iterate over make_blog_array
+                for blog in "${make_blog_array[@]}"; do
+                    if ${debug}; then echo "_blogs: Adding data for ${blog} to array"; fi
+
+                    # Concatenate all metadata into a single string for the current blog
+                    local metadata_str="SDATE: ${sdate[*]}||BTITLE: ${btitle}||INGRESS: ${ingress}||URL: ${www_root}${blog_url}"
+
+                    # Append this metadata string to the array
+                    BLOG_META_STR_ARRAY+=("${metadata_str}")
+                done
+
+                # Now BLOG_META_STR_ARRAY contains the metadata string for each blog post
+                export BLOG_META_STR_ARRAY
             
             fi
 
@@ -502,12 +514,19 @@ function _blogs() {
 function _blog_idx_for_index() {
     # This function generates the file blog/index.idx
     
-    local debug=false
+    # We use _blogs to get the data to create the blog index
+    _blogs get_index
     
-    if [[ -f ${project_dir}/blog/index.tmp.html ]]; then
-        echo "Remove temporary file: ${project_dir}/blog/index.tmp.html"
-        rm -f ${project_dir}/blog/index.tmp.html
-    fi
+    local debug=false
+    local blog_list=$(<${project_dir}/templates/${theme}/blog_list.tpl)
+    
+    for blogs in ${BLOG_META_STR_ARRAY[@]}
+    do
+        echo ${blogs[URL]}
+        echo ${blogs[BTITLE]}
+        echo ${blogs[SDATE[@]]}
+        echo ${blogs[INGRESS]}
+    done
 
 }
 
@@ -739,7 +758,10 @@ function _html() {
 }
 
 # Time to test the first function
-echo "${green}Running function _blogs${end}"
-_blogs
-echo "${green}Running function _pages${end}"
-_pages
+#echo "${green}Running function _blogs${end}"
+#_blogs
+#echo "${green}Running function _pages${end}"
+#_pages
+
+echo "Running _blog_idx_for_index"
+_blog_idx_for_index
