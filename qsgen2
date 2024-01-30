@@ -333,45 +333,45 @@ function _pages() {
         if (${debug}) echo "_pages: Removing #title line from page_content"
         page_content=$( echo ${page_content} | grep -v \#title )
         
-        # Replace every #pagetitle in pages_tpl
-        if (${debug}) echo "_pages: Replacing #pagetitle in pages_tpl"
-        pages_tpl=$( echo ${pages_tpl} | sed -e "s|#pagetitle|${page_title}|g" )
+        # HTML'ify the page content
+        if (${debug}) echo "_pages: Running engine on ${pages_in_array}"
+        pages_content=$( ${engine} ${page_content} )
         
-        # Replace every #tagline in pages_tpl
-        if (${debug}) echo "_pages: Replacing tagline"
-        pages_tpl=$( echo ${pages_tpl} | sed -e "s|#tagline|${site_tagline}|g" )
+        # Look for links, images and videos and convert them if present.
+        if (${debug}) echo "_pages: Checking for #link, #showimg and #ytvideo in page_content"
+        if [[ $( grep \#link ${page_content} > /dev/null ) ]]; then
+            echo "If #link is present, run _link: page_content"
+            page_content=$( _link "${page_content}" )
+        fi
+        if [[ $( grep \#showimg ${page_content} > /dev/null ) ]]; then
+            echo "If #showimg is present, run _image: page_content"
+            page_content=$( _image "${page_content}" )
+        fi
+        if [[ $( grep \#ytvideo ${page_content} > /dev/null ) ]]; then
+            echo "If #ytvideo is present, run _youtube: page_content"
+            page_content=$( _youtube "${page_content}" )
+        fi
         
         # Insert page_content into pages_tpl by replacing the BODY tag present there
         if (${debug}) echo "_pages: Replacing BODY with page_content in pages_tpl using Perl"
         # Use Perl for multi-line and special character handling
         pages_tpl=$( echo "${pages_tpl}" | perl -pe "s|BODY|${page_content}|gs" )
         
-        # HTML'ify the page content
-        if (${debug}) echo "_pages: Running engine on ${pages_in_array}"
-        pages_tpl=$( ${engine} ${page_content} )
+        # Replace every #pagetitle in pages_tpl
+        if (${debug}) echo "_pages: Replacing #pagetitle in pages_tpl"
+        pages_tpl=$( echo ${pages_tpl} | perl -pe "s|#pagetitle|${page_title}|gs" )
+        
+        # Replace every #tagline in pages_tpl
+        if (${debug}) echo "_pages: Replacing tagline"
+        pages_tpl=$( echo ${pages_tpl} | perl -pe "s|#tagline|${site_tagline}|gs" )
         
         # Replace #updated with today's date and #version with Name and Version to footer
         if (${debug}) echo "_pages: _last_updated in pages_tpl"
         pages_tpl=$( _last_updated ${pages_tpl} )
         
-        # Look for links, images and videos and convert them if present.
-        if (${debug}) echo "_pages: Checking for #link, #showimg and #ytvideo in page_content"
-        if [[ $( grep \#link ${pages_tpl} > /dev/null ) ]]; then
-            echo "If #link is present, run _link: pages_tpl"
-            page_content=$( _link "${pages_tpl}" )
-        fi
-        if [[ $( grep \#showimg ${pages_tpl} > /dev/null ) ]]; then
-            echo "If #showimg is present, run _image: pages_tpl"
-            page_content=$( _image "${pages_tpl}" )
-        fi
-        if [[ $( grep \#ytvideo ${pages_tpl} > /dev/null ) ]]; then
-            echo "If #ytvideo is present, run _youtube: pages_tpl"
-            page_content=$( _youtube "${pages_tpl}" )
-        fi
-        
         # Clean up unused tags, if any
         if (${debug}) echo "_pages: Running _cleanup"
-        page_content=$( _cleanup "${pages_tpl}" )
+        pages_tpl=$( _cleanup "${pages_tpl}" )
         
         # Always use lowercase for file names
         if (${debug}) echo "_pages: Lowercase filnames, always"
@@ -675,52 +675,57 @@ function _cleanup() {
 }
 
 function _html() {
-    # This converts the formatting tags into their HTML equivalents
-	
-	local debug=false
-	if (${debug}) echo "${red}_html: Generating HTML${end}"
+    # This function converts formatting tags into their HTML equivalents in a provided string
 
-	echo ${1} | sed \
-    -e "s|\#BR|<br/>\n|g" \
-	-e "s|\#BD|<b>|g" \
-	-e "s|\#EBD|</b>|g" \
-	-e "s|\#UN|<u>|g" \
-	-e "s|\#EUN|</u>\n|g" \
-	-e "s|\#P|<p>\n|g" \
-	-e "s|\#EP|</p>\n|g" \
-	-e "s|\#Q|<blockquote>|g" \
-	-e "s|\#EQ|</blockquote>|g" \
-	-e "s|\#STRONG|<strong>|g" \
-	-e "s|\#ESTRONG|</strong>|g" \
-	-e "s|\#I|<i>|g" \
-	-e "s|\#EI|</i>|g" \
-	-e "s|\#C|<code>\n|g" \
-	-e "s|\#EC|</code>\n|g" \
-	-e "s|\#EM|<em>|g" \
-	-e "s|\#SEM|</em>|g" \
-	-e "s|\#OT|\&quot;|g" \
-	-e "s|\#UL|\n<ul>\n|g" \
-	-e "s|\#OL|<ol>\n|g" \
-	-e "s|\#LI|<li class=\"libody\">|g" \
-	-e "s|\#ELI|</li>\n|g" \
-	-e "s|\#EUL|\n</ul>\n|g" \
-	-e "s|\#EOL|</ol>\n|g" \
-	-e "s|\#H1|<h1>|g" \
-	-e "s|\#H2|<h2>|g" \
-	-e "s|\#H3|<h3>|g" \
-	-e "s|\#H4|<h4>|g" \
-	-e "s|\#H5|<h5>|g" \
-	-e "s|\#H6|<h6>|g" \
-	-e "s|\#EH1|</h1>\n|g" \
-	-e "s|\#EH2|</h2>\n|g" \
-	-e "s|\#EH3|</h3>\n|g" \
-	-e "s|\#EH4|</h4>\n|g" \
-	-e "s|\#EH5|</h5>\n|g" \
-	-e "s|\#EH6|</h6>\n|g" \
-	-e "s|\#LT|\&lt;|g" \
-	-e "s|\#GT|\&gt;|g" \
-	-e "s|\#NUM|\&num;|g"
+    local content="${1}"
+    local debug=false
 
+    if (${debug}) echo "${red}_html: Generating HTML from content${end}"
+
+    # Perform HTML tag substitutions
+    local html_content=$(echo "${content}" | sed \
+        -e "s|#BR|<br/>|g" \
+        -e "s|#BD|<b>|g" \
+        -e "s|#EBD|</b>|g" \
+        -e "s|#UN|<u>|g" \
+        -e "s|#EUN|</u>|g" \
+        -e "s|#P|<p>|g" \
+        -e "s|#EP|</p>|g" \
+        -e "s|#Q|<blockquote>|g" \
+        -e "s|#EQ|</blockquote>|g" \
+        -e "s|#STRONG|<strong>|g" \
+        -e "s|#ESTRONG|</strong>|g" \
+        -e "s|#I|<i>|g" \
+        -e "s|#EI|</i>|g" \
+        -e "s|#C|<code>|g" \
+        -e "s|#EC|</code>|g" \
+        -e "s|#EM|<em>|g" \
+        -e "s|#SEM|</em>|g" \
+        -e "s|#OT|&quot;|g" \
+        -e "s|#UL|<ul>|g" \
+        -e "s|#OL|<ol>|g" \
+        -e "s|#LI|<li class=\"libody\">|g" \
+        -e "s|#ELI|</li>|g" \
+        -e "s|#EUL|</ul>|g" \
+        -e "s|#EOL|</ol>|g" \
+        -e "s|#H1|<h1>|g" \
+        -e "s|#H2|<h2>|g" \
+        -e "s|#H3|<h3>|g" \
+        -e "s|#H4|<h4>|g" \
+        -e "s|#H5|<h5>|g" \
+        -e "s|#H6|<h6>|g" \
+        -e "s|#EH1|</h1>|g" \
+        -e "s|#EH2|</h2>|g" \
+        -e "s|#EH3|</h3>|g" \
+        -e "s|#EH4|</h4>|g" \
+        -e "s|#EH5|</h5>|g" \
+        -e "s|#EH6|</h6>|g" \
+        -e "s|#LT|&lt;|g" \
+        -e "s|#GT|&gt;|g" \
+        -e "s|#NUM|&num;|g")
+
+    # Return the HTML content
+    echo "${html_content}"
 }
 
 # Time to test the first function
