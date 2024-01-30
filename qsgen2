@@ -460,7 +460,7 @@ function _blogs() {
                 # Write to file
                 echo "${blog_content}" > "${www_root}${blog_url}"
             
-            elif [[ "${mode}" ]] || [[ "${mode}" != "" ]]; then
+            elif [[ ${mode} || ${mode} != "" ]]; then
                 # Export metadata mode
                 if (${debug}) echo "_blogs: Exporting metadata for ${blog}"
                 export BLOG_SDATE="${sdate[@]}"
