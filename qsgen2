@@ -320,11 +320,6 @@ function _pages() {
         if (${debug}) echo "_pages: Removing #title line from page_content"
         page_content=$( echo ${page_content} | grep -v \#title )
         
-        #if (${debug}) echo "_pages: Writing page_content to disk"
-        #echo ${page_content} > ${project_dir}/${pages_in_array%.*}.idx
-        
-        # local pages_tpl="$(<${pages})"
-        
         # Replace every #pagetitle in pages_tpl
         if (${debug}) echo "_pages: Replacing #pagetitle in pages_tpl"
         pages_tpl=$( echo ${pages_tpl} | sed -e "s|#pagetitle|${page_title}|g" )
@@ -333,31 +328,14 @@ function _pages() {
         if (${debug}) echo "_pages: Replacing tagline"
         pages_tpl=$( echo ${pages_tpl} | sed -e "s|#tagline|${site_tagline}|g" )
         
-        #echo ${page_content}
-        #exit
-        
         # Insert page_content into pages_tpl by replacing the BODY tag present there
         if (${debug}) echo "_pages: Replacing BODY with page_content in pages_tpl using Perl"
         # Use Perl for multi-line and special character handling
         pages_tpl=$( echo "${pages_tpl}" | perl -pe "s|BODY|${page_content}|gs" )
-
-        # pages_tpl=$( echo ${pages_tpl} | sed -e "s|BODY|${page_content}|g" )
-        
-        #echo ${pages_tpl}
-        #exit
         
         # HTML'ify the page content
         if (${debug}) echo "_pages: Running engine on ${pages_in_array}"
-        pages_tpl=$( ${engine} ${pages_tpl} )
-                
-        # Always use lowercase for file names
-        pages_title_lower=$( _file_to_lower "${pages_in_array}" )
-        
-        # Write pages_tpl to disk
-        echo "${green}Writing ${www_root}/${pages_title_lower%.*}.html to disk.${end}"
-        #tee < ${pages_tpl} | sed \
-        #    -e "s|BODY|$( echo ${page_content} )|" 
-        echo "${pages_tpl}" > ${www_root}/${pages_title_lower%.*}.html
+        pages_tpl=$( ${engine} ${page_content} )
         
         # Replace #updated with today's date and #version with Name and Version to footer
         if (${debug}) echo "_pages: _last_updated in pages_tpl"
@@ -366,18 +344,28 @@ function _pages() {
         # Look for links, images and videos and convert them if present.
         if (${debug}) echo "_pages: Checking for #link, #showimg and #ytvideo in page_content"
         if [[ $( cat ${www_root}/${pages_title_lower%.*}.html | grep \#link ) ]]; then
-            echo "If #link is present, run _link: ${page_content}"
-            #_link ${www_root}/${pages_in_array%.*}.html
+            echo "If #link is present, run _link: page_content"
+            page_content=$( _link "${page_content}" )
         elif [[ $( cat ${www_root}/${pages_title_lower%.*}.html | grep \#showimg ) ]]; then
-            echo "If #showimg is present, run _image: ${page_content}"
-            #_image ${www_root}/${pages_in_array%.*}.html
+            echo "If #showimg is present, run _image: page_content"
+            page_content=$( _image "${page_content}" )
         elif [[ $( cat ${www_root}/${pages_title_lower%.*}.html | grep \#ytvideo ) ]]; then
-            echo "If #ytvideo is present, run _youtube: ${page_content}"
-            #_youtube ${www_root}/${pages_in_array%.*}.html
+            echo "If #ytvideo is present, run _youtube: page_content"
+            page_content=$( _youtube "${page_content}" )
         fi
         
-        # Run a cleanup if in case something was left out
-        # _cleanup ${pages_tpl}
+        # Clean up unused tags, if any
+        if (${debug}) echo "_pages: Running _cleanup"
+        page_content=$( _cleanup "${page_content}" )
+        
+        # Always use lowercase for file names
+        if (${debug}) echo "_pages: Lowercase filnames, always"
+        pages_title_lower=$( _file_to_lower "${pages_in_array}" )
+        
+        # Write pages_tpl to disk
+        echo "${green}Writing ${www_root}/${pages_title_lower%.*}.html to disk.${end}"
+        echo "${pages_tpl}" > ${www_root}/${pages_title_lower%.*}.html
+        
       done
       
     else
@@ -553,21 +541,21 @@ function _blog_index() {
 }
 
 function _link() {
-    # This converts #link tags to actual clickable links
+    # This converts #link tags to actual clickable links in a provided string
 
+    local content="${1}"
+    local modified_content=""
     local debug=false
-    
-    if (${debug}) echo "${red}_link: Generating links for ${1}${end}"
 
-    # Process the file line by line
-    while IFS= read -r line; do
+    # Process the content line by line
+    echo "${content}" | while IFS= read -r line; do
         if [[ ${line} == *"#link"* ]]; then
-            if (${debug}) echo "${red}URL_MAIN(line): (${1}) ${line}${end}"
+            if (${debug}) echo "${red}URL_MAIN(line): ${line}${end}"
 
             # Extract the URL and the link text
-            local url_full=$(echo "$line" | awk -F'#link ' '{print $2}' | awk -F'¤' '{print $1 "¤" $2}')
-            local url_dest=$(echo "$url_full" | awk -F'¤' '{print $1}')
-            local url_txt=$(echo "$url_full" | awk -F'¤' '{print $2}')
+            local url_full=$(echo "${line}" | awk -F'#link ' '{print $2}' | awk -F'¤' '{print $1 "¤" $2}')
+            local url_dest=$(echo "${url_full}" | awk -F'¤' '{print $1}')
+            local url_txt=$(echo "${url_full}" | awk -F'¤' '{print $2}')
             
             if (${debug}) echo "${red}URL: ${url_dest}${end}"
             if (${debug}) echo "${red}Text: ${url_txt}${end}"
@@ -579,90 +567,96 @@ function _link() {
                 modified_link+="<img class=\"exticon\" alt=\"External site icon\" src=\"/images/ext-url.png\" width=\"16\" />"
             fi
             modified_link+="</a>"
-            line=${line//"#link $url_full"/$modified_link}
+            line=${line//"#link ${url_full}"/${modified_link}}
         fi
-        echo "$line" >> "${www_root}/${1%.*}.tmp.html"
-    done < "${www_root}/${1%.*}.html"
+        modified_content+="${line}\n"
+    done
 
-    # Replace the original file with the modified one
-    builtin mv "${www_root}/${1%.*}.tmp.html" "${www_root}/${1%.*}.html"
-
+    # Return the modified content
+    echo -e "${modified_content}"
 }
 
 function _image() {
-    # This replaces #showimg to actual HTML img tag
+    # This replaces #showimg tags with actual HTML img tags in a provided string
 
-	local get_img img_link image img_alt
-	local debug=false
-    
-    if (${debug}) echo "${red}_image: Generating image tags for ${1}${end}"
+    local content="${1}"
+    local modified_content=""
+    local debug=false
 
-	cat ${www_root}/${1%.*}.html | sed "s/\.\ /\.\\n/g" | sed "s/\,/\,\\n/g" | sed "s/\#/\\n\#/g" | grep -P '(?=.*?#showimg)' |\
-		while read img
-		do
-		if [[ ${img} != "" ]]; then
-			get_img=$( echo "${img}" | awk '/#showimg/' | cut -d# -f2- )
-			if (${debug}) echo "${red}GET_IMG: ${get_img}${end}"
-			img_link=$( echo ${get_img} | cut -d' ' -f2- )
-			if (${debug}) echo "${red}IMG_LINK: ${img_link}${end}"
-			image=$( echo ${img_link} | cut -d¤ -f1 | cut -d¤ -f1- )
-			if (${debug}) echo "${red}IMAGE: ${image}${end}"
-            img_alt=$( echo ${img_link} | cut -d¤ -f2- | cut -d¤ -f1- )
-            if (${debug}) echo "${red}IMAGE_ALT: ${image_alt}${end}"
-			if [[ ${image} =~ ^https* ]]; then
-                # Images on another server
-				real_image=${image}
-				if (${debug}) echo "${red}HTTPS REAL_IMAGE: ${real_image}${end}"
-			elif [[ ${image} =~ ^\/ ]]; then
-				# This is for images in another directory and the image link begins with a /
-				real_image=${image}
-				if (${debug}) echo "${red}SLASH REAL_IMAGE: ${real_image}${end}"
-			else
-                # This is for images in the '/images/' directory
-				real_image="/images/${image}"
-				if (${debug}) echo "${red}IMAGES REAL_IMAGE: ${real_image}${end}"
-			fi
-			if (${debug}) echo "${red}REAL_IMAGE: $real_image${end}"
-			if (${debug}) echo "${red}IMG_ALT: $img_alt${end}"
-			echo ${img_link} |\
-				sed -i -- "s|${image}|<img src=\"${real_image}\"|" ${www_root}/${1%.*}.html
-				sed -i -- 's|'${img_alt}'| alt=\"'${img_alt}'\" width=\"500\" \/>|' ${www_root}/${1%.*}.html
-		fi
-		done
+    # Process the content line by line
+    echo "${content}" | while IFS= read -r line; do
+        if [[ ${line} == *"#showimg"* ]]; then
+            if (${debug}) echo "${red}_image: Processing line: ${line}${end}"
+
+            # Extract image link and alt text
+            local img_link=$(echo "${line}" | awk -F'#showimg ' '{print $2}')
+            local image=$(echo "${img_link}" | awk -F'¤' '{print $1}')
+            local img_alt=$(echo "${img_link}" | awk -F'¤' '{print $2}')
+
+            # Determine the source of the image
+            local real_image=""
+            if [[ ${image} =~ ^https?:// ]]; then
+                real_image=${image}
+            elif [[ ${image} =~ ^\/ ]]; then
+                real_image=${image}
+            else
+                real_image="/images/${image}"
+            fi
+
+            # Form the replacement HTML image tag
+            local img_tag="<img src=\"${real_image}\" alt=\"${img_alt}\" width=\"500\" />"
+            line=${line//"#showimg ${img_link}"/${img_tag}}
+        fi
+        modified_content+="${line}\n"
+    done
+
+    # Return the modified content
+    echo -e "${modified_content}"
 }
 
 function _youtube() {
-    # This embeds a YouTube video on a page or a blog
+    # This embeds a YouTube video in a provided string
 
-	local yt_id
-	local debug=false
-	
-	if (${debug}) echo "${red}_youtube: Creating YouTube player embed${end}"
+    local content="${1}"
+    local modified_content=""
+    local debug=false
 
-	cat ${www_root}/${1%.*}.html | sed "s/\.\ /\.\\n/g" | sed "s/\,/\,\\n/g" | sed "s/\#/\\n\#/g" | grep -P '(?=.*?#ytvideo)' |\
-		while read video
-		do
-		if [[ ${video} != "" ]]; then
-			yt_id=$( echo "${video}" | awk '/#ytvideo/' | cut -d" " -f2 )
-			if (${debug}) echo "${red}YT VIDEO ID: ${yt_id}${end}"
-			sed -i -- "s|${yt_id}|<iframe width=\"560\" height=\"315\" src=\"https:\/\/www.youtube.com\/embed\/${yt_id}\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" allowfullscreen><\/iframe>|" ${www_root}/${1%.*}.html
-		fi
-		done
+    # Process the content line by line
+    echo "${content}" | while IFS= read -r line; do
+        if [[ ${line} == *"#ytvideo"* ]]; then
+            if (${debug}) echo "${red}_youtube: Processing line: ${line}${end}"
 
+            # Extract YouTube video ID
+            local yt_id=$(echo "${line}" | awk -F'#ytvideo ' '{print $2}')
+
+            # Form the replacement YouTube iframe embed
+            local yt_iframe="<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/${yt_id}\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" allowfullscreen></iframe>"
+            line=${line//"#ytvideo ${yt_id}"/${yt_iframe}}
+        fi
+        modified_content+="${line}\n"
+    done
+
+    # Return the modified content
+    echo -e "${modified_content}"
 }
 
 function _cleanup() {
     # This removes tags used in the templates that may be left over for some reason
 
-	local debug=true
+    local content="${1}"
+    local debug=false
 
-	if (${debug}) echo "${red}_cleanup: Cleaning up tags${end}"
-	echo ${1} | sed \
-    -e "s|¤||g" \
-	-e "s|#showimg\ ||g" \
-	-e "s|#ytvideo\ ||g" \
-	-e "s|#link\ ||g"
+    if (${debug}) echo "${red}_cleanup: Cleaning up tags in content${end}"
 
+    # Perform the cleanup
+    local cleaned_content=$(echo "${content}" | sed \
+        -e "s|¤||g" \
+        -e "s|#showimg\ ||g" \
+        -e "s|#ytvideo\ ||g" \
+        -e "s|#link\ ||g")
+
+    # Return the cleaned content
+    echo "${cleaned_content}"
 }
 
 function _html() {
