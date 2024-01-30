@@ -322,12 +322,13 @@ function _pages() {
       do
         echo "${green}Generating Page: ${pages_in_array}${end}"
         # Read the file once
-        if (${debug}) echo "_pages: Loading page_content once"
+        if (${debug}) echo "_pages: Loading page_content once - ${pages_in_array}"
         local page_content="$(<${pages_in_array})"
               
         # Grab the title from the Page
         if (${debug}) echo "_pages: Grepping for page_title"
         page_title=$( echo ${page_content} | head -2 | grep \#title | cut -d= -f2 )
+        if (${debug}) echo "_pages: ${page_title}"
         
         # Remove the #title line from the buffer. No longer needed.
         if (${debug}) echo "_pages: Removing #title line from page_content"
