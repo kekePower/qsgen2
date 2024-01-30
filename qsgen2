@@ -408,7 +408,7 @@ function _blogs() {
     if (( ${#make_blog_array[@]} > 0 )); then
 
         for blog in "${make_blog_array[@]}"; do
-            if (${debug}) echo "_blogs: Processing ${blog}"
+            if (${debug}) echo "_blogs: Processing pre-data for ${blog}"
                 
             local content="$(<"${blog}")"
             local sdate btitle ingress body blog_index blog_dir blog_url
@@ -422,10 +422,10 @@ function _blogs() {
             body=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#BODY_START\K(.*?)#BODY_STOP" | sed "s|\ \#BODY_STOP||" | sed "s|^\ ||" )
 
             blog_index="${btitle:l}"
-            blog_index=$(echo "${blog_index}" | sed 's/ /_/g; s/,//g; s/\.//g')
+            blog_index=$(echo "${blog_index}" | sed 's/ /_/g; s/,//g; s/\.//g; s/://g; s/[()]//g')
 
             blog_dir="/blog/${sdate[2]}/${sdate[3]:l}/${sdate[4]}"
-            blog_url="${blog_dir}/${blog_index:l}.html"
+            blog_url="${blog_dir}/${blog_index}.html"
 
             # Regular blog creation process
             if [[ ! ${mode} ]]; then
