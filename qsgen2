@@ -339,7 +339,7 @@ function _pages() {
         
         # Insert page_content into pages_tpl by replacing the BODY tag present there
         if (${debug}) echo "_pages: Replacing BODY with page_content in pages_tpl"
-        echo ${pages_tpl} | sed -e 's/BODY/"${page_content}"/g'
+        echo ${pages_tpl} | sed -e 's/BODY/"${page_content}"/g;'
         # >> ${www_root}/${pages_title_lower%.*}.html
                 
         # Always use lowercase for file names
