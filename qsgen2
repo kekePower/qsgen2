@@ -495,7 +495,7 @@ function _blogs() {
                     if ${debug}; then echo "_blogs: Adding data for ${blog} to array"; fi
 
                     # Concatenate all metadata into a single string for the current blog
-                    local metadata_str="SDATE: ${sdate[*]}||BTITLE: ${btitle}||INGRESS: ${ingress}||URL: ${www_root}${blog_url}"
+                    local metadata_str="SDATE: ${sdate[@]}||BTITLE: ${btitle}||INGRESS: ${ingress}||URL: ${blog_url}"
 
                     # Append this metadata string to the array
                     BLOG_META_STR_ARRAY+=("${metadata_str}")
