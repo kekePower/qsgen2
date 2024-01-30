@@ -535,7 +535,7 @@ function _blog_idx_for_index() {
     # We use _blogs to get the data to create the blog index
     #_blogs get_index
     
-    local debug=true
+    debug=true
     
 #if [[ ${updated_blogs} = "true" ]]; then
     
