@@ -407,26 +407,6 @@ function _blogs() {
 
     if (( ${#make_blog_array[@]} > 0 )); then
 
-        for blog in "${make_blog_array[@]}"; do
-            if (${debug}) echo "_blogs: Processing pre-data for ${blog}"
-                
-            local content="$(<"${blog}")"
-            local sdate btitle ingress body blog_index blog_dir blog_url
-
-            # Extract blog information
-            sed -i "s/GETDATE/${BLOGDATE}/" ${blog}
-            # Array sdate = Name day=1, Year=2, Month=3, Number day=4
-            sdate=( $( echo ${content} | grep DATE | sed "s|DATE\ ||" | sed "s|\-|\ |g" ) )
-            btitle=$( echo ${content} | grep BLOG_TITLE | cut -d' ' -f2- )
-            ingress=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#INGRESS_START\K(.*?)#INGRESS_STOP" | sed "s|\ \#INGRESS_STOP||" | sed "s|^\ ||" )
-            body=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#BODY_START\K(.*?)#BODY_STOP" | sed "s|\ \#BODY_STOP||" | sed "s|^\ ||" )
-
-            blog_index="${btitle:l}"
-            blog_index=$(echo "${blog_index}" | sed 's/ /_/g; s/,//g; s/\.//g; s/://g; s/[()]//g')
-
-            blog_dir="/blog/${sdate[2]}/${sdate[3]:l}/${sdate[4]}"
-            blog_url="${blog_dir}/${blog_index}.html"
-
             # Regular blog creation process
             if [[ ! ${mode} ]]; then
                 
@@ -438,9 +418,30 @@ function _blogs() {
                 fi
                 
                 for blog in "${make_blog_array[@]}"; do
+                    
+                    if (${debug}) echo "_blogs: Processing pre-data for ${blog}"
+                
+                    local content="$(<"${blog}")"
+                    local sdate btitle ingress body blog_index blog_dir blog_url
+
+                    # Extract blog information
+                    sed -i "s/GETDATE/${BLOGDATE}/" ${blog}
+                    # Array sdate = Name day=1, Year=2, Month=3, Number day=4
+                    sdate=( $( echo ${content} | grep DATE | sed "s|DATE\ ||" | sed "s|\-|\ |g" ) )
+                    btitle=$( echo ${content} | grep BLOG_TITLE | cut -d' ' -f2- )
+                    ingress=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#INGRESS_START\K(.*?)#INGRESS_STOP" | sed "s|\ \#INGRESS_STOP||" | sed "s|^\ ||" )
+                    body=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#BODY_START\K(.*?)#BODY_STOP" | sed "s|\ \#BODY_STOP||" | sed "s|^\ ||" )
+
+                    blog_index="${btitle:l}"
+                    blog_index=$(echo "${blog_index}" | sed 's/ /_/g; s/,//g; s/\.//g; s/://g; s/[()]//g')
+
+                    blog_dir="/blog/${sdate[2]}/${sdate[3]:l}/${sdate[4]}"
+                    blog_url="${blog_dir}/${blog_index}.html"
+                    
                    if (${debug}) echo "_blogs: Processing ${blog}"
 
                    # Prepare the blog template
+                   if (${debug}) echo "_blogs: Processing substitutes in ${blog}"
                    local blog_content=$(echo "${blog_tpl}" | perl -pe "s|BLOGTITLE|${btitle}|g")
                    blog_content=$(echo "${blog_content}" | perl -pe "s|CALADAY|${sdate[1]}|g")
                    blog_content=$(echo "${blog_content}" | perl -pe "s|CALNDAY|${sdate[4]}|g")
@@ -492,7 +493,7 @@ function _blogs() {
                 export BLOG_URL="${www_root}${blog_url}"
             
             fi
-        done
+
     else
         echo "${yellow}No new or updated Blogs detected.${end}"
     fi
