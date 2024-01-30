@@ -503,12 +503,6 @@ function _blogs() {
                     blog_dir="/blog/${sdate[2]}/${sdate[3]:l}/${sdate[4]}"
                     blog_url="${blog_dir}/${blog_index}.html"
                     
-                    #echo "_blogs: get_index: Date = ${sdate[@]}"
-                    #echo "_blogs: get_index: URL = ${blog_url}"
-                    #echo "_blogs: get_index: Title = ${btitle}"
-                    #echo "_blogs: get_index: Ingress = ${ingress}"
-                    #exit
-                    
                     if ${debug}; then echo "_blogs: Adding data for ${blog} to array"; fi
 
                     # Concatenate all metadata into a single string for the current blog
@@ -537,15 +531,36 @@ function _blog_idx_for_index() {
     local debug=false
     local blog_list=$(<${project_dir}/templates/${theme}/blog_list.tpl)
     
+    # Truncate file before writing new one
+    : >| ${project_dir}/blog/index.tmp.html
+    
     for blogs in ${BLOG_META_STR_ARRAY[@]}
     do
-        echo "0. ${blogs}"
-        local index_array=("${(@s/||/)blogs}")
-        for item in ${index_array[@]}
-        do
-            local -a split_item=$( echo ${item[@]} | cut -f: )
-            echo "${split_item[1]} = ${split_item[2]}"
+        # Split meta_str into individual metadata components
+        local -a meta_array=("${(@s/||/)meta_str}")
+
+        # Initialize variables to store each component
+        local sdate=""
+        local btitle=""
+        local ingress=""
+        local url=""
+
+        # Iterate over each component and extract information
+        for component in "${meta_array[@]}"; do
+            case "${component}" in
+                SDATE:*) sdate=(${component#SDATE: }) ;;
+                BTITLE:*) btitle=${component#BTITLE: } ;;
+                INGRESS:*) ingress=${component#INGRESS: } ;;
+                URL:*) url=${component#URL: } ;;
+            esac
         done
+        bdate="${sdate[1]} - ${sdate[4]}/${sdate[3]}/${sdate[2]}"
+        blog_list_content=$(echo "${blog_list}" | perl -pe "s|BLOGURL|${url}|g")
+        blog_list_content=$(echo "${blog_list}" | perl -pe "s|BLOGTITLE|${btitle}|g")
+        blog_list_content=$(echo "${blog_list}" | perl -pe "s|INGRESS|${ingress}|g")
+        blog_list_content=$(echo "${blog_list}" | perl -pe "s|BLOGDATE|${bdate}|g")
+        
+        echo ${blog_list_content} >> ${project_dir}/blog/index.tmp.html
     done
 
 }
