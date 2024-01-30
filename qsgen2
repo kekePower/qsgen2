@@ -397,6 +397,7 @@ function _blogs() {
 
     local debug=false
     local mode=${1} # If <something>", exports metadata; otherwise, creates blog posts
+    export updated_blogs=false
 
     # Running function _list_blog
     if (${debug})  echo "_blogs: Running function _list_blog"
@@ -406,6 +407,8 @@ function _blogs() {
     _blog_cache
 
     if (( ${#make_blog_array[@]} > 0 )); then
+        
+        export updated_blogs=true
 
             # Regular blog creation process
             if [[ ! ${mode} ]]; then
@@ -486,6 +489,8 @@ function _blogs() {
                 done
             
             else
+        
+                export updated_blogs=true
 
                 # Declare the array to hold metadata strings for each blog
                 BLOG_META_STR_ARRAY=()
@@ -519,11 +524,12 @@ function _blogs() {
 
     else
         echo "${yellow}No new or updated Blogs detected.${end}"
+        export updated_blogs=false
     fi
 }
 
 function _blog_idx_for_index() {
-    # This function generates the file blog/index.idx
+    # This function generates the file blog/index.tmp.html
     
     # We use _blogs to get the data to create the blog index
     _blogs get_index
@@ -571,53 +577,20 @@ function _blog_index() {
     # This function generates the /blog/index.html file that gets its data from _blog_list_for_index()
     
     local debug=false
-    local pages=${project_dir}/templates/${theme}/pages.tpl
+    local blog_index_file=${project_dir}/templates/${theme}/blog_index.tpl
+    local blog_index=$(<${blog_index_file})
+    local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
 
-    if [[ ! -f ${pages} ]]; then
-        echo "Unable to find the Pages template: ${pages}"
+    if [[ ! -f ${blog_index_file} ]]; then
+        echo "Unable to find the Blogs template: ${blog_index_file}"
         exit
     fi
-
-    local blog_index_title="Blog"
     
-    # Running function _list_blog_idx
-    # It returns the array: blog_tmp_idx_array
-    _list_blog_tmp_idx
-    
-    if (( ${#blog_tmp_idx_array[@]} > 0 )); then    
-
-        local blog_list=${project_dir}/templates/${theme}/blog_list.tpl
-        
-        if [[ ! -f ${blog_list} ]]; then
-            echo "Unable to find the Pages template: ${blog_list}"
-            exit
-        fi
-
-        for blog_files in ${blog_tmp_idx_array[@]}
-        do
-            local content="$(<${blog_files})"
-    		sed -i "s/GETDATE/${BLOGDATE}/" ${blog_files}
-            # Array sdate = Name day=4, Year=2, Month=3, Number day=1
-            sdate=( $( echo ${content} | grep DATE | sed "s|DATE\ ||" | sed "s|\-|\ |g" ) )
-            ingress=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#INGRESS_START\K(.*?)#INGRESS_STOP" | sed "s|\ \#INGRESS_STOP||" | sed "s|^\ ||" )
-            body=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#BODY_START\K(.*?)#BODY_STOP" | sed "s|\ \#BODY_STOP||" | sed "s|^\ ||" )
-            blog_date="${sdate[1]} ${sdate[4]}-${sdate[3]}-${sdate[2]}"
-            
-            sed \
-                -e "s|BLOGDATE|${blog_date}|"	\
-                -e "s|BLOGURL|${blog_url}|"				\
-                -e "s|INGRESS|${ingress}|"
-            > ${project_dir}/blog/index.tmp.x
-        done
-
+    if [[ ${updated_blogs} == "true" ]]; then
+        echo "${green}Updating the Blog Index file${end}"
+        blog_index_content=$(echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g")
+        echo ${blog_index_content} > ${www_root}/blog/index.html
     fi
-    
-    tee < ${pages} | sed                            \
-        -e "s|BODY|$(cat ${project_dir}/blog/index.tmp.x)|"          \
-        -s "s|#pagetitle|${blog_index_title}|g"     \
-        > ${www_root}/blog/index.html
-    _last_updated ${www_root}/blog/index.html
-    ${engine} ${www_root}/blog/index.html
     
 }
 
@@ -795,10 +768,11 @@ function _html() {
 }
 
 # Time to test the first function
-#echo "${green}Running function _blogs${end}"
-#_blogs
-#echo "${green}Running function _pages${end}"
-#_pages
-
+echo "${green}Running function _blogs${end}"
+_blogs
 echo "Running _blog_idx_for_index"
 _blog_idx_for_index
+echo "${green}Running function _blog_index"
+_blog_index
+echo "${green}Running function _pages${end}"
+_pages
