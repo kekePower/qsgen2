@@ -554,12 +554,12 @@ function _blog_idx_for_index() {
                 URL:*) url=${component#URL: } ;;
             esac
 
-        adate=( ${sdate} )
+        local -a adate=( ${sdate} )
         bdate="${adate[1]} - ${adate[4]}/${adate[3]}/${adate[2]}"
         blog_list_content=$(echo "${blog_list}" | perl -pe "s|BLOGURL|${url}|g")
-        blog_list_content=$(echo "${blog_list}" | perl -pe "s|BLOGTITLE|${btitle}|g")
-        blog_list_content=$(echo "${blog_list}" | perl -pe "s|INGRESS|${ingress}|g")
-        blog_list_content=$(echo "${blog_list}" | perl -pe "s|BLOGDATE|${bdate}|g")
+        blog_list_content=$(echo "${blog_list_conten}" | perl -pe "s|BLOGTITLE|${btitle}|g")
+        blog_list_content=$(echo "${blog_list_content}" | perl -pe "s|INGRESS|${ingress}|g")
+        blog_list_content=$(echo "${blog_list_content}" | perl -pe "s|BLOGDATE|${bdate}|g")
         
         echo ${blog_list_content} >> ${project_dir}/blog/index.tmp.html
         
