@@ -438,12 +438,12 @@ function _blogs() {
                    if (${debug}) echo "_blogs: Processing ${blog}"
 
                    # Prepare the blog template
-                   local blog_content="${blog_tpl//BLOGTITLE/${btitle}}"
-                   blog_content="${blog_content//CALADAY/${sdate[1]}}"
-                   blog_content="${blog_content//CALNDAY/${sdate[4]}}"
-                   blog_content="${blog_content//CALMONTH/${sdate[3]}}"
-                   blog_content="${blog_content//CALYEAR/${sdate[2]}}"
-                   blog_content="${blog_content//BLOGURL/${blog_url}}"
+                   local blog_content=$(echo "${blog_tpl}" | perl -pe "s|BLOGTITLE|${btitle}|g")
+                   blog_content=$(echo "${blog_content}" | perl -pe "s|CALADAY|${sdate[1]}|g")
+                   blog_content=$(echo "${blog_content}" | perl -pe "s|CALNDAY|${sdate[4]}|g")
+                   blog_content=$(echo "${blog_content}" | perl -pe "s|CALMONTH|${sdate[3]}|g")
+                   blog_content=$(echo "${blog_content}" | perl -pe "s|CALYEAR|${sdate[2]}|g")
+                   blog_content=$(echo "${blog_content}" | perl -pe "s|BLOGURL|${blog_url}|g")
                    # Replace INGRESS placeholder with actual content using Perl
                    blog_content=$(echo "${blog_content}" | perl -pe "s|\QINGRESS\E|${ingress}|g")
                    # blog_content="${blog_content//INGRESS/${ingress}}"
