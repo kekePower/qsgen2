@@ -534,7 +534,7 @@ function _blog_idx_for_index() {
     # Truncate file before writing new one
     : >| ${project_dir}/blog/index.tmp.html
     
-    for blogs in ${BLOG_META_STR_ARRAY[@]}
+    for meta_str in ${BLOG_META_STR_ARRAY[@]}
     do
         # Split meta_str into individual metadata components
         local -a meta_array=("${(@s/||/)meta_str}")
