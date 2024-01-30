@@ -533,11 +533,11 @@ function _blog_idx_for_index() {
     # This function generates the file blog/index.tmp.html
     
     # We use _blogs to get the data to create the blog index
-    _blogs get_index
+    #_blogs get_index
     
     local debug=false
     
-if [[ ${updated_blogs} = "true" ]]; then
+#if [[ ${updated_blogs} = "true" ]]; then
     
     local blog_list_tpl=$(<${project_dir}/templates/${theme}/blog_list.tpl)
     
@@ -577,7 +577,7 @@ if [[ ${updated_blogs} = "true" ]]; then
             if (${debug}) echo "${red}_blog_idx_for_index: blog_list_content = ${blog_list_content}${end}"
             echo ${blog_list_content} >> ${project_dir}/blog/index.tmp.html
     done
-fi
+#fi
 
 }
 
