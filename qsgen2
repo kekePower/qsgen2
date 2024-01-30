@@ -410,7 +410,7 @@ function _blogs() {
     if (( ${#make_blog_array[@]} > 0 )); then
 
             # Regular blog creation process
-            if [[ ! ${mode} ]]; then
+            #if [[ ! ${mode} ]]; then
                 
                 if [[ -f ${project_dir}/templates/${theme}/blogs.tpl ]]; then
                     local blog_tpl=$(<"${project_dir}/templates/${theme}/blogs.tpl")
@@ -487,15 +487,14 @@ function _blogs() {
                    echo "${blog_content}" > "${www_root}${blog_url}"
                 done
             
-            else
+            #else
 
                 # Declare the array to hold metadata strings for each blog
                 BLOG_META_STR_ARRAY=()
 
                 # Iterate over make_blog_array
-                for blog in "$( cat ${blog_cache_file} )"
+                for blog in "${#make_blog_array[@]}"
                 do
-                    local blog=$( echo ${blog[@]} | cut -d: -f1 )
                     local content="$(<"${blog}")"
                     sdate=( $( echo ${content} | grep DATE | sed "s|DATE\ ||" | sed "s|\-|\ |g" ) )
                     btitle=$( echo ${content} | grep BLOG_TITLE | cut -d' ' -f2- )
@@ -517,7 +516,7 @@ function _blogs() {
                 # Now BLOG_META_STR_ARRAY contains the metadata string for each blog post
                 export BLOG_META_STR_ARRAY
             
-            fi
+            #fi
 
     else
         echo "${yellow}No new or updated Blogs detected.${end}"
@@ -528,7 +527,7 @@ function _blog_idx_for_index() {
     # This function generates the file blog/index.tmp.html
     
     # We use _blogs to get the data to create the blog index
-    _blogs get_index
+    #_blogs get_index
     
     local debug=true
     
