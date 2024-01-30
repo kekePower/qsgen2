@@ -294,7 +294,7 @@ function _file_to_lower() {
 function _pages() {
     # This function generates all the new and updated Pages
     
-    local debug=true
+    local debug=false
     
     # Load the cache for Pages
     if (${debug}) echo "_pages: Running function _pages_cache"
@@ -777,8 +777,8 @@ function _html() {
 # Time to test the first function
 echo "${green}Running function _blogs${end}"
 _blogs
-#echo "Running _blog_idx_for_index"
-#_blog_idx_for_index
+echo "Running _blog_idx_for_index"
+_blog_idx_for_index
 #echo "${green}Running function _blog_index"
 #_blog_index
 echo "${green}Running function _pages${end}"
