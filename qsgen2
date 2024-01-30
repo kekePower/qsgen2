@@ -395,7 +395,7 @@ function _blogs() {
     # Rewritten _blogs function
     # This function either generates blog files or exports metadata based on the argument
 
-    local debug=true
+    local debug=false
     local mode=${1} # If <something>", exports metadata; otherwise, creates blog posts
 
     # Running function _list_blog
@@ -425,15 +425,15 @@ function _blogs() {
                     local sdate btitle ingress body blog_index blog_dir blog_url
 
                     # Extract blog information
-                    sed -i "s/GETDATE/${BLOGDATE}/" ${blog}
+                    sed -i "s/GETDATE/${blogdate}/" ${blog}
                     # Array sdate = Name day=1, Year=2, Month=3, Number day=4
-                    sdate=( $( echo ${content} | grep DATE | sed "s|DATE\ ||" | sed "s|\-|\ |g" > /dev/null ) )
-                    btitle=$( echo ${content} | grep BLOG_TITLE | cut -d' ' -f2- > /dev/null )
-                    ingress=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#INGRESS_START\K(.*?)#INGRESS_STOP" | sed "s|\ \#INGRESS_STOP||" | sed "s|^\ ||" > /dev/null )
-                    body=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#BODY_START\K(.*?)#BODY_STOP" | sed "s|\ \#BODY_STOP||" | sed "s|^\ ||" > /dev/null )
+                    sdate=( $( echo ${content} | grep DATE | sed "s|DATE\ ||" | sed "s|\-|\ |g" ) )
+                    btitle=$( echo ${content} | grep BLOG_TITLE | cut -d' ' -f2- )
+                    ingress=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#INGRESS_START\K(.*?)#INGRESS_STOP" | sed "s|\ \#INGRESS_STOP||" | sed "s|^\ ||" )
+                    body=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#BODY_START\K(.*?)#BODY_STOP" | sed "s|\ \#BODY_STOP||" | sed "s|^\ ||" )
 
                     blog_index="${btitle:l}"
-                    blog_index=$(echo "${blog_index}" | sed 's/ /_/g; s/,//g; s/\.//g; s/://g; s/[()]//g' > /dev/null )
+                    blog_index=$(echo "${blog_index}" | sed 's/ /_/g; s/,//g; s/\.//g; s/://g; s/[()]//g')
 
                     blog_dir="/blog/${sdate[2]}/${sdate[3]:l}/${sdate[4]}"
                     blog_url="${blog_dir}/${blog_index}.html"
