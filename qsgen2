@@ -616,7 +616,7 @@ function _generate_sitemap() {
 
     # Start of the XML file
     echo '<?xml version="1.0" encoding="UTF-8"?>' > "${sitemap_file}"
-    echo "<?xml-stylesheet type=\"text/xsl\" href="\${site_url}/css/default-sitemap.xsl?sitemap=page\"?>" >> "${sitemap_file}"
+    echo "\<?xml-stylesheet type=\"text/xsl\" href="\${site_url}/css/default-sitemap.xsl?sitemap=page\"?\>" >> "${sitemap_file}"
     echo '<urlset' >> "${sitemap_file}"
     echo '  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"' >> "${sitemap_file}"
     echo '  xmlns:xhtml="http://www.w3.org/1999/xhtml"' >> "${sitemap_file}"
