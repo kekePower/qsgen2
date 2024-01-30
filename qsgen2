@@ -586,7 +586,7 @@ function _blog_index() {
         exit
     fi
     
-    blogs get_index
+    _blogs get_index
     
     if [[ ${updated_blogs} == "true" ]]; then
         echo "${green}Updating the Blog Index file${end}"
