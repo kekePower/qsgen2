@@ -431,7 +431,7 @@ function _blogs() {
             blog_url="${blog_dir}/${blog_index}.html"
 
             # Regular blog creation process
-            if [[ -z "${mode}" ]]; then
+            if [[ -z ${mode} ]]; then
                 
                 for blog in "${make_blog_array[@]}"; do
                 if (${debug}) echo "_blogs: Processing ${blog}"
@@ -460,7 +460,7 @@ function _blogs() {
                 # Write to file
                 echo "${blog_content}" > "${www_root}${blog_url}"
             
-            elif [[ ${mode} || ${mode} != "" ]]; then
+            elif [[ ${mode} ]]; then
                 # Export metadata mode
                 if (${debug}) echo "_blogs: Exporting metadata for ${blog}"
                 export BLOG_SDATE="${sdate[@]}"
