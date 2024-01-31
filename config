@@ -17,3 +17,5 @@ export www_root=/path/to/output/directory
 export blog_in_index=false
 # Expected values are 'native' or 'markdown'
 export generator=native
+# Do you want to generate a sitemap.xml file?
+export sitemap=true
