@@ -204,7 +204,7 @@ function _blog_cache() {
     if [[ -f $blog_cache_file ]]; then
         while IFS=':' read -r name hash; do
             blog_cache[$name]=$hash
-    		if (${debug}) _msg debug "HASH VALUE: ${blog_cache[${name}]}"
+    		if (${debug}) _msg debug "_blog_cache: HASH VALUE: ${blog_cache[${name}]}"
         done < "$blog_cache_file"
     fi
 
@@ -216,13 +216,13 @@ function _blog_cache() {
         # Compute the current blog file hash
         current_hash=$(md5sum "$blog_file" | awk '{print $1}')
 	
-    	if (${debug}) _msg debug "1. blog_cache: ${blog_file}"
-    	if (${debug}) _msg debug "2. current_cache: ${current_hash}"
+    	if (${debug}) _msg debug "1. _blog_cache: ${blog_file}"
+    	if (${debug}) _msg debug "2. _blog_cache: current_cache: ${current_hash}"
 
         # Check if the blog file is new or has changed
         if [[ ${blog_cache[$blog_file]} != "$current_hash" ]]; then
-    		if (${debug}) _msg debug "3. new_cache_file: ${blog_file}$"
-    		if (${debug}) _msg debug "4. new_current_cache: ${current_hash}"
+    		if (${debug}) _msg debug "3. _blog_cache: new_cache_file: ${blog_file}$"
+    		if (${debug}) _msg debug "4. _blog_cache: new_current_cache: ${current_hash}"
             # Blog file is new or has changed; add it to the processing array
             make_blog_array+=("$blog_file")
 
@@ -263,12 +263,12 @@ function _pages_cache() {
         current_hash=$(md5sum "$file" | awk '{print $1}')
     	
     	if (${debug}) _msg debug "1. pages_cache: ${pages_cache[$file]}"
-    	if (${debug}) _msg debug "1. current_cache: ${current_hash}"
+    	if (${debug}) _msg debug "1. c_pages_cache: urrent_cache: ${current_hash}"
 
         # Check if the pages file is new or has changed
         if [[ ${pages_cache[$file]} != "$current_hash" ]]; then
-    		if (${debug}) _msg debug "2. pages_file: ${pages_cache[$file]}"
-    		if (${debug}) _msg debug "$2. current_cache: ${current_hash}"
+    		if (${debug}) _msg debug "2. _pages_cache: pages_file: ${pages_cache[$file]}"
+    		if (${debug}) _msg debug "2. _pages_cache: current_cache: ${current_hash}"
             # Pages file is new or has changed; add it to the processing array
             pages_array+=("$file")
     
@@ -319,7 +319,7 @@ function _f_last_updated() {
 
 function _file_to_lower() {
     
-    local filename=${1}
+    local filename="${1}"
 
     # Replace spaces with dashes
     filename="${filename// /-}"
@@ -364,7 +364,7 @@ function _pages() {
         
         _msg std "Generating Page: ${pages_in_array}"
         # Read the file once
-        if (${debug}) echo "_pages: Loading page_content once - ${pages_in_array}"
+        if (${debug}) _msg debug "_pages: Loading page_content once - ${pages_in_array}"
         local page_content="$(<${pages_in_array})"
               
         # Grab the title from the Page
@@ -397,6 +397,7 @@ function _pages() {
         
         # Let's find the file 'index.tpl' and add the blog if blog_in_index is true
         if [[ ${pages_in_array} == "index.tpl" ]] && [[ ${blog_in_index} == "true" ]]; then
+            if (${debug}) _msg debug "_pages: Inserting blog list to index.html"
             local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
             echo ${blog_index_list} >> ${page_content}
         fi
@@ -434,7 +435,7 @@ function _pages() {
       
     else
 
-        _msg warn "No new or updated Pages"
+        _msg info "No new or updated Pages"
 
     fi
     
@@ -464,7 +465,7 @@ function _blogs() {
                 if [[ -f ${project_dir}/themes/${theme}/blogs.tpl ]]; then
                     local blog_tpl=$(<"${project_dir}/themes/${theme}/blogs.tpl")
                 else
-                    _msg warn "Unable to find theme template for Blogs."
+                    _msg info "Unable to find theme template for Blogs."
                     exit
                 fi
                 
@@ -544,7 +545,7 @@ function _blogs() {
             export BLOG_META_STR_ARRAY
 
     else
-        _msg warn "No new or updated Blogs detected."
+        _msg info "No new or updated Blogs detected."
     fi
 }
 
