@@ -110,7 +110,7 @@ if (${debug}); then
 	echo "${red}Contents of Config file:${end}"
     for lines in ${qsconfig}
     do
-        echo "${yellow} - ${lines}${end}"
+        echo "${yellow}${lines}${end}"
     done
     #echo "${yellow} - site_name=${site_name}${end}"
     #echo "${yellow} - site_tagline=${site_tagline}${end}"
