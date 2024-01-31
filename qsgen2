@@ -533,9 +533,11 @@ function _blogs() {
                 done
             # Now BLOG_META_STR_ARRAY contains the metadata string for each blog post
             export BLOG_META_STR_ARRAY
+            export new_updated_blogs=true
 
     else
         _msg info "No new or updated Blogs detected."
+        export new_updated_blogs=false
     fi
 }
 
@@ -598,21 +600,23 @@ function _blog_idx_for_index() {
 function _blog_index() {
 
     # This function generates the /blog/index.html file that gets its data from _blog_list_for_index()
-    if [[ ${blog_in_index} == "false" ]]; then
-        
-        _msg info "Running function _blog_index"
+    # ${new_updated_blogs} comes from the function _blogs if anything new or updated is detected
+    if [[ ${blog_in_index} == "false" ]] && [[ ${new_updated_blogs} = "true" ]]; then
+
+        if (${debug}) _msg debug "Running function _blog_index"
         if (${debug}) _msg debug "_blog_index: blog_in_index = ${blog_in_index}"
-        
+
+        _msg std "Updating the Blog Index file"
+
         local debug=false
         local blog_index=$(<${project_dir}/themes/${theme}/blog_index.tpl)
         local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
 
-        _msg std "Updating the Blog Index file"
         blog_index_content=$(echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g")
         echo "${blog_index_content}" > ${www_root}/blog/index.html
         _f_last_updated ${www_root}/blog/index.html
     fi
-    
+
 }
 
 function _sitemap() {
@@ -779,54 +783,77 @@ function _cleanup() {
 }
 
 function _html() {
+    
     # This function converts formatting tags into their HTML equivalents in a provided string
-
+    # using QStags (QS-tags)
+    
     local content="${1}"
     local debug=false
 
-    if (${debug}) _msg debug "_html: Generating HTML from content"
+    if (${debug}); then _msg debug "_html: Converting QStags in content"; fi
 
-    # Perform HTML tag substitutions
+    # Perform HTML tag substitutions handling both lowercase and uppercase QStags
     local html_content=$(echo "${content}" | sed \
-        -e "s|#BR|<br/>|g" \
-        -e "s|#BD|<b>|g" \
-        -e "s|#EBD|</b>|g" \
-        -e "s|#UN|<u>|g" \
-        -e "s|#EUN|</u>|g" \
-        -e "s|#P|<p>|g" \
-        -e "s|#EP|</p>|g" \
-        -e "s|#Q|<blockquote>|g" \
-        -e "s|#EQ|</blockquote>|g" \
-        -e "s|#STRONG|<strong>|g" \
-        -e "s|#ESTRONG|</strong>|g" \
-        -e "s|#I|<i>|g" \
-        -e "s|#EI|</i>|g" \
-        -e "s|#C|<code>|g" \
-        -e "s|#EC|</code>|g" \
-        -e "s|#EM|<em>|g" \
-        -e "s|#SEM|</em>|g" \
-        -e "s|#OT|&quot;|g" \
-        -e "s|#UL|<ul>|g" \
-        -e "s|#OL|<ol>|g" \
-        -e "s|#LI|<li class=\"libody\">|g" \
-        -e "s|#ELI|</li>|g" \
-        -e "s|#EUL|</ul>|g" \
-        -e "s|#EOL|</ol>|g" \
-        -e "s|#H1|<h1>|g" \
-        -e "s|#H2|<h2>|g" \
-        -e "s|#H3|<h3>|g" \
-        -e "s|#H4|<h4>|g" \
-        -e "s|#H5|<h5>|g" \
-        -e "s|#H6|<h6>|g" \
-        -e "s|#EH1|</h1>|g" \
-        -e "s|#EH2|</h2>|g" \
-        -e "s|#EH3|</h3>|g" \
-        -e "s|#EH4|</h4>|g" \
-        -e "s|#EH5|</h5>|g" \
-        -e "s|#EH6|</h6>|g" \
-        -e "s|#LT|&lt;|g" \
-        -e "s|#GT|&gt;|g" \
-        -e "s|#NUM|&num;|g")
+        -e "s|#[bB]|<b>|g" \
+        -e "s|#[eE][bB]|</b>|g" \
+        -e "s|#[iI]|<i>|g" \
+        -e "s|#[eE][iI]|</i>|g" \
+        -e "s|#[uU]|<u>|g" \
+        -e "s|#[eE][uU]|</u>|g" \
+        -e "s|#[pP]|<p>|g" \
+        -e "s|#[eE][pP]|</p>|g" \
+        -e "s|#[hH]1|<h1>|g" \
+        -e "s|#[hH]2|<h2>|g" \
+        -e "s|#[hH]3|<h3>|g" \
+        -e "s|#[hH]4|<h4>|g" \
+        -e "s|#[hH]5|<h5>|g" \
+        -e "s|#[hH]6|<h6>|g" \
+        -e "s|#[eE][hH]1|<h1>|g" \
+        -e "s|#[eE][hH]2|<h2>|g" \
+        -e "s|#[eE][hH]3|<h3>|g" \
+        -e "s|#[eE][hH]4|<h4>|g" \
+        -e "s|#[eE][hH]5|<h5>|g" \
+        -e "s|#[eE][hH]6|<h6>|g" \
+        -e "s|#[sS][tT][rR][oO][nN][gG]|<strong>|g" \
+        -e "s|#[eE][sS][tT][rR][oO][nN][gG]|</strong>|g" \
+        -e "s|#[eE][mM]|<em>|g" \
+        -e "s|#[eE][eE][mM]|</em>|g" \
+        -e "s|#[bB][rR]|<br/>|g" \
+        -e "s|#[aA]|<a>|g" \
+        -e "s|#[eE][aA]|</a>|g" \
+        -e "s|#[dD][iI][vV]|<div>|g" \
+        -e "s|#[eE][dD][iI][vV]|</div>|g" \
+        -e "s|#[sS][pP][aA][nN]|<span>|g" \
+        -e "s|#[eE][sS][pP][aA][nN]|</span>|g" \
+        -e "s|#[uU][lL]|<ul>|g" \
+        -e "s|#[oO][lL]|<ol>|g" \
+        -e "s|#[lL][iI]|<li>|g" \
+        -e "s|#[eE][lL][iI]|</li>|g" \
+        -e "s|#[tT][aA][bB][lL][eE]|<table>|g" \
+        -e "s|#[eE][tT][aA][bB][lL][eE]|</table>|g" \
+        -e "s|#[tT][rR]|<tr>|g" \
+        -e "s|#[eE][tT][rR]|</tr>|g" \
+        -e "s|#[tT][dD]|<td>|g" \
+        -e "s|#[eE][tT][dD]|</td>|g" \
+        -e "s|#[tT][hH]|<th>|g" \
+        -e "s|#[eE][tT][hH]|</th>|g" \
+        # Semantic HTML5 elements
+        -e "s|#[aA][rR][tT]|<article>|g" \
+        -e "s|#[eE][aA][rR][tT]|</article>|g" \
+        -e "s|#[sS][eE][cC][tT]|<section>|g" \
+        -e "s|#[eE][sS][eE][cC][tT]|</section>|g" \
+        -e "s|#[aA][sS][iI][dD][eE]|<aside>|g" \
+        -e "s|#[eE][aA][sS][iI][dD][eE]|</aside>|g" \
+        -e "s|#[nN][aA][vV]|<nav>|g" \
+        -e "s|#[eE][nN][aA][vV]|</nav>|g" \
+        # Interactive Elements
+        -e "s|#[bB][tT][nN]|<button>|g" \
+        -e "s|#[eE][bB][tT][nN]|</button>|g" \
+        -e "s|#[sS][lL][cC][tT]|<select>|g" \
+        -e "s|#[eE][sS][lL][cC][tT]|</select>|g" \
+        -e "s|#[oO][pP][tT]|<option>|g" \
+        -e "s|#[eE][oO][pP][tT]|</option>|g"
+        )
 
     # Return the HTML content
     echo "${html_content}"
