@@ -135,6 +135,7 @@ function _msg() {
         *)
             echo "${2}"
         ;;
+    esac
 }
 
 # Let's check if qsgen2 can generate this site by checking if 'generator' is available
