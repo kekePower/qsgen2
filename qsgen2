@@ -114,7 +114,7 @@ if (${debug}); then
 fi
 
 # Let's check if qsgen2 can generate this site by checking if 'generator' is available
-if [[ ! ${generator} ]]; then
+if [[ ! ${generator} ]] || [[ -d ${project_dir}/.git ]]; then
     echo "${0:t} cannot parse this site. Exiting."
     exit
 fi
@@ -165,7 +165,7 @@ function _list_blog_tmp_idx() {
 }
 function _list_blog() {
     ls -1btar blog/*.blog | while read -r file; do
-    blog_index_file_array+=($file)
+    blogs_file_array+=($file)
     done
 }
 
@@ -260,7 +260,7 @@ function _pages_cache() {
 }
 
 function _last_updated() {
-    # This function updates #updated and #version tags in the provided string
+    # This function updates #updated and #version tags in the provided string for buffers
 
     local content="${1}"
     local debug=false
@@ -277,7 +277,7 @@ function _last_updated() {
 }
 
 function _f_last_updated() {
-    # This function updates #updated and #version tags in the provided string
+    # This function updates #updated and #version tags in the provided string in files
 
     local content="${1}"
     local debug=false
@@ -344,56 +344,56 @@ function _pages() {
               
         # Grab the title from the Page
         if (${debug}) echo "_pages: Grepping for page_title"
-        page_title=$( echo ${page_content} | head -2 | grep \#title | cut -d= -f2 )
+        local page_title=$( echo ${page_content} | head -2 | grep \#title | cut -d= -f2 )
         if (${debug}) echo "_pages: ${page_title}"
         
         # Remove the #title line from the buffer. No longer needed.
         if (${debug}) echo "_pages: Removing #title line from page_content"
-        page_content=$( echo ${page_content} | grep -v \#title )
+        local page_content=$( echo ${page_content} | grep -v \#title )
         
         # HTML'ify the page content
         if (${debug}) echo "_pages: Running engine on ${pages_in_array}"
-        page_content=$( ${engine} ${page_content} )
+        local page_content=$( ${engine} ${page_content} )
         
         # Look for links, images and videos and convert them if present.
         if (${debug}) echo "_pages: Checking for #link, #showimg and #ytvideo in page_content"
         if [[ $( echo ${page_content} | grep \#link ) ]]; then
             if (${debug}) echo "_pages: #link is present, run _link: page_content"
-            page_content=$( _link "${page_content}" )
+            local page_content=$( _link "${page_content}" )
         fi
         if [[ $( echo ${page_content} | grep \#showimg ) ]]; then
             if (${debug}) echo "_pages: #showimg is present, run _image: page_content"
-            page_content=$( _image "${page_content}" )
+            local page_content=$( _image "${page_content}" )
         fi
         if [[ $( echo ${page_content} | grep \#ytvideo ) ]]; then
             if (${debug}) echo "_pages: #ytvideo is present, run _youtube: page_content"
-            page_content=$( _youtube "${page_content}" )
+            local page_content=$( _youtube "${page_content}" )
         fi
         
         # Insert page_content into pages_tpl by replacing the BODY tag present there
         if (${debug}) echo "_pages: Replacing BODY with page_content in pages_tpl using Perl"
         # Use Perl for multi-line and special character handling
-        pages_tpl=$( echo "${pages_tpl}" | perl -pe "s|BODY|${page_content}|gs" )
+        local pages_tpl=$( echo "${pages_tpl}" | perl -pe "s|BODY|${page_content}|gs" )
         
         # Replace every #pagetitle in pages_tpl
         if (${debug}) echo "_pages: Replacing #pagetitle in pages_tpl"
-        pages_tpl=$( echo ${pages_tpl} | perl -pe "s|#pagetitle|${page_title}|gs" )
+        local pages_tpl=$( echo ${pages_tpl} | perl -pe "s|#pagetitle|${page_title}|gs" )
         
         # Replace every #tagline in pages_tpl
         if (${debug}) echo "_pages: Replacing tagline"
-        pages_tpl=$( echo ${pages_tpl} | perl -pe "s|#tagline|${site_tagline}|gs" )
+        local pages_tpl=$( echo ${pages_tpl} | perl -pe "s|#tagline|${site_tagline}|gs" )
         
         # Replace #updated with today's date and #version with Name and Version to footer
         if (${debug}) echo "_pages: _last_updated in pages_tpl"
-        pages_tpl=$( _last_updated ${pages_tpl} )
+        local pages_tpl=$( _last_updated ${pages_tpl} )
         
         # Clean up unused tags, if any
         if (${debug}) echo "_pages: Running _cleanup"
-        pages_tpl=$( _cleanup "${pages_tpl}" )
+        local pages_tpl=$( _cleanup "${pages_tpl}" )
         
         # Always use lowercase for file names
         if (${debug}) echo "_pages: Lowercase filnames, always"
-        pages_title_lower=$( _file_to_lower "${pages_in_array}" )
+        local pages_title_lower=$( _file_to_lower "${pages_in_array}" )
         
         # Write pages_tpl to disk
         echo "${green}Writing ${www_root}/${pages_title_lower%.*}.html to disk.${end}"
@@ -414,7 +414,6 @@ function _blogs() {
     # This function either generates blog files or exports metadata based on the argument
 
     local debug=false
-    local mode=${1} # If <something>", exports metadata; otherwise, creates blog posts
 
     # Running function _list_blog
     if (${debug}) echo "_blogs: Running function _list_blog"
@@ -453,13 +452,12 @@ function _blogs() {
                     ingress=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#INGRESS_START\K(.*?)#INGRESS_STOP" | sed "s|\ \#INGRESS_STOP||" | sed "s|^\ ||" )
                     body=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#BODY_START\K(.*?)#BODY_STOP" | sed "s|\ \#BODY_STOP||" | sed "s|^\ ||" )
 
-                    blog_index="${btitle:l}"
-                    blog_index=$(echo "${blog_index}" | sed 's/ /_/g; s/,//g; s/\.//g; s/://g; s/[()]//g')
+                    blog_index=$(echo "${btitle:l}" | sed 's/ /_/g; s/,//g; s/\.//g; s/://g; s/[()]//g')
 
                     blog_dir="/blog/${sdate[2]}/${sdate[3]:l}/${sdate[4]}"
                     blog_url="${blog_dir}/${blog_index}.html"
                     
-                    if (${debug}) echo "_blogs: Adding data for ${blog} to array"
+                    if (${debug}) echo "_blogs: Adding data for ${blog} to array to export"
 
                     # Concatenate all metadata into a single string for the current blog
                     local metadata_str="SDATE: ${sdate[@]}||BTITLE: ${btitle}||INGRESS: ${ingress}||URL: ${blog_url}"
@@ -478,16 +476,15 @@ function _blogs() {
                    blog_content=$(echo "${blog_content}" | perl -pe "s|CALMONTH|${sdate[3]}|g")
                    blog_content=$(echo "${blog_content}" | perl -pe "s|CALYEAR|${sdate[2]}|g")
                    blog_content=$(echo "${blog_content}" | perl -pe "s|BLOGURL|${blog_url}|g")
-                   # Replace INGRESS placeholder with actual content using Perl
                    blog_content=$(echo "${blog_content}" | perl -pe "s|\QINGRESS\E|${ingress}|g")
-                   # Replace BODY placeholder with actual content using Perl
                    blog_content=$(echo "${blog_content}" | perl -pe "s|\QBODY\E|${body}|g")
 
 
+                   if (${debug}) echo "_blogs: Running function _html for ${blog}"
                    # Apply transformations
                    blog_content="$(_html "${blog_content}")"
                    # Look for links, images and videos and convert them if present.
-                   if (${debug}) echo "_pages: Checking for #link, #showimg and #ytvideo in blog_content"
+                   if (${debug}) echo "_blogs: Checking for #link, #showimg and #ytvideo in blog_content"
                    if [[ $( echo ${blog_content} | grep \#link ) ]]; then
                        if (${debug}) echo "_blogs: If #link is present, run _link: blog_content"
                        blog_content="$(_link "${blog_content}")"
@@ -522,9 +519,6 @@ function _blogs() {
 
 function _blog_idx_for_index() {
     # This function generates the file blog/index.tmp.html
-    
-    # We use _blogs to get the data to create the blog index
-    #_blogs get_index
     
     local debug=false
     
@@ -580,12 +574,11 @@ function _blog_idx_for_index() {
 }
 
 function _blog_index() {
-    echo "_blog_index: blog_in_index = ${blog_in_index}"
+    echo "${cyan}_blog_index: blog_in_index = ${blog_in_index}${end}"
     # This function generates the /blog/index.html file that gets its data from _blog_list_for_index()
     if [[ ${blog_in_index} == "false" ]]; then    
         local debug=false
-        local blog_index_file=${project_dir}/themes/${theme}/blog_index.tpl
-        local blog_index=$(<${blog_index_file})
+        local blog_index=$(<${project_dir}/themes/${theme}/blog_index.tpl)
         local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
 
         if [[ ! -f ${blog_index_file} ]]; then
@@ -594,8 +587,8 @@ function _blog_index() {
         fi
 
         echo "${green}Updating the Blog Index file${end}"
-        blog_index_content=$(echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g")
-        echo ${blog_index_content} > ${www_root}/blog/index.html
+        # blog_index_content=$(echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g")
+        echo echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g" > ${www_root}/blog/index.html
         _f_last_updated ${www_root}/blog/index.html
     elif [[ ${blog_in_index} == "true" ]]; then
         # Write blog list to /index.html and /blog/index.html
@@ -639,7 +632,7 @@ function _sitemap() {
     # End of the XML file
     echo '</urlset>' >> "${sitemap_file}"
 
-    echo "Sitemap generated at ${sitemap_file}"
+    if (${debug}) echo "${red}Sitemap generated at ${sitemap_file}${end}"
 
 }
 
@@ -819,7 +812,7 @@ function _html() {
 # Time to test the first function
 echo "1. ${green}Running function _blogs${end}"
 _blogs
-echo "2. Running _blog_idx_for_index"
+echo "2. ${green}Running function _blog_idx_for_index${end}"
 _blog_idx_for_index
 echo "3. ${green}Running function _blog_index"
 _blog_index
