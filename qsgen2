@@ -1,4 +1,4 @@
-#!/usr/bin/zsh
+#!/usr/bin/zsh -x
 
 # Quick Site Generator 2 is a static website generator inspired by Nikola.
 # It is written for the Z shell (zsh) because that's what I use and also because I like it better than Bash.
