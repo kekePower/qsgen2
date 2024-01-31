@@ -105,12 +105,12 @@ else
 fi
 debug=true
 if (${debug}); then
-    qsconfig=$( cat $(pwd)/config | grep -v \# | awk '{print substr($0, index($0, " ") + 1)}' )
+    qsconfig=( $( cat $(pwd)/config | grep -v \# | awk '{print substr($0, index($0, " ") + 1)}' ) )
     # qsconfig=$(<${qsconfig})
 	echo "${red}Contents of Config file:${end}"
-    for lines in ${qsconfig}
+    for qslines in ${qsconfig[@]}
     do
-        echo "${yellow}${lines}${end}"
+        echo "${yellow}- ${qslines}${end}"
     done
     #echo "${yellow} - site_name=${site_name}${end}"
     #echo "${yellow} - site_tagline=${site_tagline}${end}"
