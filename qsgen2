@@ -168,8 +168,10 @@ export blogdate=$( date +%a-%Y-%b-%d )
 
 # Let's create arrays of all the files we'll be working on
 
-function _list_blog() {
+function _list_blogs() {
     local debug=false
+    
+    export no_blogs_found=false
 
     # Temporarily set null_glob for this function
     setopt local_options null_glob
@@ -177,7 +179,8 @@ function _list_blog() {
     # Check if there are any .blog files in the blog directory
     local blog_files=(blog/*.blog)
     if (( ${#blog_files} == 0 )); then
-        if (${debug}); then _msg debug "_list_blog: No blog files found."; fi
+        if (${debug}); then _msg debug "_list_blogs: No blog files found."; fi
+        export no_blogs_found=true
         return
     fi
 
@@ -189,13 +192,9 @@ function _list_blog() {
 # BLOG CACHE
 function _blog_cache() {
     local debug=false
-    
-    # Check if there are any .blog files in the blog directory
-    local blog_files=(blog/*.blog)
-    if [[ ! -f ${blog_files[1]} ]]; then
-        if (${debug}); then _msg debug "_blog_cache: No blog files found."; fi
-        return
-    fi
+
+    _list_blogs
+
     # Create an associative array for the blog cache
     typeset -A blog_cache
 
@@ -211,7 +210,7 @@ function _blog_cache() {
     make_blog_array=()
 
     # Process blog files
-    for blog_file in $(ls -har blog/*.blog); do
+    for blog_file in ${blogs_file_array[@]}; do
         # Compute the current blog file hash
         current_hash=$(md5sum "$blog_file" | awk '{print $1}')
 	
@@ -449,9 +448,9 @@ function _blogs() {
 
     local debug=false
 
-    # Running function _list_blog
-    if (${debug}) _msg debug "_blogs: Running function _list_blog"
-    _list_blog
+    # Running function _list_blogs
+    if (${debug}) _msg debug "_blogs: Running function _list_blogs"
+    _list_blogs
     # Running function _blog_cache
     if (${debug}) _msg debug "_blogs: Running function _blog_cache"
     _blog_cache
