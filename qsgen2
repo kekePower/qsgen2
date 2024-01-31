@@ -609,7 +609,7 @@ function _blog_index() {
 
         _msg std "Updating the Blog Index file"
         # blog_index_content=$(echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g")
-        echo echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g" > ${www_root}/blog/index.html
+        echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g" > ${www_root}/blog/index.html
         _f_last_updated ${www_root}/blog/index.html
     elif [[ ${blog_in_index} == "true" ]]; then
         # Write blog list to /index.html and /blog/index.html
