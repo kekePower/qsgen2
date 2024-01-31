@@ -591,16 +591,14 @@ function _blog_index() {
         echo "Unable to find the Blogs template: ${blog_index_file}"
         exit
     fi
-    
-    _blogs get_index
-    
+      
     if [[ ${blog_in_index} == "false" ]]; then
         echo "${green}Updating the Blog Index file${end}"
         blog_index_content=$(echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g")
         echo ${blog_index_content} > ${www_root}/blog/index.html
         _f_last_updated ${www_root}/blog/index.html
     elif [[ ${blog_in_index} == "true" ]]; then
-        # Write blog list to /index.html
+        # Write blog list to /index.html and /blog/index.html
     fi
     
 }
