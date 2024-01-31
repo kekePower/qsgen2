@@ -561,12 +561,12 @@ function _blog_idx_for_index() {
     # Truncate file before writing new one
     : >| "${project_dir}/blog/index.tmp.html"
     
-    if (${debug}) _msg debug ":: _blog_idx_for_index: BLOG_META_STR_ARRAY: ${BLOG_META_STR_ARRAY[@]}"
+    if (${debug}) _msg debug "_blog_idx_for_index: BLOG_META_STR_ARRAY: ${BLOG_META_STR_ARRAY[@]}"
     
     for meta_str in ${BLOG_META_STR_ARRAY[@]}
     do
         if (${debug}) _msg debug "_blog_idx_for_index: meta_str from BLOG_META_STR_ARRAY from _blogs"
-        if (${debug}) _msg debug ":: _blog_idx_for_index: ${meta_str}"
+        if (${debug}) _msg debug "_blog_idx_for_index: ${meta_str}"
         local debug=false
         # Split meta_str into individual metadata components
         local -a meta_array=("${(@s/||/)meta_str}")
@@ -621,13 +621,11 @@ function _blog_index() {
         # blog_index_content=$(echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g")
         echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g" > ${www_root}/blog/index.html
         _f_last_updated ${www_root}/blog/index.html
-    elif [[ ${blog_in_index} == "true" ]]; then
-        # Write blog list to /index.html and /blog/index.html
     fi
     
 }
 
-function _m_sitemap() {
+function _sitemap() {
     
 if [[ ${sitemap} == "true" ]]; then
     
@@ -665,7 +663,7 @@ if [[ ${sitemap} == "true" ]]; then
     # End of the XML file
     echo '</urlset>' >> "${sitemap_file}"
 
-    if (${debug}) _msg debug "Sitemap generated at ${sitemap_file}"
+    if (${debug}); then _msg debug "Sitemap generated at ${sitemap_file}"; fi
 
 fi
 
@@ -853,4 +851,4 @@ _blog_index
 _msg std "Running function _pages"
 _pages
 _msg std "Running function _sitemap"
-_m_sitemap
+_sitemap
