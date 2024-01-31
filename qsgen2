@@ -627,7 +627,7 @@ function _sitemap() {
 # Check if sitemap is set to true and if there are updated Blogs or Pages before updating the sitemap.xml file.
 if [[ ${sitemap} == "true" ]] && ( [[ ${new_updated_blogs} == "true" ]] || [[ ${new_updated_pages} == "true" ]] ); then
     
-    _msg info "Generating sitemap.xml"
+    _msg info "Updating sitemap.xml"
 
     local sitemap_file="${www_root}/sitemap.xml"
 
@@ -797,7 +797,7 @@ function _html() {
     if (${debug}); then _msg debug "_html: Converting QStags in content"; fi
 
     # Perform HTML tag substitutions handling both lowercase and uppercase QStags
-    local html_content=$(echo "${content}" | sed \
+    local html_content=$( echo "${content}" | sed \
         -e "s|#[bB]|<b>|g" \
         -e "s|#[eE][bB]|</b>|g" \
         -e "s|#[iI]|<i>|g" \
@@ -841,7 +841,6 @@ function _html() {
         -e "s|#[eE][tT][dD]|</td>|g" \
         -e "s|#[tT][hH]|<th>|g" \
         -e "s|#[eE][tT][hH]|</th>|g" \
-        # Semantic HTML5 elements
         -e "s|#[aA][rR][tT]|<article>|g" \
         -e "s|#[eE][aA][rR][tT]|</article>|g" \
         -e "s|#[sS][eE][cC][tT]|<section>|g" \
@@ -850,14 +849,12 @@ function _html() {
         -e "s|#[eE][aA][sS][iI][dD][eE]|</aside>|g" \
         -e "s|#[nN][aA][vV]|<nav>|g" \
         -e "s|#[eE][nN][aA][vV]|</nav>|g" \
-        # Interactive Elements
         -e "s|#[bB][tT][nN]|<button>|g" \
         -e "s|#[eE][bB][tT][nN]|</button>|g" \
         -e "s|#[sS][lL][cC][tT]|<select>|g" \
         -e "s|#[eE][sS][lL][cC][tT]|</select>|g" \
         -e "s|#[oO][pP][tT]|<option>|g" \
-        -e "s|#[eE][oO][pP][tT]|</option>|g"
-        )
+        -e "s|#[eE][oO][pP][tT]|</option>|g" )
 
     # Return the HTML content
     echo "${html_content}"
