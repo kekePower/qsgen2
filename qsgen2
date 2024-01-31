@@ -68,7 +68,7 @@ function include () {
 # Including some colors to the script
 include common/colors
 
-echo "${bold_magenta}${QSGEN} ${VERSION}${end}"
+echo "${magenta}${blue_bg} ${QSGEN} ${end}${white}${blue_bg}${VERSION} ${end}"
 
 function _version() {
     echo "${yellow}- Created by kekePower - 2018-$(date +%Y)${end}"
