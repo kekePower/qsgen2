@@ -1,6 +1,7 @@
 #!/usr/bin/zsh
 
-# set -x
+set -x
+trap 'read -k1' DEBUG
 
 # Quick Site Generator 2 is a static website generator inspired by Nikola.
 # It is written for the Z shell (zsh) because that's what I use and also because I like it better than Bash.
@@ -103,23 +104,14 @@ else
 	echo "${yellow} - Please create the file 'config' in your project directory.${end}"
 	exit
 fi
-debug=true
+
 if (${debug}); then
     qsconfig=$( cat $(pwd)/config | grep -v \# | awk '{print substr($0, index($0, " ") + 1)}' )
-    # qsconfig=$(<${qsconfig})
 	echo "${red}Contents of Config file:${end}"
     for qslines in ${qsconfig}
     do
         echo "${yellow}${qslines}${end}"
     done
-    #echo "${yellow} - site_name=${site_name}${end}"
-    #echo "${yellow} - site_tagline=${site_tagline}${end}"
-    #echo "${yellow} - theme=${theme}${end}"
-    #echo "${yellow} - project_dir=${project_dir}${end}"
-    #echo "${yellow} - www_root=${www_root}${end}"
-    #echo "${yellow} - blog_in_index=${blog_in_index}${end}"
-    #echo "${yellow} - generator=${generator}${end}"
-    #echo "${yellow} - sitemap=${sitemap}${end}"
 fi
 
 function _msg() {
