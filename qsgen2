@@ -1,7 +1,7 @@
 #!/usr/bin/zsh
 
 set -x
-trap 'read -k1' DEBUG
+# trap 'read -k1' DEBUG
 
 # Quick Site Generator 2 is a static website generator inspired by Nikola.
 # It is written for the Z shell (zsh) because that's what I use and also because I like it better than Bash.
@@ -835,12 +835,12 @@ function _html() {
 }
 
 # Time to test the first function
-_msg std "Running function _blogs"
+#_msg std "Running function blogs"
 _blogs
-_msg std "Running function _blog_idx_for_index"
+#_msg std "Running function blog_idx_for_index"
 _blog_idx_for_index
 _blog_index
-_msg std "Running function _pages"
+#_msg std "Running function pages"
 _pages
-_msg std "Running function sitemap"
+#_msg std "Running function sitemap"
 _sitemap
