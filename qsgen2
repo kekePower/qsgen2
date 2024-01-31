@@ -167,23 +167,6 @@ export today=$( date "+%Y-%m-%d - %T" )
 export blogdate=$( date +%a-%Y-%b-%d )
 
 # Let's create arrays of all the files we'll be working on
-
-function _list_blog_idx() {
-    ls -har blog/*.idx | while read -r file; do
-    blog_idx_array+=($file)
-    done
-}
-function _list_blog_tmp_idx() {
-    ls -har blog/*.tmp.html | while read -r file; do
-    blog_tmp_idx_array+=($file)
-    done
-}
-function _list_blog() {
-    ls -1btar blog/*.blog | while read -r file; do
-    blogs_file_array+=($file)
-    done
-}
-
 # BLOG CACHE
 function _blog_cache() {
     local debug=false
