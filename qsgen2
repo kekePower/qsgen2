@@ -423,9 +423,12 @@ function _pages() {
         
       done
       
+      export new_updated_pages=true
+      
     else
 
         _msg info "No new or updated Pages"
+        export new_updated_pages=false
 
     fi
     
@@ -621,7 +624,8 @@ function _blog_index() {
 
 function _sitemap() {
     
-if [[ ${sitemap} == "true" ]]; then
+# Check if sitemap is set to true and if there are updated Blogs or Pages before updating the sitemap.xml file.
+if [[ ${sitemap} == "true" ]] && ( [[ ${new_updated_blogs} == "true" ]] || [[ ${new_updated_pages} == "true" ]] ); then
     
     _msg info "Generating sitemap.xml"
 
