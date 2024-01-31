@@ -106,7 +106,7 @@ fi
 debug=true
 if (${debug}); then
     qsconfig=$( cat $(pwd)/config | grep -v \# | awk '{print substr($0, index($0, " ") + 1)}' )
-    qsconfig=$(<${qsconfig})
+    # qsconfig=$(<${qsconfig})
 	echo "${red}Contents of Config file:${end}"
     for lines in ${qsconfig}
     do
