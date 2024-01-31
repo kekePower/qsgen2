@@ -170,17 +170,20 @@ export blogdate=$( date +%a-%Y-%b-%d )
 
 function _list_blog() {
     local debug=false
-    # local blog_files=(blog/*.blog)
 
-    # Check if array is empty
-    if [[ -z "$(ls -A blog/*.blog 2>/dev/null)" ]]; then
+    # Temporarily set null_glob for this function
+    setopt local_options null_glob
+
+    # Check if there are any .blog files in the blog directory
+    local blog_files=(blog/*.blog)
+    if (( ${#blog_files} == 0 )); then
         if (${debug}); then _msg debug "_list_blog: No blog files found."; fi
         return
-    else
-        for file in blog/*.blog; do
-            blogs_file_array+=("$file")
-        done
     fi
+
+    for file in blog/*.blog; do
+        blogs_file_array+=("$file")
+    done
 }
 
 # BLOG CACHE
