@@ -617,7 +617,7 @@ function _blog_index() {
     
 }
 
-function _sitemap() {
+function _m_sitemap() {
     
 if [[ ${sitemap} == "true" ]]; then
     
@@ -843,4 +843,4 @@ _blog_index
 _msg std "Running function _pages"
 _pages
 _msg std "Running function _sitemap"
-_sitemap
+_m_sitemap
