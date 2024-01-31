@@ -851,4 +851,4 @@ _blog_index
 _msg std "Running function _pages"
 _pages
 _msg std "Running function sitemap"
-_sitemap
+#_sitemap
