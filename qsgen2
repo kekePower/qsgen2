@@ -170,10 +170,10 @@ export blogdate=$( date +%a-%Y-%b-%d )
 
 function _list_blog() {
     local debug=false
-    local blog_files=(blog/*.blog)
+    # local blog_files=(blog/*.blog)
 
     # Check if array is empty
-    if (( ${#blog_files[@]} == 0 || ! -f ${blog_files[1]} )); then
+    if [[ -z "$(ls -A blog/*.blog 2>/dev/null)" ]]; then
         if (${debug}); then _msg debug "_list_blog: No blog files found."; fi
         return
     else
