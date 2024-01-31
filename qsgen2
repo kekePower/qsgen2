@@ -618,8 +618,8 @@ function _blog_index() {
         local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
 
         _msg std "Updating the Blog Index file"
-        # blog_index_content=$(echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g")
-        echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g" > ${www_root}/blog/index.html
+        blog_index_content=$(echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g")
+        echo "${blog_index_content}" > ${www_root}/blog/index.html
         _f_last_updated ${www_root}/blog/index.html
     fi
     
