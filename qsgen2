@@ -580,19 +580,19 @@ function _blog_idx_for_index() {
 }
 
 function _blog_index() {
+    echo "_blog_index: blog_in_index = ${blog_in_index}"
     # This function generates the /blog/index.html file that gets its data from _blog_list_for_index()
-    
-    local debug=false
-    local blog_index_file=${project_dir}/themes/${theme}/blog_index.tpl
-    local blog_index=$(<${blog_index_file})
-    local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
+    if [[ ${blog_in_index} == "false" ]]; then    
+        local debug=false
+        local blog_index_file=${project_dir}/themes/${theme}/blog_index.tpl
+        local blog_index=$(<${blog_index_file})
+        local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
 
-    if [[ ! -f ${blog_index_file} ]]; then
-        echo "Unable to find the Blogs template: ${blog_index_file}"
-        exit
-    fi
-      
-    if [[ ${blog_in_index} == "false" ]]; then
+        if [[ ! -f ${blog_index_file} ]]; then
+            echo "Unable to find the Blogs template: ${blog_index_file}"
+            exit
+        fi
+
         echo "${green}Updating the Blog Index file${end}"
         blog_index_content=$(echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g")
         echo ${blog_index_content} > ${www_root}/blog/index.html
@@ -603,7 +603,7 @@ function _blog_index() {
     
 }
 
-function _generate_sitemap() {
+function _sitemap() {
     
     echo "${bold_yellow}Generating sitemap.xml${end}"
 
@@ -825,4 +825,5 @@ echo "3. ${green}Running function _blog_index"
 _blog_index
 echo "4. ${green}Running function _pages${end}"
 _pages
-_generate_sitemap
+echo "4. ${green}Running function _sitemap${end}"
+_sitemap
