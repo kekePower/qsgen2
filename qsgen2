@@ -68,12 +68,12 @@ function include () {
 # Including some colors to the script
 include common/colors
 
-echo "${magenta}${QSGEN} ${VERSION}${end}"
+echo "${bold_magenta}${QSGEN} ${VERSION}${end}"
 
 function _version() {
     echo "${yellow}- Created by kekePower - 2018-$(date +%Y)${end}"
     echo "${yellow}- https://github.com/kekePower/qsgen2/${end}"
-    echo "${yellow}- See '${1} help' for more information."
+    echo "${yellow}- See '${1} help' for more information.${end}"
     exit
 }
 
@@ -132,13 +132,13 @@ function _msg() {
             echo "${bold_yellow}${2}${end}"
         ;;
         *)
-            # Nothing
+            echo "${2}"
         ;;
 }
 
 # Let's check if qsgen2 can generate this site by checking if 'generator' is available
-if [[ ! ${generator} ]] || [[ -d ${project_dir}/.git ]]; then
-    echo "${0:t} cannot parse this site. Exiting."
+if [[ ! ${generator} ]] || [[ -d $(pwd)/.git ]]; then
+    _msg other "${0:t} cannot parse this site. Exiting."
     exit
 fi
 
@@ -148,18 +148,11 @@ if [[ ${generator} == "native" ]]; then
         engine=_html
 elif [[ ${generator} == "markdown" ]]; then
     if [[ ! -f /usr/bin/markdown ]]; then
-        echo "Please install the 'discount' package to use Markdown."
+        _msg other "Please install the 'discount' package to use Markdown."
         exit
     else
-        # Let's make sure that the Markdown executable gets all its variables: 1 and 2
-        if [[ ! ${2} ]] || [[ ${2} == "" ]]; then
-            echo "Engine: To use Markdown, please provide a second variable, the output file."
-            echo "Engine: Example: engine file.tpl www_root/file.html"
-            exit
-        else
-            # Usage: ${engine} ${1} - Where 1 is the file you want parsed
-            engine=$( /usr/bin/markdown ${1} -d )
-        fi
+        # Usage: ${engine} ${1} - Where 1 is the file you want parsed
+        engine=$( /usr/bin/markdown ${1} -d )
     fi
 fi
 if (${debug}) _msg debug "Using the ${generator} engine"
