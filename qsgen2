@@ -850,5 +850,5 @@ _blog_idx_for_index
 _blog_index
 _msg std "Running function _pages"
 _pages
-_msg std "Running function _sitemap"
+_msg std "Running function sitemap"
 _sitemap
