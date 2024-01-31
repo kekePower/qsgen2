@@ -105,7 +105,7 @@ else
 fi
 debug=true
 if (${debug}); then
-    qsconfig=$( cat $(pwd)/config | grep -v \# )
+    qsconfig=$( cat $(pwd)/config | grep -v \# | cut -d" " -f2 )
     qsconfig=$(<${qsconfig})
 	echo "${red}Contents of Config file:${end}"
     for lines in ${qsconfig}
