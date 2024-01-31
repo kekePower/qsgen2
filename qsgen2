@@ -167,9 +167,23 @@ export today=$( date "+%Y-%m-%d - %T" )
 export blogdate=$( date +%a-%Y-%b-%d )
 
 # Let's create arrays of all the files we'll be working on
+
+function _list_blog() {
+    ls -1btar blog/*.blog | while read -r file; do
+    blogs_file_array+=($file)
+    done
+}
+
 # BLOG CACHE
 function _blog_cache() {
     local debug=false
+    
+    # Check if there are any .blog files in the blog directory
+    local blog_files=(blog/*.blog)
+    if [[ ! -f ${blog_files[1]} ]]; then
+        if (${debug}); then _msg debug "_blog_cache: No blog files found."; fi
+        return
+    fi
     # Create an associative array for the blog cache
     typeset -A blog_cache
 
