@@ -169,14 +169,16 @@ export blogdate=$( date +%a-%Y-%b-%d )
 # Let's create arrays of all the files we'll be working on
 
 function _list_blog() {
-    # Check if there are any .blog files in the blog directory
+    local debug=false
     local blog_files=(blog/*.blog)
-    if [[ ! -f ${blog_files[1]} ]]; then
-        if (${debug}); then _msg debug "_blog_cache: No blog files found."; fi
+
+    # Check if array is empty
+    if (( ${#blog_files[@]} == 0 || ! -f ${blog_files[1]} )); then
+        if (${debug}); then _msg debug "_list_blog: No blog files found."; fi
         return
     else
-        ls -1btar blog/*.blog | while read -r file; do
-        blogs_file_array+=($file)
+        for file in blog/*.blog; do
+            blogs_file_array+=("$file")
         done
     fi
 }
