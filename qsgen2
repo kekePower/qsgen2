@@ -263,9 +263,11 @@ function _blog_cache() {
 # PAGES CACHE
 # Returns the array pages_array()
 function _pages_cache() {
-    local debug=false
+    local debug=true
     # Create an associative array for the pages cache
     typeset -A pages_cache
+    
+    _list_pages
     
     # Load the existing pages cache
     if [[ -f $pages_cache_file ]]; then
@@ -277,8 +279,6 @@ function _pages_cache() {
     
     # Initialize the array for storing pages files to process
     pages_array=()
-    
-    _list_pages
     
     # Process pages files
     for file in ${pages_file_array[@]}; do
