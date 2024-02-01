@@ -842,7 +842,6 @@ function _html() {
             );
         }
         while (my ($key, $value) = each %qstags) {
-            $key = quotemeta($key); # Escape special characters in QStags
             s/(?<!\S)\Q$key\E\b/$value/g;
         }
     ');
