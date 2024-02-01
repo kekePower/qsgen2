@@ -187,6 +187,7 @@ function _list_pages() {
     fi
 
     for file in $( echo ${pages_files} ); do
+        if (${debug}) _msg debug "_list_pages: Adding file to array: ${file}"
         pages_file_array+=("$file")
     done
 }
