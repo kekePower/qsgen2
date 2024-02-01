@@ -152,7 +152,7 @@ elif [[ ${generator} == "markdown" ]]; then
         exit
     else
         # Usage: ${engine} ${1} - Where 1 is the file you want parsed
-        engine=/usr/bin/markdown -d -n -s ${1}
+        engine=/usr/bin/markdown -d -n -s
         export file_ext=md
     fi
 fi
@@ -288,7 +288,7 @@ function _pages_cache() {
         current_hash=$(md5sum "$file" | awk '{print $1}')
         
     	if (${debug}) _msg debug "1. pages_cache: ${pages_cache[$file]}"
-    	if (${debug}) _msg debug "1. c_pages_cache: urrent_cache: ${current_hash}"
+    	if (${debug}) _msg debug "1. _pages_cache: current_cache: ${current_hash}"
         
         # Check if the pages file is new or has changed
         if [[ ${pages_cache[$file]} != "$current_hash" ]]; then
