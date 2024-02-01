@@ -862,6 +862,18 @@ def replace_qstags(match):
         "#LT": "&lt;",
         "#GT": "&gt;",
         "#NUM": "&num;",
+        "#H1": "<h1>",
+        "#H2": "<h2>",
+        "#H3": "<h3>",
+        "#H4": "<h4>",
+        "#H5": "<h5>",
+        "#H6": "<h6>",
+        "#EH1": "</h1>",
+        "#EH2": "</h2>",
+        "#EH3": "</h3>",
+        "#EH4": "</h4>",
+        "#EH5": "</h5>",
+        "#EH6": "</h6>",
     }
     return qstag_dict.get(qstag, qstag)  # Replace or return unchanged
 
