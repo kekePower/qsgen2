@@ -820,12 +820,12 @@ function _html() {
         -e "s|#[hH]4|<h4>|g" \
         -e "s|#[hH]5|<h5>|g" \
         -e "s|#[hH]6|<h6>|g" \
-        -e "s|#[eE][hH]1|<h1>|g" \
-        -e "s|#[eE][hH]2|<h2>|g" \
-        -e "s|#[eE][hH]3|<h3>|g" \
-        -e "s|#[eE][hH]4|<h4>|g" \
-        -e "s|#[eE][hH]5|<h5>|g" \
-        -e "s|#[eE][hH]6|<h6>|g" \
+        -e "s|#[eE][hH]1|</h1>|g" \
+        -e "s|#[eE][hH]2|</h2>|g" \
+        -e "s|#[eE][hH]3|</h3>|g" \
+        -e "s|#[eE][hH]4|</h4>|g" \
+        -e "s|#[eE][hH]5|</h5>|g" \
+        -e "s|#[eE][hH]6|</h6>|g" \
         -e "s|#[sS][tT][rR][oO][nN][gG]|<strong>|g" \
         -e "s|#[eE][sS][tT][rR][oO][nN][gG]|</strong>|g" \
         -e "s|#[eE][mM]|<em>|g" \
