@@ -538,8 +538,10 @@ function _blogs() {
                    [[ ! -d "${www_root}/${blog_dir}" ]] && mkdir -p "${www_root}/${blog_dir}"
 
                    # Write to file
-                   if (${debug}) _msg debug "_blogs: Writing ${blog} to disk: ${www_root}${blog_url}"
+                   if (${debug}) _msg debug "_blogs: Writing blog to disk: ${www_root}${blog_url}"
                    echo "${blog_content}" > "${www_root}${blog_url}"
+                   
+                   unset sdate btitle ingress body blog_index blog_dir blog_url
                 
                 done
             # Now BLOG_META_STR_ARRAY contains the metadata string for each blog post
