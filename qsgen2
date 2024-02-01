@@ -806,6 +806,7 @@ function _html() {
 
     # Perform HTML tag substitutions handling both lowercase and uppercase QStags
     local html_content=$( echo "${content}" | sed \
+        -e "s|#[bB][rR]|<br/>|g" \
         -e "s|#[bB]|<b>|g" \
         -e "s|#[eE][bB]|</b>|g" \
         -e "s|#[iI]|<i>|g" \
@@ -830,9 +831,6 @@ function _html() {
         -e "s|#[eE][sS][tT][rR][oO][nN][gG]|</strong>|g" \
         -e "s|#[eE][mM]|<em>|g" \
         -e "s|#[eE][eE][mM]|</em>|g" \
-        -e "s|#[bB][rR]|<br/>|g" \
-        -e "s|#[aA]|<a>|g" \
-        -e "s|#[eE][aA]|</a>|g" \
         -e "s|#[dD][iI][vV]|<div>|g" \
         -e "s|#[eE][dD][iI][vV]|</div>|g" \
         -e "s|#[sS][pP][aA][nN]|<span>|g" \
