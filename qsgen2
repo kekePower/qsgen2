@@ -417,13 +417,13 @@ function _pages() {
         if (${debug}) _msg debug "_pages: _last_updated in pages_tpl"
         local pages_tpl=$( _last_updated ${pages_tpl} )
         
-        # Clean up unused tags, if any
-        if (${debug}) _msg debug "_pages: Running _cleanup"
-        local pages_tpl=$( _cleanup "${pages_tpl}" )
-        
         # Always use lowercase for file names
         if (${debug}) _msg debug "_pages: Lowercase filnames, always"
         local pages_title_lower=$( _file_to_lower "${pages_in_array}" )
+        
+        # Clean up unused tags, if any
+        if (${debug}) _msg debug "_pages: Running _cleanup"
+        local pages_tpl=$( _cleanup "${pages_tpl}" )
         
         # Write pages_tpl to disk
         _msg std "Writing ${www_root}/${pages_title_lower%.*}.html to disk."
@@ -443,7 +443,6 @@ function _pages() {
 }
 
 function _blogs() {
-    # Rewritten _blogs function
     # This function either generates blog files or exports metadata based on the argument
 
     local debug=false
@@ -512,27 +511,26 @@ function _blogs() {
                    blog_content=$(echo "${blog_content}" | perl -pe "s|\QINGRESS\E|${ingress}|g")
                    blog_content=$(echo "${blog_content}" | perl -pe "s|\QBODY\E|${body}|g")
 
-
                    if (${debug}) _msg debug "_blogs: Running function _html for ${blog}"
                    # Apply transformations
                    blog_content="$(_html "${blog_content}")"
                    # Look for links, images and videos and convert them if present.
                    if (${debug}) _msg debug "_blogs: Checking for #link, #showimg and #ytvideo in blog_content"
                    if [[ $( echo ${blog_content} | grep \#link ) ]]; then
-                       if (${debug}) _msg debug "_blogs: If #link is present, run _link: blog_content"
+                       if (${debug}) _msg debug "_blogs: #link is present, run _link: blog_content"
                        blog_content="$(_link "${blog_content}")"
                    fi
                    if [[ $( echo ${blog_content} | grep \#showimg ) ]]; then
-                       if (${debug}) _msg debug "_blogs: If #showimg is present, run _link: blog_content"
+                       if (${debug}) _msg debug "_blogs: #showimg is present, run _link: blog_content"
                        blog_content="$(_image "${blog_content}")"
                    fi
                    if [[ $( echo ${blog_content} | grep \#ytvideo ) ]]; then
-                       if (${debug}) _msg debug "_blogs: If #ytvideo is present, run _link: blog_content"
+                       if (${debug}) _msg debug "_blogs: #ytvideo is present, run _link: blog_content"
                        blog_content="$(_youtube "${blog_content}")"
-                   fi                   
-                   blog_content="$(_cleanup "${blog_content}")"
+                   fi
                    blog_content="$(_last_updated "${blog_content}")"
-                
+                   blog_content="$(_cleanup "${blog_content}")"
+                   
                    # Create directory if it doesn't exist
                    if (${debug}) _msg debug "_blogs: Creating directoty ${www_root}/${blog_dir}"
                    [[ ! -d "${www_root}/${blog_dir}" ]] && mkdir -p "${www_root}/${blog_dir}"
@@ -552,6 +550,9 @@ function _blogs() {
         _msg info "No new or updated Blogs detected."
         export new_updated_blogs=false
     fi
+_blog_idx_for_index
+_blog_index
+
 }
 
 function _blog_idx_for_index() {
@@ -851,12 +852,6 @@ _html() {
 }
 
 # Time to test the first function
-#_msg std "Running function blogs"
 _blogs
-#_msg std "Running function blog_idx_for_index"
-_blog_idx_for_index
-_blog_index
-#_msg std "Running function pages"
 _pages
-#_msg std "Running function sitemap"
 _sitemap
