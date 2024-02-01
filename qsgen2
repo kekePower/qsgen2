@@ -809,7 +809,7 @@ _html() {
     BEGIN {
         @tags = (
             "#BR", "<br/>\n",
-            "#BD", "<b>", "#EBD", "</b>\n",
+            "#BD", "<b>", "#EBD", "</b>",
             "#I", "<i>", "#EI", "</i>\n",
             "#P", "<p>", "#EP", "</p>\n",
             "#Q", "<blockquote>", "#EQ", "</blockquote>\n",
