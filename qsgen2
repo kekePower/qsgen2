@@ -152,7 +152,7 @@ elif [[ ${generator} == "markdown" ]]; then
         exit
     else
         # Usage: ${engine} ${1} - Where 1 is the file you want parsed
-        engine="/usr/bin/markdown ${1} -d"
+        engine=/usr/bin/markdown ${1} -d
         export file_ext=md
     fi
 fi
@@ -180,7 +180,7 @@ function _list_pages() {
     setopt local_options null_glob
 
     # Check if there are any .blog files in the blog directory
-    local pages_files=$(ls *.${file_ext})
+    local pages_files=$(ls *${file_ext})
     if (( ${#pages_files} == 0 )); then
         if (${debug}); then _msg debug "_list_pages: No Pages found."; fi
         export no_pages_found=true
