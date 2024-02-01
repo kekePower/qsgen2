@@ -292,7 +292,7 @@ function _last_updated() {
 
     # Perform the replacements
     local updated_content=$(echo "${content}" | sed \
-        -e "s|#updated|${TODAY}|" \
+        -e "s|#updated|${today}|" \
         -e "s|#version|${QSGEN} ${VERSION}|")
 
     # Return the updated content
@@ -309,7 +309,7 @@ function _f_last_updated() {
 
     # Perform the replacements
     tee < ${content} | sed \
-        -e "s|#updated|${TODAY}|" \
+        -e "s|#updated|${today}|" \
         -e "s|#version|${QSGEN} ${VERSION}|" \
         > ${content}
 
