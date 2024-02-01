@@ -811,8 +811,6 @@ function _html() {
         -e "s|#[eE][bB]|</b>|g" \
         -e "s|#[iI]|<i>|g" \
         -e "s|#[eE][iI]|</i>|g" \
-        -e "s|#[uU]|<u>|g" \
-        -e "s|#[eE][uU]|</u>|g" \
         -e "s|#[pP]|<p>|g" \
         -e "s|#[eE][pP]|</p>|g" \
         -e "s|#[hH]1|<h1>|g" \
@@ -838,6 +836,11 @@ function _html() {
         -e "s|#[uU][lL]|<ul>|g" \
         -e "s|#[oO][lL]|<ol>|g" \
         -e "s|#[lL][iI]|<li>|g" \
+        -e "s|#[eE][uU][lL]|</ul>|g" \
+        -e "s|#[eE][oO][lL]|</ol>|g" \
+        -e "s|#[eE][lL][iI]|</li>|g" \
+        -e "s|#[uU]|<u>|g" \
+        -e "s|#[eE][uU]|</u>|g" \
         -e "s|#[eE][lL][iI]|</li>|g" \
         -e "s|#[tT][aA][bB][lL][eE]|<table>|g" \
         -e "s|#[eE][tT][aA][bB][lL][eE]|</table>|g" \
