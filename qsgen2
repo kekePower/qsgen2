@@ -145,6 +145,7 @@ fi
 if [[ ${generator} == "native" ]]; then
         # Usage: ${engine} ${1} - Where 1 is the file you want to convert
         engine=_html
+        file_ext=tpl
 elif [[ ${generator} == "markdown" ]]; then
     if [[ ! -f /usr/bin/markdown ]]; then
         _msg other "Please install the 'discount' package to use Markdown."
@@ -152,6 +153,7 @@ elif [[ ${generator} == "markdown" ]]; then
     else
         # Usage: ${engine} ${1} - Where 1 is the file you want parsed
         engine=$( /usr/bin/markdown ${1} -d )
+        file_ext=md
     fi
 fi
 if (${debug}) _msg debug "Using the ${generator} engine"
@@ -167,6 +169,27 @@ export today=$( date "+%Y-%m-%d - %T" )
 export blogdate=$( date +%a-%Y-%b-%d )
 
 # Let's create arrays of all the files we'll be working on
+
+function _list_pages() {
+    local debug=false
+    
+    export no_pages_found=false
+
+    # Temporarily set null_glob for this function
+    setopt local_options null_glob
+
+    # Check if there are any .blog files in the blog directory
+    local pages_files=(*.${file_ext})
+    if (( ${#pages_files} == 0 )); then
+        if (${debug}); then _msg debug "_list_pages: No Pages found."; fi
+        export no_pages_found=true
+        return
+    fi
+
+    for file in $( ls *.${file_ext} ); do
+        pages_file_array+=("$file")
+    done
+}
 
 function _list_blogs() {
     local debug=false
@@ -243,7 +266,7 @@ function _pages_cache() {
     local debug=false
     # Create an associative array for the pages cache
     typeset -A pages_cache
-
+    
     # Load the existing pages cache
     if [[ -f $pages_cache_file ]]; then
         while IFS=':' read -r name hash; do
@@ -251,30 +274,32 @@ function _pages_cache() {
     		if (${debug}) _msg debug "PAGES HASH VALUE: ${pages_cache[${name}]}"
         done < "$pages_cache_file"
     fi
-
+    
     # Initialize the array for storing pages files to process
     pages_array=()
-
+    
+    _list_pages
+    
     # Process pages files
-    for file in $(ls -1bt *tpl); do
+    for file in ${pages_file_array[@]}; do
         # Compute the current blog file hash
         current_hash=$(md5sum "$file" | awk '{print $1}')
-    	
+        
     	if (${debug}) _msg debug "1. pages_cache: ${pages_cache[$file]}"
     	if (${debug}) _msg debug "1. c_pages_cache: urrent_cache: ${current_hash}"
-
+        
         # Check if the pages file is new or has changed
         if [[ ${pages_cache[$file]} != "$current_hash" ]]; then
     		if (${debug}) _msg debug "2. _pages_cache: pages_file: ${pages_cache[$file]}"
     		if (${debug}) _msg debug "2. _pages_cache: current_cache: ${current_hash}"
             # Pages file is new or has changed; add it to the processing array
             pages_array+=("$file")
-    
+            
             # Update the pages cache with the new hash
             pages_cache[$file]=$current_hash
         fi
     done
-
+    
     # Rebuild the pages cache file from scratch
     : >| "$pages_cache_file"  # Truncate the file before writing
     for name in "${(@k)pages_cache}"; do
