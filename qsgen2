@@ -446,7 +446,7 @@ function _blogs() {
     # Rewritten _blogs function
     # This function either generates blog files or exports metadata based on the argument
 
-    local debug=false
+    local debug=true
 
     # Running function _list_blogs
     if (${debug}) _msg debug "_blogs: Running function _list_blogs"
