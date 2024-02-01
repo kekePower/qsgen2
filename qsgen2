@@ -805,10 +805,10 @@ _html() {
     # Define the Python code for parsing and replacing specific QStags
     local python_code=$(cat <<EOF
 import re
-
-# Define a function to replace specific QStags
+# Define a function to replace QStags
 def replace_qstags(match):
     qstag = match.group(0)
+    return qstag_dict.get(qstag, qstag)  # Replace using the table or return unchanged
     qstag_dict = {
         "#H1": "<h1>",
         "#EH1": "</h1>",
@@ -875,10 +875,10 @@ def replace_qstags(match):
         "#EH5": "</h5>",
         "#EH6": "</h6>",
     }
-    return qstag_dict.get(qstag, qstag)  # Replace or return unchanged
 
 # Define the regular expression pattern for QStags, excluding specific ones
 pattern = r'(?<=\s)(#(?!link|image|ytvideo|updated|version)\w+)'
+
 # Replace QStags using the defined function
 result = re.sub(pattern, replace_qstags, '''$content''', flags=re.MULTILINE)
 
