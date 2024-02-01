@@ -179,7 +179,7 @@ function _list_pages() {
     setopt local_options null_glob
 
     # Check if there are any .blog files in the blog directory
-    local pages_files=(*.${file_ext})
+    local pages_files=(*.$(echo ${file_ext}))
     if (( ${#pages_files} == 0 )); then
         if (${debug}); then _msg debug "_list_pages: No Pages found."; fi
         export no_pages_found=true
