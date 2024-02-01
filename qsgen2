@@ -800,47 +800,52 @@ _html() {
     local content="$1"
     local debug=false
 
-    if (${debug}) _msg debug "_html: Converting QStags in content"
+    if ${debug}; then
+        echo "_html: Converting QStags in content"
+    fi
 
-    perl -pe '
+    # Use perl to convert QStags to HTML
+    perl -0777 -pe '
     BEGIN {
-        %qstags = (
-            "#BR" => "<br/>\n",
-            "#BD" => "<b>", "#EBD" => "</b>\n",
-            "#I" => "<i>", "#EI" => "</i>\n",
-            "#P" => "<p>", "#EP" => "</p>\n",
-            "#Q" => "<blockquote>", "#EQ" => "</blockquote>\n",
-            "#C" => "<code>", "#EC" => "</code>\n",
-            "#H1" => "<h1>", "#EH1" => "</h1>\n",
-            "#H2" => "<h2>", "#EH2" => "</h2>\n",
-            "#H3" => "<h3>", "#EH3" => "</h3>\n",
-            "#H4" => "<h4>", "#EH4" => "</h4>\n",
-            "#H5" => "<h5>", "#EH5" => "</h5>\n",
-            "#H6" => "<h6>", "#EH6" => "</h6>\n",
-            "#STRONG" => "<strong>", "#ESTRONG" => "</strong>\n",
-            "#EM" => "<em>", "#EEM" => "</em>\n",
-            "#DV" => "<div>", "#EDV" => "</div>\n",
-            "#SPN" => "<span>", "#ESPN" => "</span>\n",
-            "#UL" => "<ul>", "#EUL" => "</ul>\n",
-            "#OL" => "<ol>", "#EOL" => "</ol>\n",
-            "#LI" => "<li>", "#ELI" => "</li>\n",
-            "#U" => "<u>", "#EU" => "</u>\n",
-            "#TBL" => "<table>", "#ETBL" => "</table>\n",
-            "#TR" => "<tr>", "#ETR" => "</tr>\n",
-            "#TD" => "<td>", "#ETD" => "</td>\n",
-            "#TH" => "<th>", "#ETH" => "</th>\n",
-            "#ART" => "<article>", "#EART" => "</article>\n",
-            "#SEC" => "<section>", "#ESEC" => "</section>\n",
-            "#ASIDE" => "<aside>", "#EASIDE" => "</aside>\n",
-            "#NAV" => "<nav>", "#ENAV" => "</nav>\n",
-            "#BTN" => "<button>", "#EBTN" => "</button>\n",
-            "#SEL" => "<select>", "#ESEL" => "</select>\n",
-            "#OPT" => "<option>", "#EOPT" => "</option>\n",
-            "#LT" => "&lt;", "#GT" => "&gt;", "#NUM" => "&num;"
+        @tags = (
+            "#BR", "<br/>\n",
+            "#BD", "<b>", "#EBD", "</b>\n",
+            "#I", "<i>", "#EI", "</i>\n",
+            "#P", "<p>", "#EP", "</p>\n",
+            "#Q", "<blockquote>", "#EQ", "</blockquote>\n",
+            "#C", "<code>", "#EC", "</code>\n",
+            "#H1", "<h1>", "#EH1", "</h1>\n",
+            "#H2", "<h2>", "#EH2", "</h2>\n",
+            "#H3", "<h3>", "#EH3", "</h3>\n",
+            "#H4", "<h4>", "#EH4", "</h4>\n",
+            "#H5", "<h5>", "#EH5", "</h5>\n",
+            "#H6", "<h6>", "#EH6", "</h6>\n",
+            "#STRONG", "<strong>", "#ESTRONG", "</strong>\n",
+            "#EM", "<em>", "#EEM", "</em>\n",
+            "#DV", "<div>", "#EDV", "</div>\n",
+            "#SPN", "<span>", "#ESPN", "</span>\n",
+            "#UL", "<ul>", "#EUL", "</ul>\n",
+            "#OL", "<ol>", "#EOL", "</ol>\n",
+            "#LI", "<li>", "#ELI", "</li>\n",
+            "#U", "<u>", "#EU", "</u>\n",
+            "#TBL", "<table>", "#ETBL", "</table>\n",
+            "#TR", "<tr>", "#ETR", "</tr>\n",
+            "#TD", "<td>", "#ETD", "</td>\n",
+            "#TH", "<th>", "#ETH", "</th>\n",
+            "#ART", "<article>", "#EART", "</article>\n",
+            "#SEC", "<section>", "#ESEC", "</section>\n",
+            "#ASIDE", "<aside>", "#EASIDE", "</aside>\n",
+            "#NAV", "<nav>", "#ENAV", "</nav>\n",
+            "#BTN", "<button>", "#EBTN", "</button>\n",
+            "#SEL", "<select>", "#ESEL", "</select>\n",
+            "#OPT", "<option>", "#EOPT", "</option>\n",
+            "#LT", "&lt;", "#GT", "&gt;", "#NUM", "&num;"
         );
     }
-    while (my ($key, $value) = each %qstags) {
-        s/(?<!\S)\Q$key\E\b/$value/g;
+    for (my $i = 0; $i < $#tags; $i += 2) {
+        my $tag = $tags[$i];
+        my $html = $tags[$i + 1];
+        s/\Q$tag\E/$html/g;
     }
     ' <<< "$content"
 }
