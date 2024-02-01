@@ -797,69 +797,57 @@ function _cleanup() {
 }
 
 function _html() {
-
     local content="${1}"
     local debug=false
 
     if ${debug}; then _msg debug "_html: Converting QStags in content"; fi
 
-    # Convert QStags to HTML using Perl, excluding specific patterns
-    local html_content=$(echo "$content" | perl -0777 -pe '
-        s/(?<!\S)#BR\b/<br\/>\n/gi;
-        s/(?<!\S)#B\b/<b>/gi;
-        s/(?<!\S)#EB\b/<\/b>\n/gi;
-        s/(?<!\S)#I\b/<i>/gi;
-        s/(?<!\S)#EI\b/<\/i>/gi;
-        s/(?<!\S)#P\b/<p>/gi;
-        s/(?<!\S)#EP\b/<\/p>\n/gi;
-        s/(?<!\S)#H([1-6])\b/<h\1>/gi;
-        s/(?<!\S)#EH([1-6])\b/<\/h\1>\n/gi;
-        s/(?<!\S)#STRONG\b/<strong>/gi;
-        s/(?<!\S)#ESTRONG\b/<\/strong>/gi;
-        s/(?<!\S)#EM\b/<em>/gi;
-        s/(?<!\S)#EEM\b/<\/em>/gi;
-        s/(?<!\S)#DV\b/<div>/gi;
-        s/(?<!\S)#EDV\b/<\/div>\n/gi;
-        s/(?<!\S)#SPN\b/<span>/gi;
-        s/(?<!\S)#ESPN\b/<\/span>\n/gi;
-        s/(?<!\S)#UL\b/<ul>/gi;
-        s/(?<!\S)#EUL\b/<\/ul>\n/gi;
-        s/(?<!\S)#OL\b/<ol>/gi;
-        s/(?<!\S)#EOL\b/<\/ol>\n/gi;
-        s/(?<!\S)#LI\b/<li>/gi;
-        s/(?<!\S)#ELI\b/<\/li>\n/gi;
-        s/(?<!\S)#U\b/<u>/gi;
-        s/(?<!\S)#EU\b/<\/u>/gi;
-        s/(?<!\S)#TBL\b/<table>/gi;
-        s/(?<!\S)#ETBL\b/<\/table>\n/gi;
-        s/(?<!\S)#TR\b/<tr>/gi;
-        s/(?<!\S)#ETR\b/<\/tr>\n/gi;
-        s/(?<!\S)#TD\b/<td>/gi;
-        s/(?<!\S)#ETD\b/<\/td>\n/gi;
-        s/(?<!\S)#TH\b/<th>/gi;
-        s/(?<!\S)#ETH\b/<\/th>\n/gi;
-        s/(?<!\S)#ART\b/<article>/gi;
-        s/(?<!\S)#EART\b/<\/article>\n/gi;
-        s/(?<!\S)#SEC\b/<section>/gi;
-        s/(?<!\S)#ESEC\b/<\/section>\n/gi;
-        s/(?<!\S)#ASIDE\b/<aside>/gi;
-        s/(?<!\S)#EASIDE\b/<\/aside>\n/gi;
-        s/(?<!\S)#NAV\b/<nav>/gi;
-        s/(?<!\S)#ENAV\b/<\/nav>\n/gi;
-        s/(?<!\S)#BTN\b/<button>/gi;
-        s/(?<!\S)#EBTN\b/<\/button>\n/gi;
-        s/(?<!\S)#SEL\b/<select>/gi;
-        s/(?<!\S)#ESEL\b/<\/select>\n/gi;
-        s/(?<!\S)#OPT\b/<option>/gi;
-        s/(?<!\S)#EOPT\b/<\/option>\n/gi;
-        s/(?<!\S)#LT\b/&lt;/gi;
-        s/(?<!\S)#GT\b/&gt;/gi;
-        s/(?<!\S)#NUM\b/&num;/gi;
-    ')
+    # Convert QStags to HTML using Perl, strictly matching the QStags list
+    local html_content=$(echo "${content}" | perl -pe '
+        BEGIN {
+            # Define a hash of QStags to their HTML equivalents
+            %qstags = (
+                "#BR" => "<br/>\\n",
+                "#BD" => "<b>", "#EBD" => "</b>\\n",
+                "#I" => "<i>", "#EI" => "</i>\\n",
+                "#P" => "<p>", "#EP" => "</p>\\n",
+                "#H1" => "<h1>", "#EH1" => "</h1>\\n",
+                "#H2" => "<h2>", "#EH2" => "</h2>\\n",
+                "#H3" => "<h3>", "#EH3" => "</h3>\\n",
+                "#H4" => "<h4>", "#EH4" => "</h4>\\n",
+                "#H5" => "<h5>", "#EH5" => "</h5>\\n",
+                "#H6" => "<h6>", "#EH6" => "</h6>\\n",
+                "#STRONG" => "<strong>", "#ESTRONG" => "</strong>\\n",
+                "#EM" => "<em>", "#EEM" => "</em>\\n",
+                "#DV" => "<div>", "#EDV" => "</div>\\n",
+                "#SPN" => "<span>", "#ESPN" => "</span>\\n",
+                "#UL" => "<ul>", "#EUL" => "</ul>\\n",
+                "#OL" => "<ol>", "#EOL" => "</ol>\\n",
+                "#LI" => "<li>", "#ELI" => "</li>\\n",
+                "#U" => "<u>", "#EU" => "</u>\\n",
+                "#TBL" => "<table>", "#ETBL" => "</table>\\n",
+                "#TR" => "<tr>", "#ETR" => "</tr>\\n",
+                "#TD" => "<td>", "#ETD" => "</td>\\n",
+                "#TH" => "<th>", "#ETH" => "</th>\\n",
+                "#ART" => "<article>", "#EART" => "</article>\\n",
+                "#SEC" => "<section>", "#ESEC" => "</section>\\n",
+                "#ASIDE" => "<aside>", "#EASIDE" => "</aside>\\n",
+                "#NAV" => "<nav>", "#ENAV" => "</nav>\\n",
+                "#BTN" => "<button>", "#EBTN" => "</button>\\n",
+                "#SEL" => "<select>", "#ESEL" => "</select>\\n",
+                "#OPT" => "<option>", "#EOPT" => "</option>\\n",
+                "#LT" => "&lt;", "#GT" => "&gt;", "#NUM" => "&num;"
+            );
+        }
+        while (my ($key, $value) = each %qstags) {
+            $key = quotemeta($key); # Escape special characters in QStags
+            s/(?<!\S)$key\b/$value/gi;
+        }
+    ');
 
     echo "${html_content}"
-
 }
+
 
 # Time to test the first function
 #_msg std "Running function blogs"
