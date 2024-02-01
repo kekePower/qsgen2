@@ -186,7 +186,7 @@ function _list_pages() {
         return
     fi
 
-    for file in $( ls *.${file_ext} ); do
+    for file in $( echo ${pages_files} ); do
         pages_file_array+=("$file")
     done
 }
