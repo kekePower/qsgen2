@@ -878,7 +878,7 @@ def replace_qstags(match):
     return qstag_dict.get(qstag, qstag)  # Replace or return unchanged
 
 # Define the regular expression pattern for QStags
-pattern = r'#\w+'
+pattern = r'#(?!link|image|ytvideo|updated|version)\w+'
 
 # Replace QStags using the defined function
 result = re.sub(pattern, replace_qstags, '''$content''', flags=re.MULTILINE)
