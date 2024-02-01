@@ -803,7 +803,7 @@ function _html() {
     if ${debug}; then _msg debug "_html: Converting QStags in content"; fi
 
     # Convert QStags to HTML using Perl, strictly matching the QStags list
-    local html_content=$(echo "${content}" | perl  -0777 -pe '
+    local html_content=$(echo "${content}" | perl -pe '
         BEGIN {
             # Define a hash of QStags to their HTML equivalents
             %qstags = (
