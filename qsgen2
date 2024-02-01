@@ -877,11 +877,13 @@ def replace_qstags(match):
     }
     return qstag_dict.get(qstag, qstag)  # Replace or return unchanged
 
-# Define the regular expression pattern for QStags
-pattern = r'(?<=^|\s)(#(?!link|image|ytvideo|updated|version)\w+)'
-
+# Define the regular expression pattern for QStags, excluding specific ones
+pattern = r'(?<=\s)(#(?!link|image|ytvideo|updated|version)\w+)'
 # Replace QStags using the defined function
 result = re.sub(pattern, replace_qstags, '''$content''', flags=re.MULTILINE)
+
+# Handle QStags at the beginning of lines separately
+result = re.sub(r'^(#(?!link|image|ytvideo|updated|version)\w+)', replace_qstags, result, flags=re.MULTILINE)
 
 print(result)
 EOF
