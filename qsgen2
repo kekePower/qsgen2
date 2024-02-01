@@ -869,7 +869,7 @@ def replace_qstags(match):
 pattern = r'#\w+'
 
 # Replace QStags using the defined function
-result = re.sub(pattern, replace_qstags, '$content')
+result = re.sub(pattern, replace_qstags, '''$content''')
 
 print(result)
 EOF
@@ -880,6 +880,7 @@ EOF
 
     echo "${html_content}"
 }
+
 
 
 
