@@ -147,12 +147,12 @@ if [[ ${generator} == "native" ]]; then
         engine=_html
         export file_ext=tpl
 elif [[ ${generator} == "markdown" ]]; then
-    if [[ ! -f /usr/bin/markdown ]]; then
+    if [[ ! -f /usr/bin/markdown-it ]]; then
         _msg other "Please install the 'discount' package to use Markdown."
         exit
     else
         # Usage: ${engine} ${1} - Where 1 is the file you want parsed
-        engine=/usr/bin/markdown -d -n -s
+        engine="/usr/bin/markdown-it"
         export file_ext=md
     fi
 fi
