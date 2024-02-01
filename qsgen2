@@ -156,7 +156,8 @@ elif [[ ${generator} == "markdown" ]]; then
         export file_ext=md
     fi
 fi
-if (${debug}) _msg debug "Using the ${generator} engine"
+debug=true
+if (${debug}) _msg debug "Using the ${generator} engine for files: ${file_ext}"
 
 # Define cache files for blogs and pages
 blog_cache_file="${project_dir}/.blog_cache"
