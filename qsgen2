@@ -171,7 +171,7 @@ export blogdate=$( date +%a-%Y-%b-%d )
 # Let's create arrays of all the files we'll be working on
 
 function _list_pages() {
-    local debug=false
+    local debug=true
     
     export no_pages_found=false
 
