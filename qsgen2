@@ -184,7 +184,7 @@ function _list_blogs() {
         return
     fi
 
-    for file in blog/*.blog; do
+    for file in $( ls -har blog/*.blog ); do
         blogs_file_array+=("$file")
     done
 }
