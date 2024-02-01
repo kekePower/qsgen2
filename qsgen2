@@ -810,56 +810,55 @@ function _html() {
     local html_content=$( echo "${content}" | sed \
         -e "s|#[bB][rR]|<br/>|g" \
         -e "s|#[bB]|<b>|g" \
-        -e "s|#[eE][bB]|</b>|g" \
+        -e "s|#[eE][bB]|</b>\n|g" \
         -e "s|#[iI]|<i>|g" \
         -e "s|#[eE][iI]|</i>|g" \
         -e "s|#[pP]|<p>|g" \
-        -e "s|#[eE][pP]|</p>|g" \
+        -e "s|#[eE][pP]|</p>\n|g" \
         -e "s|#[hH]1|<h1>|g" \
         -e "s|#[hH]2|<h2>|g" \
         -e "s|#[hH]3|<h3>|g" \
         -e "s|#[hH]4|<h4>|g" \
         -e "s|#[hH]5|<h5>|g" \
         -e "s|#[hH]6|<h6>|g" \
-        -e "s|#[eE][hH]1|</h1>|g" \
-        -e "s|#[eE][hH]2|</h2>|g" \
-        -e "s|#[eE][hH]3|</h3>|g" \
-        -e "s|#[eE][hH]4|</h4>|g" \
-        -e "s|#[eE][hH]5|</h5>|g" \
-        -e "s|#[eE][hH]6|</h6>|g" \
+        -e "s|#[eE][hH]1|</h1>\n|g" \
+        -e "s|#[eE][hH]2|</h2>\n|g" \
+        -e "s|#[eE][hH]3|</h3>\n|g" \
+        -e "s|#[eE][hH]4|</h4>\n|g" \
+        -e "s|#[eE][hH]5|</h5>\n|g" \
+        -e "s|#[eE][hH]6|</h6>\n|g" \
         -e "s|#[sS][tT][rR][oO][nN][gG]|<strong>|g" \
         -e "s|#[eE][sS][tT][rR][oO][nN][gG]|</strong>|g" \
         -e "s|#[eE][mM]|<em>|g" \
         -e "s|#[eE][eE][mM]|</em>|g" \
         -e "s|#[dD][iI][vV]|<div>|g" \
-        -e "s|#[eE][dD][iI][vV]|</div>|g" \
+        -e "s|#[eE][dD][iI][vV]|</div>\n|g" \
         -e "s|#[sS][pP][aA][nN]|<span>|g" \
-        -e "s|#[eE][sS][pP][aA][nN]|</span>|g" \
+        -e "s|#[eE][sS][pP][aA][nN]|</span>\n|g" \
         -e "s|#[uU][lL]|<ul>|g" \
         -e "s|#[oO][lL]|<ol>|g" \
         -e "s|#[lL][iI]|<li>|g" \
-        -e "s|#[eE][uU][lL]|</ul>|g" \
-        -e "s|#[eE][oO][lL]|</ol>|g" \
-        -e "s|#[eE][lL][iI]|</li>|g" \
+        -e "s|#[eE][uU][lL]|</ul>\n|g" \
+        -e "s|#[eE][oO][lL]|</ol>\n|g" \
+        -e "s|#[eE][lL][iI]|</li>\n|g" \
         -e "s|#[uU]|<u>|g" \
         -e "s|#[eE][uU]|</u>|g" \
-        -e "s|#[eE][lL][iI]|</li>|g" \
         -e "s|#[tT][aA][bB][lL][eE]|<table>|g" \
-        -e "s|#[eE][tT][aA][bB][lL][eE]|</table>|g" \
+        -e "s|#[eE][tT][aA][bB][lL][eE]|</table>\n|g" \
         -e "s|#[tT][rR]|<tr>|g" \
-        -e "s|#[eE][tT][rR]|</tr>|g" \
+        -e "s|#[eE][tT][rR]|</tr>\n|g" \
         -e "s|#[tT][dD]|<td>|g" \
-        -e "s|#[eE][tT][dD]|</td>|g" \
+        -e "s|#[eE][tT][dD]|</td>\n|g" \
         -e "s|#[tT][hH]|<th>|g" \
-        -e "s|#[eE][tT][hH]|</th>|g" \
+        -e "s|#[eE][tT][hH]|</th>\n|g" \
         -e "s|#[aA][rR][tT]|<article>|g" \
         -e "s|#[eE][aA][rR][tT]|</article>|g" \
         -e "s|#[sS][eE][cC][tT]|<section>|g" \
-        -e "s|#[eE][sS][eE][cC][tT]|</section>|g" \
+        -e "s|#[eE][sS][eE][cC][tT]|</section>\n|g" \
         -e "s|#[aA][sS][iI][dD][eE]|<aside>|g" \
         -e "s|#[eE][aA][sS][iI][dD][eE]|</aside>|g" \
         -e "s|#[nN][aA][vV]|<nav>|g" \
-        -e "s|#[eE][nN][aA][vV]|</nav>|g" \
+        -e "s|#[eE][nN][aA][vV]|</nav>\n|g" \
         -e "s|#[bB][tT][nN]|<button>|g" \
         -e "s|#[eE][bB][tT][nN]|</button>|g" \
         -e "s|#[sS][lL][cC][tT]|<select>|g" \
