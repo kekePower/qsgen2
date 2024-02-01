@@ -808,7 +808,7 @@ function _html() {
 
     # Perform HTML tag substitutions handling both lowercase and uppercase QStags
     local html_content=$( echo "${content}" | sed \
-        -e "s|#[bB][rR]|<br/>|g" \
+        -e "s|#[bB][rR]|<br/>\n|g" \
         -e "s|#[bB]|<b>|g" \
         -e "s|#[eE][bB]|</b>\n|g" \
         -e "s|#[iI]|<i>|g" \
@@ -835,11 +835,11 @@ function _html() {
         -e "s|#[eE][dD][iI][vV]|</div>\n|g" \
         -e "s|#[sS][pP][aA][nN]|<span>|g" \
         -e "s|#[eE][sS][pP][aA][nN]|</span>\n|g" \
-        -e "s|#[uU][lL]|<ul>|g" \
-        -e "s|#[oO][lL]|<ol>|g" \
-        -e "s|#[lL][iI]|<li>|g" \
-        -e "s|#[eE][uU][lL]|</ul>\n|g" \
-        -e "s|#[eE][oO][lL]|</ol>\n|g" \
+        -e "s|#[uU][lL]|\n<ul>|g" \
+        -e "s|#[oO][lL]|\n<ol>|g" \
+        -e "s|#[lL][iI]|\n<li>|g" \
+        -e "s|#[eE][uU][lL]|\n</ul>\n|g" \
+        -e "s|#[eE][oO][lL]|\n</ol>\n|g" \
         -e "s|#[eE][lL][iI]|</li>\n|g" \
         -e "s|#[uU]|<u>|g" \
         -e "s|#[eE][uU]|</u>|g" \
