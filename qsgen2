@@ -797,78 +797,71 @@ function _cleanup() {
 }
 
 function _html() {
-    
-    # This function converts formatting tags into their HTML equivalents in a provided string
-    # using QStags (QS-tags)
-    
+
     local content="${1}"
     local debug=false
 
-    if (${debug}); then _msg debug "_html: Converting QStags in content"; fi
+    if ${debug}; then _msg debug "_html: Converting QStags in content"; fi
 
-    # Perform HTML tag substitutions handling both lowercase and uppercase QStags
-    local html_content=$( echo "${content}" | sed \
-        -e "s|#[bB][rR]|<br/>\n|g" \
-        -e "s|#[bB]|<b>|g" \
-        -e "s|#[eE][bB]|</b>\n|g" \
-        -e "s|#[iI]|<i>|g" \
-        -e "s|#[eE][iI]|</i>|g" \
-        -e "s|#[pP]|<p>|g" \
-        -e "s|#[eE][pP]|</p>\n|g" \
-        -e "s|#[hH]1|<h1>|g" \
-        -e "s|#[hH]2|<h2>|g" \
-        -e "s|#[hH]3|<h3>|g" \
-        -e "s|#[hH]4|<h4>|g" \
-        -e "s|#[hH]5|<h5>|g" \
-        -e "s|#[hH]6|<h6>|g" \
-        -e "s|#[eE][hH]1|</h1>\n|g" \
-        -e "s|#[eE][hH]2|</h2>\n|g" \
-        -e "s|#[eE][hH]3|</h3>\n|g" \
-        -e "s|#[eE][hH]4|</h4>\n|g" \
-        -e "s|#[eE][hH]5|</h5>\n|g" \
-        -e "s|#[eE][hH]6|</h6>\n|g" \
-        -e "s|#[sS][tT][rR][oO][nN][gG]|<strong>|g" \
-        -e "s|#[eE][sS][tT][rR][oO][nN][gG]|</strong>|g" \
-        -e "s|#[eE][mM]|<em>|g" \
-        -e "s|#[eE][eE][mM]|</em>|g" \
-        -e "s|#[dD][iI][vV]|<div>|g" \
-        -e "s|#[eE][dD][iI][vV]|</div>\n|g" \
-        -e "s|#[sS][pP][aA][nN]|<span>|g" \
-        -e "s|#[eE][sS][pP][aA][nN]|</span>\n|g" \
-        -e "s|#[uU][lL]|\n<ul>|g" \
-        -e "s|#[oO][lL]|\n<ol>|g" \
-        -e "s|#[lL][iI]|\n<li>|g" \
-        -e "s|#[eE][uU][lL]|\n</ul>\n|g" \
-        -e "s|#[eE][oO][lL]|\n</ol>\n|g" \
-        -e "s|#[eE][lL][iI]|</li>\n|g" \
-        -e "s|#[uU]|<u>|g" \
-        -e "s|#[eE][uU]|</u>|g" \
-        -e "s|#[tT][aA][bB][lL][eE]|<table>|g" \
-        -e "s|#[eE][tT][aA][bB][lL][eE]|</table>\n|g" \
-        -e "s|#[tT][rR]|<tr>|g" \
-        -e "s|#[eE][tT][rR]|</tr>\n|g" \
-        -e "s|#[tT][dD]|<td>|g" \
-        -e "s|#[eE][tT][dD]|</td>\n|g" \
-        -e "s|#[tT][hH]|<th>|g" \
-        -e "s|#[eE][tT][hH]|</th>\n|g" \
-        -e "s|#[aA][rR][tT]|<article>|g" \
-        -e "s|#[eE][aA][rR][tT]|</article>|g" \
-        -e "s|#[sS][eE][cC][tT]|<section>|g" \
-        -e "s|#[eE][sS][eE][cC][tT]|</section>\n|g" \
-        -e "s|#[aA][sS][iI][dD][eE]|<aside>|g" \
-        -e "s|#[eE][aA][sS][iI][dD][eE]|</aside>|g" \
-        -e "s|#[nN][aA][vV]|<nav>|g" \
-        -e "s|#[eE][nN][aA][vV]|</nav>\n|g" \
-        -e "s|#[bB][tT][nN]|<button>|g" \
-        -e "s|#[eE][bB][tT][nN]|</button>|g" \
-        -e "s|#[sS][lL][cC][tT]|<select>|g" \
-        -e "s|#[eE][sS][lL][cC][tT]|</select>|g" \
-        -e "s|#[oO][pP][tT]|<option>|g" \
-        -e "s|#[eE][oO][pP][tT]|</option>|g" )
+    # Convert QStags to HTML using Perl
+    local html_content=$(perl -pe '
+        next if /#link|#image|#ytvideo/;
+        s/(?<!\S)#BR\b/<br\/>\n/gi;
+        s/(?<!\S)#B\b/<b>/gi;
+        s/(?<!\S)#EB\b/<\/b>\n/gi;
+        s/(?<!\S)#I\b/<i>/gi;
+        s/(?<!\S)#EI\b/<\/i>/gi;
+        s/(?<!\S)#P\b/<p>/gi;
+        s/(?<!\S)#EP\b/<\/p>\n/gi;
+        s/(?<!\S)#H([1-6])\b/<h\1>/gi;
+        s/(?<!\S)#EH([1-6])\b/<\/h\1>\n/gi;
+        s/(?<!\S)#STRONG\b/<strong>/gi;
+        s/(?<!\S)#ESTRONG\b/<\/strong>/gi;
+        s/(?<!\S)#EM\b/<em>/gi;
+        s/(?<!\S)#MEM\b/<\/em>/gi;
+        s/(?<!\S)#DV\b/<div>/gi;
+        s/(?<!\S)#EDV\b/<\/div>\n/gi;
+        s/(?<!\S)#SPN\b/<span>/gi;
+        s/(?<!\S)#ESPN\b/<\/span>\n/gi;
+        s/(?<!\S)#UL\b/\n<ul>/gi;
+        s/(?<!\S)#EUL\b/\n<\/ul>\n/gi;
+        s(?<!\S)#OL\b/\n<ol>/gi;
+        s/(?<!\S)#EOL\b/\n<\/ol>\n/gi;
+        s(?<!\S)#LI\b/<li>/gi;
+        s(?<!\S)#ELI\b/<\/li>\n/gi;
+        s(?<!\S)#U\b/<u>/gi;
+        s(?<!\S)#EU\b/<\/u>/gi;
+        s(?<!\S)#TBL\b/<table>/gi;
+        s(?<!\S)#ETBL\b/<\/table>\n/gi;
+        s(?<!\S)#TR\b/<tr>/gi;
+        s(?<!\S)#ETR\b/<\/tr>\n/gi;
+        s(?<!\S)#TD\b/<td>/gi;
+        s(?<!\S)#ETD\b/<\/td>\n/gi;
+        s(?<!\S)#TH\b/<th>/gi;
+        s(?<!\S)#ETH\b/<\/th>\n/gi;
+        s(?<!\S)#ART\b/<article>/gi;
+        s(?<!\S)#EART\b/<\/article>\n/gi;
+        s(?<!\S)#SEC\b/<section>/gi;
+        s(?<!\S)#ESEC\b/<\/section>\n/gi;
+        s(?<!\S)#ASIDE\b/<aside>/gi;
+        s(?<!\S)#EASIDE\b/<\/aside>\n/gi;
+        s(?<!\S)#NAV\b/<nav>/gi;
+        s(?<!\S)#ENAV\b/<\/nav>\n/gi;
+        s(?<!\S)#BTN\b/<button>/gi;
+        s(?<!\S)#EBTN\b/<\/button>\n/gi;
+        s(?<!\S)#SEL\b/<select>/gi;
+        s(?<!\S)#ESEL\b/<\/select>\n/gi;
+        s(?<!\S)#OPT\b/<option>/gi;
+        s(?<!\S)#EOPT\b/<\/option>\n/gi;
+        s/(?<!\S)\#LT\b/\&lt;/gi;
+        s/(?<!\S)\#GT\b/\&gt;/gi;
+        s/(?<!\S)\#NUM\b/\&num;/gi;
+    ' <<< "$content")
 
-    # Return the HTML content
     echo "${html_content}"
+
 }
+
 
 # Time to test the first function
 #_msg std "Running function blogs"
