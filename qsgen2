@@ -797,106 +797,53 @@ function _cleanup() {
 }
 
 _html() {
-    local content="${1}"
+    local content="$1"
     local debug=false
 
-    if ${debug}; then _msg debug "_html: Converting QStags in content"; fi
+    if (${debug}) _msg debug "_html: Converting QStags in content"
 
-    # Define the Python code for parsing and replacing specific QStags
-    local python_code=$(cat <<EOF
-import re
-# Define a function to replace QStags
-def replace_qstags(match):
-    qstag = match.group(0)
-    return qstag_dict.get(qstag, qstag)  # Replace using the table or return unchanged
-    qstag_dict = {
-        "#H1": "<h1>",
-        "#EH1": "</h1>",
-        "#H2": "<h2>",
-        "#EH2": "</h2>",
-        "#P": "<p>",
-        "#EP": "</p>",
-        "#BR": "<br/>",
-        "#BD": "<b>",
-        "#EBD": "</b>",
-        "#I": "<i>",
-        "#EI": "</i>",
-        "#STRONG": "<strong>",
-        "#ESTRONG": "</strong>",
-        "#EM": "<em>",
-        "#EM": "</em>",
-        "#DIV": "<div>",
-        "#EDIV": "</div>",
-        "#SPAN": "<span>",
-        "#ESPAN": "</span>",
-        "#UL": "<ul>",
-        "#EUL": "</ul>",
-        "#OL": "<ol>",
-        "#EOL": "</ol>",
-        "#LI": "<li>",
-        "#ELI": "</li>",
-        "#U": "<u>",
-        "#EU": "</u>",
-        "#TABLE": "<table>",
-        "#ETABLE": "</table>",
-        "#TR": "<tr>",
-        "#ETR": "</tr>",
-        "#TD": "<td>",
-        "#ETD": "</td>",
-        "#TH": "<th>",
-        "#ETH": "</th>",
-        "#ART": "<article>",
-        "#EART": "</article>",
-        "#SEC": "<section>",
-        "#ESEC": "</section>",
-        "#ASIDE": "<aside>",
-        "#EASIDE": "</aside>",
-        "#NAV": "<nav>",
-        "#ENAV": "</nav>",
-        "#BTN": "<button>",
-        "#EBTN": "</button>",
-        "#SEL": "<select>",
-        "#ESEL": "</select>",
-        "#OPT": "<option>",
-        "#EOPT": "</option>",
-        "#LT": "&lt;",
-        "#GT": "&gt;",
-        "#NUM": "&num;",
-        "#H1": "<h1>",
-        "#H2": "<h2>",
-        "#H3": "<h3>",
-        "#H4": "<h4>",
-        "#H5": "<h5>",
-        "#H6": "<h6>",
-        "#EH1": "</h1>",
-        "#EH2": "</h2>",
-        "#EH3": "</h3>",
-        "#EH4": "</h4>",
-        "#EH5": "</h5>",
-        "#EH6": "</h6>",
+    perl -pe '
+    BEGIN {
+        %qstags = (
+            "#BR" => "<br/>\n",
+            "#BD" => "<b>", "#EBD" => "</b>\n",
+            "#I" => "<i>", "#EI" => "</i>\n",
+            "#P" => "<p>", "#EP" => "</p>\n",
+            "#Q" => "<blockquote>", "#EQ" => "</blockquote>\n",
+            "#C" => "<code>", "#EC" => "</code>\n",
+            "#H1" => "<h1>", "#EH1" => "</h1>\n",
+            "#H2" => "<h2>", "#EH2" => "</h2>\n",
+            "#H3" => "<h3>", "#EH3" => "</h3>\n",
+            "#H4" => "<h4>", "#EH4" => "</h4>\n",
+            "#H5" => "<h5>", "#EH5" => "</h5>\n",
+            "#H6" => "<h6>", "#EH6" => "</h6>\n",
+            "#STRONG" => "<strong>", "#ESTRONG" => "</strong>\n",
+            "#EM" => "<em>", "#EEM" => "</em>\n",
+            "#DV" => "<div>", "#EDV" => "</div>\n",
+            "#SPN" => "<span>", "#ESPN" => "</span>\n",
+            "#UL" => "<ul>", "#EUL" => "</ul>\n",
+            "#OL" => "<ol>", "#EOL" => "</ol>\n",
+            "#LI" => "<li>", "#ELI" => "</li>\n",
+            "#U" => "<u>", "#EU" => "</u>\n",
+            "#TBL" => "<table>", "#ETBL" => "</table>\n",
+            "#TR" => "<tr>", "#ETR" => "</tr>\n",
+            "#TD" => "<td>", "#ETD" => "</td>\n",
+            "#TH" => "<th>", "#ETH" => "</th>\n",
+            "#ART" => "<article>", "#EART" => "</article>\n",
+            "#SEC" => "<section>", "#ESEC" => "</section>\n",
+            "#ASIDE" => "<aside>", "#EASIDE" => "</aside>\n",
+            "#NAV" => "<nav>", "#ENAV" => "</nav>\n",
+            "#BTN" => "<button>", "#EBTN" => "</button>\n",
+            "#SEL" => "<select>", "#ESEL" => "</select>\n",
+            "#OPT" => "<option>", "#EOPT" => "</option>\n",
+            "#LT" => "&lt;", "#GT" => "&gt;", "#NUM" => "&num;"
+        );
     }
-
-# Define the regular expression pattern for QStags, excluding specific ones
-pattern = r'(?<=\s)(#(?!link|image|ytvideo|updated|version)\w+)'
-
-# Replace QStags using the defined function
-result = re.sub(pattern, replace_qstags, '''$content''', flags=re.MULTILINE)
-
-# Handle QStags at the beginning of lines separately
-result = re.sub(r'^(#(?!link|image|ytvideo|updated|version)\w+)', replace_qstags, result, flags=re.MULTILINE)
-
-print(result)
-EOF
-)
-
-    # Execute the Python code and capture the output
-    local html_content=$(python -c "${python_code}")
-
-    echo "${html_content}"
+    while (my ($key, $value) = each %qstags) {
+        s/(?<!\S)\Q$key\E\b/$value/g;
+    }
+    ' <<< "$content"
 }
-
-
-
 
 # Time to test the first function
 #_msg std "Running function blogs"
