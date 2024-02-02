@@ -443,7 +443,7 @@ function _pages() {
             # Use Perl for multi-line and special character handling
             local pages_tpl=$( awk -v new_body="$page_content" '{sub(/BODY/, new_body)} 1' <(echo "${pages_tpl}") )
           fi
-        elif [[ ${new_updated_blogs} == "falseq" ]] && [[ ${blog_in_index} == "false" ]]; then
+        elif [[ ${new_updated_blogs} == "false" ]] && [[ ${blog_in_index} == "false" ]]; then
           if (${debug}) _msg debug "_pages: 2. Replacing BODY with page_content in pages_tpl using Perl"
           # Use Perl for multi-line and special character handling
           local pages_tpl=$( awk -v new_body="$page_content" '{sub(/BODY/, new_body)} 1' <(echo "${pages_tpl}") )
