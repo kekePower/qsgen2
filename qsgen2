@@ -418,38 +418,24 @@ function _pages() {
         if (${debug}) _msg debug "_pages: Running engine on ${pages_in_array}"
           if [[ ${file_ext} == "tpl" ]]; then
             local page_content=$( ${engine} "$page_content" )
-        
+            
         # Look for links, images and videos and convert them if present.
         if (${debug}) _msg debug "_pages: Checking for #link, #showimg and #ytvideo in page_content"
-        if [[ $( echo ${page_content} | grep \#link ) ]]; then
+          if [[ $( echo ${page_content} | grep \#link ) ]]; then
             if (${debug}) _msg debug "_pages: #link is present, run _link: page_content"
             local page_content=$( _link "${page_content}" )
-        fi
-        if [[ $( echo ${page_content} | grep \#showimg ) ]]; then
+            fi
+          if [[ $( echo ${page_content} | grep \#showimg ) ]]; then
             if (${debug}) _msg debug "_pages: #showimg is present, run _image: page_content"
             local page_content=$( _image "${page_content}" )
-        fi
-        if [[ $( echo ${page_content} | grep \#ytvideo ) ]]; then
+          fi
+          if [[ $( echo ${page_content} | grep \#ytvideo ) ]]; then
             if (${debug}) _msg debug "_pages: #ytvideo is present, run _youtube: page_content"
             local page_content=$( _youtube "${page_content}" )
-        fi
+          fi
         elif [[ ${file_ext} == "md" ]]; then
             local page_content=$(echo "$page_content" | ${engine})
-            #echo "$page_content"
-            #exit
-          fi
-        #new_updated_blogs=true
-        # Let's find the file 'index.tpl' and add the blog if blog_in_index is true
-        if [[ ${pages_in_array} == "index.${file_ext}" ]] && [[ ${blog_in_index} == "true" ]]; then
-            if (${debug}) _msg debug "_pages: Inserting blog list to index.html"
-            local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
-            page_content=$( echo ${blog_index_list} >> ${page_content} )
         fi
-        
-        # Insert page_content into pages_tpl by replacing the BODY tag present there
-        if (${debug}) _msg debug "_pages: Replacing BODY with page_content in pages_tpl using Perl"
-        # Use Perl for multi-line and special character handling
-        local pages_tpl=$( awk -v new_body="$page_content" '{sub(/BODY/, new_body)} 1' <(echo "${pages_tpl}") )
         
         # Replace every #pagetitle in pages_tpl
         if (${debug}) _msg debug "_pages: Replacing #pagetitle in pages_tpl"
@@ -480,10 +466,10 @@ function _pages() {
       export new_updated_pages=true
       
     else
-
+        
         _msg info "No new or updated Pages"
         export new_updated_pages=false
-
+      
     fi
     
 }
@@ -676,6 +662,20 @@ function _blog_index() {
         echo "${blog_index_content}" > ${www_root}/blog/index.html
         _f_last_updated ${www_root}/blog/index.html
     fi
+
+}
+
+function _add_blog_list_to_index() {
+  
+  local debug=true
+  
+  # Let's find the file 'index.tpl' and add the blog if blog_in_index is true
+  if [[ ${new_updated_blogs} == "true" ]] && [[ ${blog_in_index} == "true" ]]; then
+    if (${debug}) _msg debug "_pages: Inserting blog list to index.html"
+    local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
+    local site_index_file=$(<${www_root}/index.tmp.html)
+    awk -v new_body="$site_index_file" '{sub(/BLOGINDEX/, new_body)} 1' <(echo "${blog_index_list}")
+  fi
 
 }
 
@@ -900,4 +900,5 @@ _html() {
 # Time to test the first function
 _blogs
 _pages
+_add_blog_list_to_index
 _sitemap
