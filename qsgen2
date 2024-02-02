@@ -614,10 +614,7 @@ function _blog_idx_for_index() {
         local -a meta_array=("${(@s/||/)meta_str}")
 
         # Initialize variables to store each component
-        local sdate=""
-        local btitle=""
-        local ingress=""
-        local url=""
+        local sdate btitle ingress url
 
         # Iterate over each component and extract information
         if (${debug}) _msg debug "_blog_idx_for_index: Iterate over each component and extract information"
@@ -631,11 +628,20 @@ function _blog_idx_for_index() {
             esac
 
             local adate=( $( echo ${sdate} ) )
+            local caladay="${adate[1]}"
+            local calnday="${adate[2]}"
+            local calmonth="${adate[3]}"
+            local calyear="${adate[4]}"
+            
             local bdate="${adate[1]} - ${adate[4]}/${adate[3]}/${adate[2]}"
             blog_list_content=$(echo "${blog_list_tpl}" | perl -pe "s|BLOGURL|${url}|g")
             blog_list_content=$(echo "${blog_list_content}" | perl -pe "s|BLOGTITLE|${btitle}|g")
             blog_list_content=$(echo "${blog_list_content}" | perl -pe "s|INGRESS|${ingress}|g")
-            blog_list_content=$(echo "${blog_list_content}" | perl -pe "s|BLOGDATE|${bdate}|g")    
+            blog_list_content=$(echo "${blog_list_content}" | perl -pe "s|BLOGDATE|${bdate}|g")
+            blog_list_content=$(echo "${blog_list_content}" | perl -pe "s|CALADAY|${caladay}|g")
+            blog_list_content=$(echo "${blog_list_content}" | perl -pe "s|CALNDAY|${calnday}|g")
+            blog_list_content=$(echo "${blog_list_content}" | perl -pe "s|CALMONTH|${calmonth}|g")
+            blog_list_content=$(echo "${blog_list_content}" | perl -pe "s|CALYEAR|${calyear}|g")
         
         done
     
