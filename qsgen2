@@ -418,7 +418,7 @@ function _pages() {
           if [[ ${file_ext} == "tpl" ]]; then
             local page_content=$( ${engine} "$page_content" )
           elif [[ ${file_ext} == "md" ]]; then
-            local page_content=$( echo "$page_content" | $(${engine}) )
+            local page_content=$( echo "$page_content" | ${engine} )
             echo "$page_content"
             exit
           fi
