@@ -419,6 +419,8 @@ function _pages() {
             local page_content=$( ${engine} "$page_content" )
           elif [[ ${file_ext} == "md" ]]; then
             local page_content=$( echo "$page_content" | ${engine} >&1 )
+            echo "$page_content"
+            exit
           fi
         
         # Look for links, images and videos and convert them if present.
