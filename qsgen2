@@ -147,12 +147,12 @@ if [[ ${generator} == "native" ]]; then
         engine=_html
         export file_ext=tpl
 elif [[ ${generator} == "markdown" ]]; then
-    if [[ ! -f /usr/bin/Markdown.pl ]]; then
-        _msg other "Please install the perl-Text-Markdown package."
+    if [[ ! -f /usr/local/bin/pandoc ]]; then
+        _msg other "Please install Pandoc."
         exit
     else
         # Usage: ${engine} ${1} - Where 1 is the file you want parsed
-        engine=/usr/bin/Markdown.pl
+        engine=/usr/local/bin/pandoc
 #        function engine() {
 #  
 #          local command="/usr/bin/Markdown.pl"
