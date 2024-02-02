@@ -8,6 +8,8 @@ Quick Site Generator 2 is a static website generator inspired by Nikola and writ
 
 
 
+
+
 ## Why?
 
 Well, I wanted something that worked for me and wasn't too complicated and I also like a challenge.
