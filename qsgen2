@@ -415,7 +415,11 @@ function _pages() {
         
         # HTML'ify the page content
         if (${debug}) _msg debug "_pages: Running engine on ${pages_in_array}"
-        local page_content=$( ${engine} "$page_content" )
+          if [[ ${file_ext} == "tpl" ]]; then
+            local page_content=$( ${engine} "$page_content" )
+          elif [[ ${file_ext} == "md" ]]; then
+            local page_content=$( echo "$page_content" | ${engine} >&1 )
+          fi
         
         # Look for links, images and videos and convert them if present.
         if (${debug}) _msg debug "_pages: Checking for #link, #showimg and #ytvideo in page_content"
