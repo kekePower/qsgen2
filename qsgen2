@@ -443,7 +443,7 @@ function _pages() {
         if [[ ${pages_in_array} == "index.${file_ext}" ]] && [[ ${blog_in_index} == "true" ]]; then
             if (${debug}) _msg debug "_pages: Inserting blog list to index.html"
             local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
-            echo ${blog_index_list} >> ${page_content}
+            page_content=$( echo ${blog_index_list} >> ${page_content} )
         fi
         
         # Insert page_content into pages_tpl by replacing the BODY tag present there
