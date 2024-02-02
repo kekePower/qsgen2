@@ -156,7 +156,9 @@ elif [[ ${generator} == "markdown" ]]; then
           local command="/usr/bin/markdown"
           local c-opts="-d -n -s"
           
-          command c-opts "${1}" > "${1}"
+          local buffer=$(< <($(command) $c-opts "$1"))
+          
+          echo "${buffer}"
         }
         export file_ext=md
     fi
