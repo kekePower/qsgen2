@@ -1,46 +1,14 @@
 #!/usr/bin/zsh
 
+# 
 # Quick Site Generator 2 is a static website generator inspired by Nikola.
 # It is written for the Z shell (zsh) because that's what I use and also because I like it better than Bash.
 #
 # This script is an almost complete rewrite of my old script because it became overly complicated and
 # had way too many bugs, even though it worked on simple sites.
-#
-# qsgen2 uses different templates and its own formattings tags to generate the static HTML pages.
-#
-# The file structure in the project directory should look like this:
-#
-# .blog_cache
-# .pages_cache
-# config
-# index.tpl
-# templates/
-# templates/<theme>/pages.tpl
-# templates/<theme>/blogs.tpl
-# templates/<theme>/blog_index.tpl
-# blog/
-# blog/2024-01-26-1.blog
-#
-# Explanation of the file structure.
-# The file 'config' contains the settings for this specific project.
-# The file 'index.tpl' is what becomes index.html that is served to the public.
-# The 'templates/' directory contains the templates used to generate the pages and blog posts.
-# The 'blog/' directory contains the blog posts. The date format of the files are used to create a blog/index.html with the newest post first.
-#
-# Contents of the file 'config' --> CHANGE THESE <--
-# export site_name="The name of the website"
-# - This is the project directory
-# export project_dir=${HOME}/www/vikingo
-# - This is where the generated files will be put
-# export www_root=${HOME}/www_root/smelror.com
-# #################################################################################################
-# I don't think these need to be here as they'll always be in the same place with the same names
-# export pages=${project_dir}/themes/<theme>/pages.tpl
-# export blogs=${project_dir}/themes/<theme>/blogs.tpl
-# export blog_list=${project_dir}/themes/<theme>/blog_list.tpl
-# export blog_index=${project_dir}/themes/<theme>/blog_index.tpl
-# #################################################################################################
-# export blog_in_index=false
+# 
+# https://github.com/kekePower/qsgen2/
+# 
 
 VERSION="0.2.2 alpha" # Fri-2024-02-02
 QSGEN="Quick Site Generator 2"
