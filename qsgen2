@@ -416,11 +416,10 @@ function _pages() {
         
         # HTML'ify the page content
         if (${debug}) _msg debug "_pages: Running engine on ${pages_in_array}"
-          if [[ ${file_ext} == "tpl" ]]; then
+        if [[ ${file_ext} == "tpl" ]]; then
             local page_content=$( ${engine} "$page_content" )
-            
-        # Look for links, images and videos and convert them if present.
-        if (${debug}) _msg debug "_pages: Checking for #link, #showimg and #ytvideo in page_content"
+            # Look for links, images and videos and convert them if present.
+          if (${debug}) _msg debug "_pages: Checking for #link, #showimg and #ytvideo in page_content"
           if [[ $( echo ${page_content} | grep \#link ) ]]; then
             if (${debug}) _msg debug "_pages: #link is present, run _link: page_content"
             local page_content=$( _link "${page_content}" )
@@ -436,6 +435,11 @@ function _pages() {
         elif [[ ${file_ext} == "md" ]]; then
             local page_content=$(echo "$page_content" | ${engine})
         fi
+        
+        # Insert page_content into pages_tpl by replacing the BODY tag present there
+        if (${debug}) _msg debug "_pages: Replacing BODY with page_content in pages_tpl using Perl"
+        # Use Perl for multi-line and special character handling
+        local pages_tpl=$( awk -v new_body="$page_content" '{sub(/BODY/, new_body)} 1' <(echo "${pages_tpl}") )
         
         # Replace every #pagetitle in pages_tpl
         if (${debug}) _msg debug "_pages: Replacing #pagetitle in pages_tpl"
