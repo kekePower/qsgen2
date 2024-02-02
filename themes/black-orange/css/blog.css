@@ -1,0 +1,93 @@
+div.blog {
+	border-left: 1px groove #ccc;
+	padding-left: 1px;
+	width: 100%;
+	float: right;
+	color: white;
+	font-size: 14px;
+	/* margin-left: 50px; */
+}
+div.blogtitle {
+	/* background: url(/images/round_corner.png) top right no-repeat;
+	background-size: 37px; */
+	border-top-right-radius: 10px;
+	border-bottom-left-radius: 10px;
+	padding: 3px;
+	margin-left: 2.1em;
+	background-color: #444;
+	font-size: 20px;
+}
+div.blogtitle a {
+	text-decoration: none !important;
+}
+div.blogcontent{
+	padding: 3px;
+	float: left;
+	width: 45px;
+	color: white;
+	height: 5em;
+}
+div.cal-icon {
+	text-align: center;
+	width: 40px;
+	float: left;
+}
+div.blogcontent div.blogingress {
+	/* font-size: 14px; */
+	color: white !important;
+	float: left;
+	width: 94%;
+	padding-left: 5px;
+	padding-top: 5px;
+	margin-left: 5px;
+	height: 5em;
+}
+div.blogbody {
+	border-top-right-radius: 20px;
+	border-bottom-left-radius: 20px;
+	background-color: #222;
+	font-size: 14px;
+	float: left;
+	padding-bottom: 10px;
+	padding-top: 10px;
+	margin-left: 3.5em;
+	padding-left: 5px;
+	/* color: white !important; */
+	width: 94%;
+}
+
+div.blogbody, img {
+	float:left;
+}
+
+img.exticon {
+	float: none !important;
+}
+
+div.blogingress img {
+	width: 100px !important;
+	float: left;
+	padding-right: 5px;
+	padding-bottom: 5px;
+}
+
+div.right h2 {
+	font-size: 26px;
+}
+
+#logo td {
+	align: center;
+	height: 75px;
+}
+
+#sitetitle td {
+	align: left;
+	height: 75px;
+	text-align: left;
+	vertical-align: middle;
+	padding-left: 15px;
+}
+
+#libody td {
+	padding-left: 35px;
+}

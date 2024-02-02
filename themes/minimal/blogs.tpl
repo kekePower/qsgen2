@@ -11,7 +11,7 @@ WebFont.load({  google: {    families: ["Vollkorn:400,400italic,700,700italic","
 <script type="text/javascript">
 !function(o,c){var n=c.documentElement,t=" w-mod-";n.className+=t+"js",("ontouchstart"in o||o.DocumentTouch&&c instanceof DocumentTouch)&&(n.className+=t+"touch")}(window,document);</script>
 <link href="/images/el-vikingo-ti.png" rel="shortcut icon" type="image/png"/>
-<link href="/images/webclip.png" rel="apple-touch-icon"/>
+<link href="/images/el-vikingo-ti.png" rel="apple-touch-icon"/>
 
 </head>
 <body>
@@ -74,7 +74,9 @@ BODY
 </div>
 <h3>Lo que hago</h3>
 <p class="contact-text">
-#tagline
+Elegir a El Vikingo TI significa<br/>
+optar por la tranquilidad, la profesionalidad<br/>
+y una calidad de transmisión inigualable.
 </p>
 </div>
 
@@ -113,7 +115,7 @@ BODY
 <footer id="footer" class="newsection footer">
 <img src="/images/el-vikingo-ti.png" width="43" alt="El Vikingo TI Logo" class="footer-logo"/>
 <p class="footer-text">
-Last updated #updated by <a href="https://blog.kekepower.com/generate.html">#version</a>
+#updated
 </p>
 </div>
 </footer>

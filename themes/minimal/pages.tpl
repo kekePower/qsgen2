@@ -117,7 +117,9 @@ BODY
 </div>
 <h3>Lo que hago</h3>
 <p class="contact-text">
-#tagline
+Elegir a El Vikingo TI significa<br/>
+optar por la tranquilidad, la profesionalidad<br/>
+y una calidad de transmisión inigualable.
 </p>
 </div>
 
@@ -156,7 +158,7 @@ BODY
 <footer id="footer" class="newsection footer">
 <img src="/images/el-vikingo-ti.png" width="43" alt="El Vikingo TI Logo" class="footer-logo"/>
 <p class="footer-text">
-Last updated #updated by <a href="https://blog.kekepower.com/qsgen2.html">#version</a>
+#updated
 </p>
 </div>
 </footer>

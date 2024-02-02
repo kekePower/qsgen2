@@ -1,0 +1,26 @@
+div.datetime .caltop p {
+font:bold x-small/100% Georgia, "New Century Schoolbook", "Book Antiqua", "Times New Roman", serif;
+letter-spacing:0.12em;
+text-transform:uppercase;
+color:#fefefe !important;
+background-color: #222; /* #2f4765; */
+}
+
+/* day of the month (NUMBER) */
+div.datetime p.day {
+font:bold 1.5em/98% Georgia, "New Century Schoolbook", "Book Antiqua", "Times New Roman", serif !important;
+letter-spacing:0.13em;
+}
+
+/* month */
+div.datetime p.mon {
+font:x-small/135% Verdana,Geneva,Arial,Helvetica,sans-serif !important;
+letter-spacing:normal;
+text-transform:uppercase;
+}
+
+/* year */
+div.datetime p.yr {
+font:x-small/110% Verdana,Geneva,Arial,Helvetica,sans-serif;
+letter-spacing:0.05em;
+}

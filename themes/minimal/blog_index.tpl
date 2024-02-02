@@ -15,7 +15,7 @@
 </script>
 
 <link href="/images/el-vikingo-ti.png" rel="shortcut icon" type="image/png"/>
-<link href="/images/webclip.png" rel="apple-touch-icon"/>
+<link href="/images/el-vikingo-ti.png" rel="apple-touch-icon"/>
 
 </head>
 
@@ -52,6 +52,8 @@
 <div class="about-section">
 <div class="w-container">
 
+<p>&nbsp;</p>
+
 <!-- Header End -->
 
 <!-- Body Start -->
@@ -62,6 +64,8 @@ BODY
 
 <!-- Begin Footer Template -->
 
+	</div>
+</div>
 </div>
 <div id="contact" class="section contact">
 <div class="w-container">
@@ -117,7 +121,7 @@ y una calidad de transmisión inigualable.
 <footer id="footer" class="newsection footer">
 <img src="/images/el-vikingo-ti.png" width="43" alt="El Vikingo TI Logo" class="footer-logo"/>
 <p class="footer-text">
-Last updated #updated by <a href="https://blog.kekepower.com/qsgen2.html">#version</a>
+#updated
 </p>
 </div>
 </footer>
