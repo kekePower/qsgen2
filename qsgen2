@@ -152,7 +152,7 @@ elif [[ ${generator} == "markdown" ]]; then
         exit
     else
         # Usage: ${engine} ${1} - Where 1 is the file you want parsed
-        engine="/usr/bin/Markdown.pl"
+        engine=$(/usr/bin/Markdown.pl)
 #        function engine() {
 #  
 #          local command="/usr/bin/Markdown.pl"
