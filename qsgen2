@@ -294,11 +294,12 @@ function _last_updated() {
     # This function updates #updated and #version tags in the provided string for buffers
 
     local content="${1}"
-    local debug=false
+    local debug=true
     
     local upd_msg="Last updated ${today} by <a href=\"https://blog.kekepower.com/qsgen2.html\">${QSGEN} ${VERSION}</a>"
 
     if (${debug}) _msg debug "_last_updated: Setting date and version in footer"
+    if (${debug}) _msg debug "_last_updated: ${upd_msg}"
 
     # Perform the replacements
     local updated_content=$(echo "${content}" | sed \
@@ -312,11 +313,12 @@ function _f_last_updated() {
     # This function updates #updated and #version tags in the provided string in files
 
     local content="${1}"
-    local debug=false
+    local debug=true
     
     local upd_msg="Last updated ${today} by <a href=\"https://blog.kekepower.com/qsgen2.html\">${QSGEN} ${VERSION}</a>"
 
     if (${debug}) _msg debug "_f_last_updated: Setting date and version in footer of file ${1}"
+    if (${debug}) _msg debug "_f_last_updated: ${upd_msg}"
 
     # Perform the replacements
     tee < ${content} | sed \
