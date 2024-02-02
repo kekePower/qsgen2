@@ -1,6 +1,12 @@
 # Quick Site Generator 2
 Quick Site Generator 2 is a static website generator inspired by Nikola and written using Zsh.
 
+## Why?
+
+Well, I wanted something that worked for me and wasn't too complicated and I also like a challenge.
+
+## What is qsgen2?
+
 ```qsgen2``` is capable of creating static HTML pages using the native ```_html``` engine that uses ```QStags``` (that I'll describe in detail later) or by writing your pages and blogs in Markdown. It uses [Pandoc](https://github.com/jgm/pandoc/releases), mostly because it's the most compete tool for the job. Not all Linux distributions have it, so you can just download the binaries and place them where it suits you the best.
 
 You cannot mix native and Markdown when creating your project.
