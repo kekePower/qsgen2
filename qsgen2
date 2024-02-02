@@ -855,8 +855,9 @@ function _cleanup() {
         -e "s|¤||g" \
         -e "s|#showimg\ ||g" \
         -e "s|#ytvideo\ ||g" \
-        -e "s|#link\ ||g") \
-        -e "s|BLOGINDEX\ ||g")
+        -e "s|#link\ ||g" \
+        -e "s|BLOGINDEX\ ||g" \
+        )
 
     # Return the cleaned content
     echo "${cleaned_content}"
