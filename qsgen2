@@ -153,10 +153,10 @@ elif [[ ${generator} == "markdown" ]]; then
     else
         # Usage: ${engine} ${1} - Where 1 is the file you want parsed
         function engine() {
-          local command="/usr/bin/markdown-it"
-          local c-opts=""
+          local command="/usr/bin/markdown"
+          local c-opts="-d -n -s"
           
-          command c-opts "$1" > "$1"
+          command c-opts "${1}" > "${1}"
         }
         export file_ext=md
     fi
