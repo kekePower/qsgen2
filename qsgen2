@@ -673,7 +673,7 @@ function _add_blog_list_to_index() {
   if [[ ${new_updated_blogs} == "true" ]] && [[ ${blog_in_index} == "true" ]]; then
     if (${debug}) _msg debug "_pages: Inserting blog list to index.html"
     local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
-    local site_index_file=$(<${www_root}/index.tmp.html)
+    local site_index_file=$(<${www_root}/index.html)
     awk -v new_body="$site_index_file" '{sub(/BLOGINDEX/, new_body)} 1' <(echo "${blog_index_list}")
   fi
 
