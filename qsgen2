@@ -152,7 +152,7 @@ elif [[ ${generator} == "markdown" ]]; then
         exit
     else
         # Usage: ${engine} ${1} - Where 1 is the file you want parsed
-        engine=$(/usr/bin/Markdown.pl)
+        engine="/usr/bin/Markdown.pl"
 #        function engine() {
 #  
 #          local command="/usr/bin/Markdown.pl"
@@ -418,7 +418,7 @@ function _pages() {
           if [[ ${file_ext} == "tpl" ]]; then
             local page_content=$( ${engine} "$page_content" )
           elif [[ ${file_ext} == "md" ]]; then
-            local page_content=$( echo "$page_content" | ${engine} )
+            local page_content=$( echo "$page_content" | $(engine) )
             echo "$page_content"
             exit
           fi
