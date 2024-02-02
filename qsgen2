@@ -39,10 +39,10 @@
 # export blogs=${project_dir}/themes/<theme>/blogs.tpl
 # export blog_list=${project_dir}/themes/<theme>/blog_list.tpl
 # export blog_index=${project_dir}/themes/<theme>/blog_index.tpl
-###################################################################################################
+# #################################################################################################
 # export blog_in_index=false
 
-VERSION="0.2.1 alpha" # Tue-2024-01-30
+VERSION="0.2.2 alpha" # Fri-2024-02-02
 QSGEN="Quick Site Generator 2"
 
 # Set to true or false
