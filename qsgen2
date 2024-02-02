@@ -152,18 +152,19 @@ elif [[ ${generator} == "markdown" ]]; then
         exit
     else
         # Usage: ${engine} ${1} - Where 1 is the file you want parsed
-        function engine() {
-  
-          local command="/usr/bin/Markdown.pl"
-          local c-opts=
-  
-          echo "$1" | $(command)
-          
-          # Assign the output to the global variable named by $1
-          # eval "$1=\${result}"
-  
-          # echo "${(P)1}"
-        }
+        engine="/usr/bin/Markdown.pl"
+#        function engine() {
+#  
+#          local command="/usr/bin/Markdown.pl"
+#          local c-opts=
+#  
+#          $(command) "$1"
+#          
+#          # Assign the output to the global variable named by $1
+#          # eval "$1=\${result}"
+#  
+#          # echo "${(P)1}"
+#        }
         export file_ext=md
     fi
 fi
