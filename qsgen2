@@ -42,7 +42,7 @@
 ###################################################################################################
 # export blog_in_index=false
 
-VERSION="0.1.0 alpha" # Tue-2024-01-30
+VERSION="0.2.0 alpha" # Tue-2024-01-30
 QSGEN="Quick Site Generator 2"
 
 # Set to true or false
@@ -149,6 +149,7 @@ if [[ ${generator} == "native" ]]; then
 elif [[ ${generator} == "markdown" ]]; then
     if [[ ! -f /usr/local/bin/pandoc ]]; then
         _msg other "Please install Pandoc."
+        _msg other "https://github.com/jgm/pandoc/releases"
         exit
     else
         # Usage: ${engine} ${1} - Where 1 is the file you want parsed
