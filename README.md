@@ -1,4 +1,9 @@
+<img src="qsg2-square.png" width="150" align="left">
+
 # Quick Site Generator 2
+
+
+
 Quick Site Generator 2 is a static website generator inspired by Nikola and written using Zsh.
 
 ## Why?
