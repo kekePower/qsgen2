@@ -82,3 +82,7 @@ Tags replaced are:
 * BODY
 
 And then the footer gets the same touch as the blog posts.
+
+### Knows bugs
+
+* Sometimes it doesn't write the Blog Index file (/blog/index.html) with all the blogs, only the latest.
