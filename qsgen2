@@ -411,15 +411,6 @@ function _pages() {
         if (${debug}) _msg debug "_pages: Replacing #pagetitle, #tagline and #sitename in pages_tpl"
         pages_tpl=$(echo "${pages_tpl}" | perl -pe "s|#pagetitle|${page_title}|gs; s|#tagline|${site_tagline}|gs; s|#sitename|${site_name}|gs")
         
-        # Insert the blog to the front page is blog_in_index is true and the file in the array is index.file_ext
-        # and if index.tmp.html exist and is not empty
-        if [[ ${pages_in_array} == "index.${file_ext}" &&  ${blog_in_index} == "true" && -s "${project_dir}/blog/index.tmp.html" ]]; then
-          _add_blog_list_to_index
-        else
-          _msg debug "Cannot find file ${project_dir}/blog/index.tmp.html"
-          continue
-        fi
-        
         # Replace every #tagline in pages_tpl
         #if (${debug}) _msg debug "_pages: Replacing tagline"
         #pages_tpl="${pages_tpl//#tagline/${site_tagline}}"
@@ -445,6 +436,19 @@ function _pages() {
         # Write pages_tpl to disk
         # _msg std "Writing ${www_root}/${pages_title_lower%.*}.html to disk."
         echo "${pages_tpl}" > ${www_root}/${pages_title_lower%.*}.html
+        
+        # Insert the blog to the front page is blog_in_index is true and the file in the array is index.file_ext
+        # and if index.tmp.html exist and is not empty
+        if [[ ${pages_in_array} == "index.${file_ext}" &&  ${blog_in_index} == "true" && -s "${project_dir}/blog/index.tmp.html" ]]; then
+          _msg sub "- Parsing ${pages_in_array}"
+          _msg sub "- blog_in_index = ${blog_in_index}"
+          _msg sub "- Listing blog temp file:"
+          ls -l ${project_dir}/blog/index.tmp.html
+          _add_blog_list_to_index
+        else
+          _msg debug "Cannot find file ${project_dir}/blog/index.tmp.html"
+          continue
+        fi
         
       done
       
