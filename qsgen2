@@ -445,7 +445,7 @@ function _pages() {
       
         # Insert the blog to the front page is blog_in_index is true and the file in the array is index.file_ext
         # and if index.tmp.html exist and is not empty
-        if [[ ${pages_in_array} == "index.${file_ext}" &&  ${blog_in_index} == "true" && -s "${project_dir}/blog/index.tmp.html" ]]; then
+        if [[ ${blog_in_index} == "true" && -s "${project_dir}/blog/index.tmp.html" ]]; then
           _msg std "Updating index.html with new blog posts"
           if (${debug}) _msg sub "- Parsing ${pages_in_array}"
           if (${debug}) _msg sub "- blog_in_index = ${blog_in_index}"
@@ -899,7 +899,7 @@ function _html() {
             "#UL", "<ul>", "#EUL", "</ul>\n",
             "#OL", "<ol>", "#EOL", "</ol>\n",
             "#LI", "<li>", "#ELI", "</li>\n",
-            "#U", "<u>", "#EU", "</u>\n",
+            "#IU", "<u>", "#EIU", "</u>\n",
             "#TBL", "<table>", "#ETBL", "</table>\n",
             "#TR", "<tr>", "#ETR", "</tr>\n",
             "#TD", "<td>", "#ETD", "</td>\n",
@@ -956,7 +956,7 @@ function _zhtml() {
         "#UL" "<ul>" "#EUL" "</ul>\n"
         "#OL" "<ol>" "#EOL" "</ol>\n"
         "#LI" "<li>" "#ELI" "</li>\n"
-        "#U" "<u>" "#EU" "</u>\n"
+        "#IU" "<u>" "#EIU" "</u>\n"
         "#TBL" "<table>" "#ETBL" "</table>\n"
         "#TR" "<tr>" "#ETR" "</tr>\n"
         "#TD" "<td>" "#ETD" "</td>\n"
