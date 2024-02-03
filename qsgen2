@@ -655,8 +655,8 @@ function _blog_index() {
         blog_index_content=$(echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g")
         
         # Replace every #pagetitle in pages_tpl
-        if (${debug}) _msg debug "_blog_index: Replacing #pagetitle in blog_index_content"
-        blog_index_content=$( echo ${blog_index_content} | perl -pe "s|#pagetitle|${page_title}|gs" )
+        if (${debug}) _msg debug "_blog_index: Replacing #sitename in blog_index_content"
+        blog_index_content=$( echo ${blog_index_content} | perl -pe "s|#sitename|${site_name}|gs" )
         
         # Replace every #tagline in pages_tpl
         if (${debug}) _msg debug "_blog_index: Replacing tagline in blog_index_content"
