@@ -74,9 +74,9 @@ _list_sites() {
     touch "${sites_file}"
 
     if [[ -f "$sites_file" ]]; then
-        echo "Registered qsgen2 Sites:"
+        echo "Registered Sites:"
         while IFS='|' read -r site_name site_dir; do
-          printf "%-30s - Directory: %-50s\n" "Site: $site_name" "$site_dir"
+          printf "%-30s - Directory: %-50s\n" "Site: ${magenta}$site_name${end}" "${blue}$site_dir${end}"
         done < "$sites_file"
     else
         echo "No sites registered."
