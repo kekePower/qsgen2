@@ -414,7 +414,6 @@ function _pages() {
         # Insert the blog to the front page is blog_in_index is true and the file in the array is index.file_ext
         # and if index.tmp.html exist and is not empty
         if [[ ${pages_in_array} == "index.${file_ext}" &&  ${blog_in_index} == "true" && -s ${project_dir}/blog/index.tmp.html ]]; then
-          _blog_idx_for_index
           local blog_index_file=$(<${project_dir}/blog/index.tmp.html)
           pages_tpl=$( awk -v new_blog="$blog_index_file" '{sub(/BLOGINDEX/, new_blog)} 1' <(echo "${pages_tpl}") )
         else
@@ -982,6 +981,6 @@ function _zhtml() {
 
 # Time to run the first function
 _blogs
+_add_blog_list_to_index
 _pages
-# _add_blog_list_to_index
 _sitemap
