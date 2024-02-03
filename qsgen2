@@ -335,6 +335,8 @@ function _file_to_lower() {
 function _pages() {
     # This function generates all the new and updated Pages
     
+    _msg other "Generating Pages"
+    
     local debug=false
     
     # Load the cache for Pages
@@ -445,6 +447,8 @@ function _pages() {
 
 function _blogs() {
     # This function either generates blog files or exports metadata based on the argument
+    
+    _msg other "Generating Blogs"
 
     local debug=false
 
