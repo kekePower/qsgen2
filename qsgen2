@@ -412,15 +412,13 @@ function _pages() {
         pages_tpl=$(echo "${pages_tpl}" | perl -pe "s|#pagetitle|${page_title}|gs; s|#tagline|${site_tagline}|gs; s|#sitename|${site_name}|gs")
         
         # Insert the blog to the front page is blog_in_index is true and the file in the array is index.file_ext
-        if [[ ${pages_in_array} == "index.${file_ext}" &&  ${blog_in_index} == "true" ]]; then
-          if [[ -f ${project_dir}/blog/index.tmp.html ]]; then
-            local blog_index_file=$(<${project_dir}/blog/index.tmp.html)
-          else
-            _msg debug "Cannot find file ${project_dir}/blog/index.tmp.html"
-            continue
-          fi
-          
-          pages_tpl=$( awk -v new_body="$blog_index_file" '{sub(/BLOGINDEX/, new_body)} 1' <(echo "${pages_tpl}") )
+        # and if index.tmp.html exist and is not empty
+        if [[ ${pages_in_array} == "index.${file_ext}" &&  ${blog_in_index} == "true" && -s ${project_dir}/blog/index.tmp.html ]]; then
+          local blog_index_file=$(<${project_dir}/blog/index.tmp.html)
+          pages_tpl=$( awk -v new_blog="$blog_index_file" '{sub(/BLOGINDEX/, new_blog)} 1' <(echo "${pages_tpl}") )
+        else
+          _msg debug "Cannot find file ${project_dir}/blog/index.tmp.html"
+          continue
         fi
         
         # Replace every #tagline in pages_tpl
@@ -551,16 +549,16 @@ function _blogs() {
                        blog_content=$(_youtube "${blog_content}")
                    fi
                   elif [[ ${file_ext} == "md" ]]; then
-                    local blog_content=$(echo "$blog_content" | ${engine})
+                    blog_content=$(echo "$blog_content" | ${engine})
                   fi
                   
                   # Replace every #tagline in blog_content
-                  if (${debug}) _msg debug "_blogs: Replacing tagline"
-                  local blog_content=$( echo ${blog_content} | perl -pe "s|#tagline|${site_tagline}|gs" )
+                  if (${debug}) _msg debug "_blogs: Replacing tagline, sitename and pagetitle"
+                  blog_content=$( echo ${blog_content} | perl -pe "s|#tagline|${site_tagline}|gs; s|#sitename|${site_name}|gs; s|#pagetitle|${page_title}|gs" )
                   
                   # Replace every #sitename in blog_content
-                  if (${debug}) _msg debug "_blogs: Replacing sitename"
-                  local blog_content=$( echo ${blog_content} | perl -pe "s|#sitename|${site_name}|gs" )
+                  #if (${debug}) _msg debug "_blogs: Replacing sitename"
+                  #local blog_content=$( echo ${blog_content} | perl -pe "s|#sitename|${site_name}|gs" )
                   
                    blog_content=$(_last_updated "${blog_content}")
                    blog_content=$(_cleanup "${blog_content}")
@@ -984,5 +982,5 @@ function _zhtml() {
 # Time to run the first function
 _blogs
 _pages
-_add_blog_list_to_index
+# _add_blog_list_to_index
 _sitemap
