@@ -108,7 +108,7 @@ function _msg() {
 
 # Let's check if qsgen2 can generate this site by checking if 'generator' is available
 if [[ ! ${generator} ]] || [[ -d $(pwd)/.git ]]; then
-    _msg other "${0:t} cannot parse this site. Exiting."
+    _msg sub "${0:t} cannot parse this site. Exiting."
     exit
 fi
 
@@ -359,7 +359,7 @@ function _pages() {
       return
     fi
     
-    _msg other "Generating Pages"
+    _msg info "Generating Pages"
     
     if (( ${#pages_array[@]} > 0 )); then
     
@@ -490,7 +490,7 @@ function _blogs() {
       return
     fi
     
-    _msg other "Generating Blogs"
+    _msg info "Generating Blogs"
     
     # Running function _blog_cache
     if (${debug}) _msg debug "_blogs: Running function _blog_cache"
