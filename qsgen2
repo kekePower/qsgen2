@@ -410,6 +410,10 @@ function _pages() {
         if (${debug}) _msg debug "_pages: Replacing tagline"
         local pages_tpl=$( echo ${pages_tpl} | perl -pe "s|#tagline|${site_tagline}|gs" )
         
+        # Replace every #sitename in pages_tpl
+        if (${debug}) _msg debug "_pages: Replacing sitename"
+        local pages_tpl=$( echo ${pages_tpl} | perl -pe "s|#sitename|${site_name}|gs" )
+        
         # Replace #updated with today's date and #version with Name and Version to footer
         if (${debug}) _msg debug "_pages: _last_updated in pages_tpl"
         local pages_tpl=$( _last_updated ${pages_tpl} )
@@ -528,6 +532,15 @@ function _blogs() {
                   elif [[ ${file_ext} == "md" ]]; then
                     local blog_content=$(echo "$blog_content" | ${engine})
                   fi
+                  
+                  # Replace every #tagline in blog_content
+                  if (${debug}) _msg debug "_blogs: Replacing tagline"
+                  local blog_content=$( echo ${blog_content} | perl -pe "s|#tagline|${site_tagline}|gs" )
+                  
+                  # Replace every #sitename in blog_content
+                  if (${debug}) _msg debug "_blogs: Replacing sitename"
+                  local blog_content=$( echo ${blog_content} | perl -pe "s|#sitename|${site_name}|gs" )
+                  
                    blog_content=$(_last_updated "${blog_content}")
                    blog_content=$(_cleanup "${blog_content}")
                    

@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>kekePower - #pagetitle</title>
+	<title>#sitename - #pagetitle</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<link rel="stylesheet" type="text/css" href="/css/dark.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/css/cal-icon.css" media="screen" />
@@ -20,7 +20,7 @@
 			<a href="/"><img src="/images/favicon-kekepower-transparent.png" height="75"></a>
 		</td>
 		<td id="sitetitle">
-			<h1><a href="/">kekePower</a></h1>
+			<h1><a href="/">#sitename</a></h1>
 			<h2>#tagline</h2>
 		</td>
 	</tr>
@@ -40,7 +40,11 @@
 
 <!-- This is the end of the HEADER -->
 
+<!-- Body Start -->
+
 BODY
+
+<!-- Body End -->
 
 <!-- This is the beginning of the FOOTER -->
 </div> <!-- End of div right -->

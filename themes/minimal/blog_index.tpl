@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8"/>
-<title>El Vikingo TI - Blog</title>
+<title>#sitename - Blog</title>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="Webflow" name="generator"/>
 <link href="/css/minimaltemplate-v1.css" rel="stylesheet" type="text/css"/>
@@ -25,7 +25,7 @@
 
 <a href="/" class="brand-block w-clearfix w-nav-brand">
 <img src="/images/el-vikingo-ti.png" width="65" alt="" class="logo-img"/>
-<h1 class="logo-title">El Vikingo TI</h1>
+<h1 class="logo-title">#sitename</h1>
 </a>
 
 <nav role="navigation" class="nav-menu w-nav-menu">
@@ -46,7 +46,7 @@
 <h1 class="main-heading">Blog</h1>
 <div class="divider">
 </div>
-<div class="main-subtitle">Déjame ayudarte a hacer tus directos sin estrés.</div>
+<div class="main-subtitle">#tagline</div>
 </div>
 </div>
 <div class="about-section">

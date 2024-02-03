@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta charset="utf-8"/>
-<title>El Vikingo TI - BLOGTITLE</title>
+<title>#sitename - BLOGTITLE</title>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <link href="/css/minimaltemplate-v1.css" rel="stylesheet" type="text/css"/>
 <script src="/css/webfont.js" type="text/javascript">
@@ -19,7 +19,7 @@ WebFont.load({  google: {    families: ["Vollkorn:400,400italic,700,700italic","
 <div class="w-container">
 <a href="/" class="brand-block w-clearfix w-nav-brand">
 <img src="/images/el-vikingo-ti.png" width="65" alt="" class="logo-img"/>
-<h1 class="logo-title">El Vikingo TI</h1>
+<h1 class="logo-title">#sitename</h1>
 </a>
 <nav role="navigation" class="nav-menu w-nav-menu">
 <a href="/blog/" class="nav-link w-nav-link">←  Al Blog</a>

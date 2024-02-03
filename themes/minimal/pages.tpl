@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8"/>
-<title>El Vikingo TI - #pagetitle</title>
+<title>#sitename - #pagetitle</title>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="Webflow" name="generator"/>
 <link href="/css/minimaltemplate-v1.css" rel="stylesheet" type="text/css"/>
@@ -25,12 +25,12 @@
 
 <a href="/" class="brand-block w-clearfix w-nav-brand">
 <img src="/images/el-vikingo-ti.png" width="65" alt="" class="logo-img"/>
-<h1 class="logo-title">El Vikingo TI</h1>
+<h1 class="logo-title">#sitename</h1>
 </a>
 
 <nav role="navigation" class="nav-menu w-nav-menu">
 <a href="/" class="nav-link w-nav-link">Inicio</a>
-<a href="/sobre.html" class="nav-link w-nav-link">Sobre El Vikingo TI</a>
+<a href="/sobre.html" class="nav-link w-nav-link">Sobre #sitename</a>
 <a href="/servicios.html" class="nav-link w-nav-link">Que Hago</a>
 <a href="/contacto.html" class="nav-link w-nav-link">Contáctame</a>
 <a href="/blog/" class="nav-link w-nav-link">Blog</a>
@@ -59,47 +59,6 @@
 BODY
 
 <!-- Body End -->
-
-<!-- Section for testimonies -->
-<!-- <h3>Testimonios</h3>
-
-<div class="testimonials">
-  <div class="testimony">
-    <div class="text">
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique."
-    </div>
-    <div class="photo">
-      <img src="/images/el-vikingo-ti.png" alt="Testimonial Photo">
-    </div>
-    <div class="name">El Vikingo</div>
-    <div class="title">Noruega</div>
-  </div>
-
-  <div class="testimony">
-    <div class="text">
-      "Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. "
-    </div>
-    <div class="photo">
-      <img src="/images/el-vikingo-ti.png" alt="Testimonial Photo">
-    </div>
-    <div class="name">El Vikingo</div>
-    <div class="title">Noruega</div>
-  </div>
-
-  <div class="testimony">
-    <div class="text">
-      "Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae risus tristique posuere."
-    </div>
-    <div class="photo">
-      <img src="/images/el-vikingo-ti.png" alt="Testimonial Photo">
-    </div>
-    <div class="name">El Vikingo</div>
-    <div class="title">Noruega</div>
-  </div>
-</div> -->
-
-<!-- End Testimonies -->
-
 
 <!-- Begin Footer Template -->
 
