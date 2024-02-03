@@ -411,6 +411,18 @@ function _pages() {
         if (${debug}) _msg debug "_pages: Replacing #pagetitle, #tagline and #sitename in pages_tpl"
         pages_tpl=$(echo "${pages_tpl}" | perl -pe "s|#pagetitle|${page_title}|gs; s|#tagline|${site_tagline}|gs; s|#sitename|${site_name}|gs")
         
+        # Insert the blog to the front page is blog_in_index is true and the file in the array is index.file_ext
+        if [[ ${pages_in_array} == "index.${file_ext}"]] && [[ ${blog_in_index} == "true" ]]; then
+          if [[ -f ${project_dir}/blog/index.tmp.html ]]; then
+            local blog_index_file=$(<${project_dir}/blog/index.tmp.html)
+          else
+            _msg debug "Cannot find file ${project_dir}/blog/index.tmp.html"
+            continue
+          fi
+          
+          pages_tpl=$( awk -v new_body="$blog_index_file" '{sub(/BLOGINDEX/, new_body)} 1' <(echo "${pages_tpl}") )
+        fi
+        
         # Replace every #tagline in pages_tpl
         #if (${debug}) _msg debug "_pages: Replacing tagline"
         #pages_tpl="${pages_tpl//#tagline/${site_tagline}}"
