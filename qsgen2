@@ -76,7 +76,7 @@ _list_sites() {
     if [[ -f "$sites_file" ]]; then
         echo "Registered qsgen2 Sites:"
         while IFS='|' read -r site_name site_dir; do
-            echo "Site: $site_name - Directory: $site_dir"
+            echo "Site: $site_name\t- Directory: $site_dir"
         done < "$sites_file"
     else
         echo "No sites registered."
