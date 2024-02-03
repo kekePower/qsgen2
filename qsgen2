@@ -636,6 +636,8 @@ function _blog_idx_for_index() {
 }
 
 function _blog_index() {
+  
+  local debug=false
 
     # This function generates the /blog/index.html file that gets its data from _blog_list_for_index()
     # ${new_updated_blogs} comes from the function _blogs if anything new or updated is detected
@@ -644,13 +646,22 @@ function _blog_index() {
         if (${debug}) _msg debug "Running function _blog_index"
         if (${debug}) _msg debug "_blog_index: blog_in_index = ${blog_in_index}"
 
-        _msg std "Updating the Blog Index file"
+        _msg std "Generating the Blog index file"
 
         local debug=false
         local blog_index=$(<${project_dir}/themes/${theme}/blog_index.tpl)
         local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
 
-        blog_index_content=$(echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g")
+        local blog_index_content=$(echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g")
+        
+        # Replace every #pagetitle in pages_tpl
+        if (${debug}) _msg debug "_blog_index: Replacing #pagetitle in blog_index_content"
+        blog_index_content=$( echo ${blog_index_content} | perl -pe "s|#pagetitle|${page_title}|gs" )
+        
+        # Replace every #tagline in pages_tpl
+        if (${debug}) _msg debug "_blog_index: Replacing tagline in blog_index_content"
+        blog_index_content=$( echo ${pages_tpl} | perl -pe "s|#tagline|${site_tagline}|gs" )
+        
         echo "${blog_index_content}" > ${www_root}/blog/index.html
         _f_last_updated ${www_root}/blog/index.html
     fi
