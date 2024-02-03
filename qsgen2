@@ -652,7 +652,7 @@ function _blog_index() {
         local blog_index=$(<${project_dir}/themes/${theme}/blog_index.tpl)
         local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
 
-        local blog_index_content=$(echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g")
+        blog_index_content=$(echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g")
         
         # Replace every #pagetitle in pages_tpl
         if (${debug}) _msg debug "_blog_index: Replacing #pagetitle in blog_index_content"
@@ -660,7 +660,7 @@ function _blog_index() {
         
         # Replace every #tagline in pages_tpl
         if (${debug}) _msg debug "_blog_index: Replacing tagline in blog_index_content"
-        blog_index_content=$( echo ${pages_tpl} | perl -pe "s|#tagline|${site_tagline}|gs" )
+        blog_index_content=$( echo ${blog_index_content} | perl -pe "s|#tagline|${site_tagline}|gs" )
         
         echo "${blog_index_content}" > ${www_root}/blog/index.html
         _f_last_updated ${www_root}/blog/index.html
