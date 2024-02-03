@@ -97,6 +97,8 @@ function _msg() {
         other)
             echo "${bold_yellow}${2}${end}"
         ;;
+        sub)
+            echo "${magenta}${2}${end}"
         *)
             echo "${2}"
         ;;
@@ -364,7 +366,7 @@ function _pages() {
             pages_tpl="$(<${pages})"
         fi
         
-        _msg std "Generating Page: ${pages_in_array:l%.*}.html"
+        _msg std "Generating Page: ${pages_in_array%.*}.html"
         # Read the file once
         if (${debug}) _msg debug "_pages: Loading page_content once - ${pages_in_array}"
         local page_content="$(<${pages_in_array})"
@@ -438,7 +440,7 @@ function _pages() {
       
     else
         
-        _msg info "No new or updated Pages"
+        _msg sub "- No new or updated Pages found"
         export new_updated_pages=false
       
     fi
@@ -564,7 +566,7 @@ function _blogs() {
             export new_updated_blogs=true
 
     else
-        _msg info "No new or updated Blogs detected."
+        _msg sub "- No new or updated Blogs found"
         export new_updated_blogs=false
     fi
 _blog_idx_for_index
