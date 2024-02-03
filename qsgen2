@@ -144,7 +144,7 @@ export blogdate=$( date +%a-%Y-%b-%d )
 # Let's create arrays of all the files we'll be working on
 
 function _list_pages() {
-    local debug=false
+    local debug=true
     
     export no_pages_found=false
 
@@ -152,9 +152,9 @@ function _list_pages() {
     setopt local_options null_glob
 
     # Check if there are any .blog files in the blog directory
-    local pages_files=$(ls *${file_ext})
+    local pages_files=$(ls *.${file_ext})
     if (( ${#pages_files} == 0 )); then
-        if (${debug}); then _msg debug "_list_pages: No Pages found."; fi
+        if (${debug}); then _msg debug "_list_pages: No Pages found with ext ${file_ext}."; fi
         export no_pages_found=true
         return
     fi
