@@ -10,7 +10,7 @@
 # https://github.com/kekePower/qsgen2/
 # 
 
-VERSION="0.2.4" # Sat-2024-02-03
+VERSION="0.2.5" # Sat-2024-02-03
 QSGEN="Quick Site Generator 2"
 
 # Set to true or false
@@ -411,16 +411,6 @@ function _pages() {
         if (${debug}) _msg debug "_pages: Replacing #pagetitle, #tagline and #sitename in pages_tpl"
         pages_tpl=$(echo "${pages_tpl}" | perl -pe "s|#pagetitle|${page_title}|gs; s|#tagline|${site_tagline}|gs; s|#sitename|${site_name}|gs")
         
-        # Replace every #tagline in pages_tpl
-        #if (${debug}) _msg debug "_pages: Replacing tagline"
-        #pages_tpl="${pages_tpl//#tagline/${site_tagline}}"
-        #local pages_tpl=$( echo ${pages_tpl} | perl -pe "s|#tagline|${site_tagline}|gs" )
-        
-        # Replace every #sitename in pages_tpl
-        #if (${debug}) _msg debug "_pages: Replacing sitename"
-        #pages_tpl="${pages_tpl//#sitename/${site_name}}"
-        #local pages_tpl=$( echo ${pages_tpl} | perl -pe "s|#sitename|${site_name}|gs" )
-        
         # Replace #updated with today's date and #version with Name and Version to footer
         if (${debug}) _msg debug "_pages: _last_updated in pages_tpl"
         pages_tpl=$( _last_updated ${pages_tpl} )
@@ -440,14 +430,11 @@ function _pages() {
         # Insert the blog to the front page is blog_in_index is true and the file in the array is index.file_ext
         # and if index.tmp.html exist and is not empty
         if [[ ${pages_in_array} == "index.${file_ext}" &&  ${blog_in_index} == "true" && -s "${project_dir}/blog/index.tmp.html" ]]; then
-          _msg sub "- Parsing ${pages_in_array}"
-          _msg sub "- blog_in_index = ${blog_in_index}"
-          _msg sub "- Listing blog temp file:"
-          ls -l ${project_dir}/blog/index.tmp.html
+          if (${debug}) _msg sub "- Parsing ${pages_in_array}"
+          if (${debug}) _msg sub "- blog_in_index = ${blog_in_index}"
+          if (${debug}) _msg sub "- Listing blog temp file:"
+          if (${debug}) ls -l ${project_dir}/blog/index.tmp.html
           _add_blog_list_to_index
-        else
-          _msg debug "Cannot find file ${project_dir}/blog/index.tmp.html"
-          continue
         fi
         
       done
@@ -591,7 +578,7 @@ _blog_index
 function _blog_idx_for_index() {
     # This function generates the file blog/index.tmp.html
     
-    local debug=true
+    local debug=false
     
     _msg sub "- Populating ${project_dir}/blog/index.tmp.html"
     
@@ -663,7 +650,7 @@ function _blog_idx_for_index() {
 
 function _blog_index() {
   
-  local debug=true
+  local debug=false
 
     # This function generates the /blog/index.html file that gets its data from _blog_list_for_index()
     # ${new_updated_blogs} comes from the function _blogs if anything new or updated is detected
@@ -675,18 +662,11 @@ function _blog_index() {
         _msg std "Generating the Blog index file"
 
         local debug=false
-        local blog_index=$(<${project_dir}/themes/${theme}/blog_index.tpl)
+        local blog_index_tpl=$(<${project_dir}/themes/${theme}/blog_index.tpl)
         local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
-
-        blog_index_content=$(echo "${blog_index}" | perl -pe "s|BODY|${blog_index_list}|g")
         
-        # Replace every #pagetitle in pages_tpl
-        if (${debug}) _msg debug "_blog_index: Replacing #sitename in blog_index_content"
-        blog_index_content=$( echo ${blog_index_content} | perl -pe "s|#sitename|${site_name}|gs" )
-        
-        # Replace every #tagline in pages_tpl
-        if (${debug}) _msg debug "_blog_index: Replacing tagline in blog_index_content"
-        blog_index_content=$( echo ${blog_index_content} | perl -pe "s|#tagline|${site_tagline}|gs" )
+        local blog_index_content=$( awk -v new_body="$blog_index_list" '{sub(/BODY/, new_body)} 1' <(echo "${blog_index_tpl}") )
+        blog_index_content=$(echo "${blog_index_tpl}" | perl -pe "s|#sitename|${site_name}|gs; s|#tagline|${site_tagline}|gs")
         
         echo "${blog_index_content}" > ${www_root}/blog/index.html
         _f_last_updated ${www_root}/blog/index.html
