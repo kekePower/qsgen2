@@ -413,9 +413,8 @@ function _pages() {
         
         # Insert the blog to the front page is blog_in_index is true and the file in the array is index.file_ext
         # and if index.tmp.html exist and is not empty
-        if [[ ${pages_in_array} == "index.${file_ext}" &&  ${blog_in_index} == "true" && -s ${project_dir}/blog/index.tmp.html ]]; then
-          local blog_index_file=$(<${project_dir}/blog/index.tmp.html)
-          pages_tpl=$( awk -v new_blog="$blog_index_file" '{sub(/BLOGINDEX/, new_blog)} 1' <(echo "${pages_tpl}") )
+        if [[ ${pages_in_array} == "index.${file_ext}" &&  ${blog_in_index} == "true" && -s "${project_dir}/blog/index.tmp.html" ]]; then
+          _add_blog_list_to_index
         else
           _msg debug "Cannot find file ${project_dir}/blog/index.tmp.html"
           continue
@@ -642,7 +641,7 @@ function _blog_idx_for_index() {
               s|CALMONTH|${calmonth}|g; \
               s|CALYEAR|${calyear}|g \
               ")
-                              
+
         done
           unset sdate btitle ingress url
     
@@ -652,7 +651,7 @@ function _blog_idx_for_index() {
             
             # Debug exit
             ls -l ${project_dir}/blog/index.tmp.html
-            exit
+            #exit
 
     done
 
@@ -660,7 +659,7 @@ function _blog_idx_for_index() {
 
 function _blog_index() {
   
-  local debug=false
+  local debug=true
 
     # This function generates the /blog/index.html file that gets its data from _blog_list_for_index()
     # ${new_updated_blogs} comes from the function _blogs if anything new or updated is detected
@@ -696,13 +695,13 @@ function _add_blog_list_to_index() {
   local debug=true
   
   # Let's find the file 'index.tpl' and add the blog if blog_in_index is true
-  if [[ ${new_updated_blogs} == "true" ]] && [[ ${blog_in_index} == "true" ]]; then
+  #if [[ ${new_updated_blogs} == "true" ]] && [[ ${blog_in_index} == "true" ]]; then
     _msg sub "- Adding blog list to ${www_root}/index.html"
     if (${debug}) _msg debug "_add_blog_list_to_index: Inserting blog list to index.html"
     local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
     local site_index_file=$(<${www_root}/index.html)
     echo "${site_index_file}" | awk -v new_body="${blog_index_list}" '{sub(/BLOGINDEX/, new_body)} 1' > "${www_root}/index.html"
-  fi
+  #fi
 
 }
 
