@@ -116,7 +116,7 @@ fi
 if [[ ${generator} == "native" ]]; then
         # Usage: ${engine} ${1} - Where 1 is the file you want to convert
         engine=_zhtml
-        export file_ext="tpl"
+        export file_ext="qst"
 elif [[ ${generator} == "markdown" ]]; then
     if [[ ! -f /usr/local/bin/pandoc ]]; then
         _msg other "Please install Pandoc."
@@ -398,7 +398,7 @@ function _pages() {
         
         # HTML'ify the page content
         if (${debug}) _msg debug "_pages: Running engine on ${pages_in_array}"
-        if [[ ${file_ext} == "tpl" ]]; then
+        if [[ ${file_ext} == "qst" ]]; then
             page_content=$( ${engine} "$page_content" )
             # Look for links, images and videos and convert them if present.
           if (${debug}) _msg debug "_pages: Checking for #link, #showimg and #ytvideo in page_content"
@@ -558,7 +558,7 @@ function _blogs() {
                         ")
 
                    if (${debug}) _msg debug "_blogs: Running function $engine for ${blog}"
-                  if [[ ${file_ext} == "tpl" ]]; then
+                  if [[ ${file_ext} == "qst" ]]; then
                    blog_content=$( ${engine} "${blog_content}" )
                    # Look for links, images and videos and convert them if present.
                    if (${debug}) _msg debug "_blogs: Checking for #link, #showimg and #ytvideo in blog_content"
@@ -716,7 +716,7 @@ function _add_blog_list_to_index() {
   
   local debug=true
   
-  # Let's find the file 'index.tpl' and add the blog if blog_in_index is true
+  # Let's find the file 'index.qst' and add the blog if blog_in_index is true
   #if [[ ${new_updated_blogs} == "true" ]] && [[ ${blog_in_index} == "true" ]]; then
     _msg sub "- Adding blog list to ${www_root}/index.html"
     if (${debug}) _msg debug "_add_blog_list_to_index: Inserting blog list to index.html"
