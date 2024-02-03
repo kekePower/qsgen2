@@ -588,7 +588,7 @@ _blog_index
 function _blog_idx_for_index() {
     # This function generates the file blog/index.tmp.html
     
-    local debug=false
+    local debug=true
     
     _msg sub "- Populating ${project_dir}/blog/index.tmp.html"
     
