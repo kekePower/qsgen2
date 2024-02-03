@@ -181,7 +181,7 @@ function _list_blogs() {
     setopt local_options null_glob
 
     # Directly capture matching blog files into an array
-    local -a blog_files=(blog/*.blog(O))
+    local -a blog_files=(blog/*.blog(On))
 
     if (( ${#blog_files[@]} == 0 )); then
         if ${debug}; then _msg debug "_list_blogs: No blog files found."; fi
