@@ -508,25 +508,28 @@ function _blogs() {
                    blog_content=$(echo "${blog_content}" | perl -pe "s|\QINGRESS\E|${ingress}|g")
                    blog_content=$(echo "${blog_content}" | perl -pe "s|\QBODY\E|${body}|g")
 
-                   if (${debug}) _msg debug "_blogs: Running function _html for ${blog}"
-                   # Apply transformations
-                   blog_content="$(_html "${blog_content}")"
+                   if (${debug}) _msg debug "_blogs: Running function $engine for ${blog}"
+                  if [[ ${file_ext} == "tpl" ]]; then
+                   blog_content=$( ${engine} "${blog_content}" )
                    # Look for links, images and videos and convert them if present.
                    if (${debug}) _msg debug "_blogs: Checking for #link, #showimg and #ytvideo in blog_content"
                    if [[ $( echo ${blog_content} | grep \#link ) ]]; then
                        if (${debug}) _msg debug "_blogs: #link is present, run _link: blog_content"
-                       blog_content="$(_link "${blog_content}")"
+                       blog_content=$(_link "${blog_content}")
                    fi
                    if [[ $( echo ${blog_content} | grep \#showimg ) ]]; then
                        if (${debug}) _msg debug "_blogs: #showimg is present, run _link: blog_content"
-                       blog_content="$(_image "${blog_content}")"
+                       blog_content=$(_image "${blog_content}")
                    fi
                    if [[ $( echo ${blog_content} | grep \#ytvideo ) ]]; then
                        if (${debug}) _msg debug "_blogs: #ytvideo is present, run _link: blog_content"
-                       blog_content="$(_youtube "${blog_content}")"
+                       blog_content=$(_youtube "${blog_content}")
                    fi
-                   blog_content="$(_last_updated "${blog_content}")"
-                   blog_content="$(_cleanup "${blog_content}")"
+                  elif [[ ${file_ext} == "md" ]]; then
+                    local blog_content=$(echo "$blog_content" | ${engine})
+                  fi
+                   blog_content=$(_last_updated "${blog_content}")
+                   blog_content=$(_cleanup "${blog_content}")
                    
                    # Create directory if it doesn't exist
                    if (${debug}) _msg debug "_blogs: Creating directoty ${www_root}/${blog_dir}"
@@ -603,10 +606,9 @@ function _blog_idx_for_index() {
             blog_list_content=$(echo "${blog_list_content}" | perl -pe "s|CALNDAY|${calnday}|g")
             blog_list_content=$(echo "${blog_list_content}" | perl -pe "s|CALMONTH|${calmonth}|g")
             blog_list_content=$(echo "${blog_list_content}" | perl -pe "s|CALYEAR|${calyear}|g")
-            
-            unset sdate btitle ingress url
         
         done
+          unset sdate btitle ingress url
     
             if (${debug}) _msg debug "_blog_idx_for_index: Writing _blog_idx_for_index to file: ${project_dir}/blog/index.tmp.html"
             if (${debug}) _msg debug "_blog_idx_for_index: blog_list_content = ${blog_list_content}"
