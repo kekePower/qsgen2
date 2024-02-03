@@ -463,19 +463,20 @@ function _pages() {
 
 function _blogs() {
     # This function either generates blog files or exports metadata based on the argument
-    
-    if [[ ${no_blogs_found} == "true" ]]; then
-      _msg std "You do not have any blogs."
-      continue
-    fi
-    
-    _msg other "Generating Blogs"
 
     local debug=false
 
     # Running function _list_blogs
     if (${debug}) _msg debug "_blogs: Running function _list_blogs"
     _list_blogs
+    
+    if [[ ${no_blogs_found} == "true" ]]; then
+      _msg std "* You do not have any blogs *"
+      return
+    fi
+    
+    _msg other "Generating Blogs"
+    
     # Running function _blog_cache
     if (${debug}) _msg debug "_blogs: Running function _blog_cache"
     _blog_cache
