@@ -523,14 +523,18 @@ function _blogs() {
 
                    # Prepare the blog template
                    if (${debug}) _msg debug "_blogs: Processing substitutes in ${blog}"
-                   local blog_content=$(echo "${blog_tpl}" | perl -pe "s|BLOGTITLE|${btitle}|g")
-                   blog_content=$(echo "${blog_content}" | perl -pe "s|CALADAY|${sdate[1]}|g")
-                   blog_content=$(echo "${blog_content}" | perl -pe "s|CALNDAY|${sdate[4]}|g")
-                   blog_content=$(echo "${blog_content}" | perl -pe "s|CALMONTH|${sdate[3]}|g")
-                   blog_content=$(echo "${blog_content}" | perl -pe "s|CALYEAR|${sdate[2]}|g")
-                   blog_content=$(echo "${blog_content}" | perl -pe "s|BLOGURL|${blog_url}|g")
-                   blog_content=$(echo "${blog_content}" | perl -pe "s|\QINGRESS\E|${ingress}|g")
-                   blog_content=$(echo "${blog_content}" | perl -pe "s|\QBODY\E|${body}|g")
+                   local blog_content=$(
+                        echo "${blog_tpl}" | \
+                          perl -pe "\
+                          s|BLOGTITLE|${btitle}|g; \
+                          s|CALADAY|${sdate[1]}|g; \
+                          s|CALNDAY|${sdate[4]}|g; \
+                          s|CALMONTH|${sdate[3]}|g; \
+                          s|CALYEAR|${sdate[2]}|g; \
+                          s|BLOGURL|${blog_url}|g; \
+                          s|\QINGRESS\E|${ingress}|g; \
+                          s|\QBODY\E|${body}|g \
+                        ")
 
                    if (${debug}) _msg debug "_blogs: Running function $engine for ${blog}"
                   if [[ ${file_ext} == "tpl" ]]; then
