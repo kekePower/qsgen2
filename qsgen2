@@ -76,7 +76,7 @@ _list_sites() {
     if [[ -f "$sites_file" ]]; then
         echo "Registered Sites:"
         while IFS='|' read -r site_name site_dir; do
-          printf "%-30s - Directory: %-50s\n" "Site: ${magenta}$site_name${end}" "${blue}$site_dir${end}"
+          printf "${magenta}%-30s${end} - Directory: ${blue}%-50s${end}\n" "Site: $site_name" "$site_dir"
         done < "$sites_file"
     else
         echo "No sites registered."
