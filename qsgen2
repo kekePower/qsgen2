@@ -677,10 +677,6 @@ function _blog_idx_for_index() {
             if (${debug}) _msg debug "_blog_idx_for_index: Writing _blog_idx_for_index to file: ${project_dir}/blog/index.tmp.html"
             if (${debug}) _msg debug "_blog_idx_for_index: blog_list_content = ${blog_list_content}"
             echo ${blog_list_content} >> ${project_dir}/blog/index.tmp.html
-            
-            # Debug exit
-            ls -l ${project_dir}/blog/index.tmp.html
-            #exit
 
     done
 
@@ -714,11 +710,10 @@ function _blog_index() {
 
 function _add_blog_list_to_index() {
   
-  local debug=true
+  local debug=false
   
   # Let's find the file 'index.qst' and add the blog if blog_in_index is true
   #if [[ ${new_updated_blogs} == "true" ]] && [[ ${blog_in_index} == "true" ]]; then
-    _msg sub "- Adding blog list to ${www_root}/index.html"
     if (${debug}) _msg debug "_add_blog_list_to_index: Inserting blog list to index.html"
     local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
     local site_index_file=$(<${www_root}/index.html)
