@@ -466,7 +466,7 @@ function _blogs() {
     
     if [[ ${no_blogs_found} == "true" ]]; then
       _msg std "You do not have any blogs."
-      return
+      continue
     fi
     
     _msg other "Generating Blogs"
