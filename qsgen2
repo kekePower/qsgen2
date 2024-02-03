@@ -412,7 +412,7 @@ function _pages() {
         pages_tpl=$(echo "${pages_tpl}" | perl -pe "s|#pagetitle|${page_title}|gs; s|#tagline|${site_tagline}|gs; s|#sitename|${site_name}|gs")
         
         # Insert the blog to the front page is blog_in_index is true and the file in the array is index.file_ext
-        if [[ ${pages_in_array} == "index.${file_ext}"]] && [[ ${blog_in_index} == "true" ]]; then
+        if [[ ${pages_in_array} == "index.${file_ext}" &&  ${blog_in_index} == "true" ]]; then
           if [[ -f ${project_dir}/blog/index.tmp.html ]]; then
             local blog_index_file=$(<${project_dir}/blog/index.tmp.html)
           else
