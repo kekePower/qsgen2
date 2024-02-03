@@ -99,6 +99,7 @@ function _msg() {
         ;;
         sub)
             echo "${magenta}${2}${end}"
+        ;;
         *)
             echo "${2}"
         ;;
