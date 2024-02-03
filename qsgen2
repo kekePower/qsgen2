@@ -86,10 +86,10 @@ function _msg() {
     
     case ${1} in
         std)
-            echo "${green}${2}${end}"
+            echo "${yellow}${2}${end}"
         ;;
         info)
-            echo "${yellow}${2}${end}"
+            echo "${green}${2}${end}"
         ;;
         debug)
             echo "${red}${2}${end}"
