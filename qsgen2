@@ -409,15 +409,18 @@ function _pages() {
         
         # Replace every #pagetitle in pages_tpl
         if (${debug}) _msg debug "_pages: Replacing #pagetitle in pages_tpl"
-        local pages_tpl=$( echo ${pages_tpl} | perl -pe "s|#pagetitle|${page_title}|gs" )
+        local pages_tpl="${pages_tpl//#pagetitle/$page_title}"
+        #local pages_tpl=$( echo ${pages_tpl} | perl -pe "s|#pagetitle|${page_title}|gs" )
         
         # Replace every #tagline in pages_tpl
         if (${debug}) _msg debug "_pages: Replacing tagline"
-        local pages_tpl=$( echo ${pages_tpl} | perl -pe "s|#tagline|${site_tagline}|gs" )
+        local pages_tpl="${pages_tpl//#tagline/$site_tagline}"
+        #local pages_tpl=$( echo ${pages_tpl} | perl -pe "s|#tagline|${site_tagline}|gs" )
         
         # Replace every #sitename in pages_tpl
         if (${debug}) _msg debug "_pages: Replacing sitename"
-        local pages_tpl=$( echo ${pages_tpl} | perl -pe "s|#sitename|${site_name}|gs" )
+        local pages_tpl="${pages_tpl//#sitename/$site_name}"
+        #local pages_tpl=$( echo ${pages_tpl} | perl -pe "s|#sitename|${site_name}|gs" )
         
         # Replace #updated with today's date and #version with Name and Version to footer
         if (${debug}) _msg debug "_pages: _last_updated in pages_tpl"
