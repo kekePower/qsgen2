@@ -556,10 +556,6 @@ function _blogs() {
                   if (${debug}) _msg debug "_blogs: Replacing tagline, sitename and pagetitle"
                   blog_content=$( echo ${blog_content} | perl -pe "s|#tagline|${site_tagline}|gs; s|#sitename|${site_name}|gs; s|#pagetitle|${page_title}|gs" )
                   
-                  # Replace every #sitename in blog_content
-                  #if (${debug}) _msg debug "_blogs: Replacing sitename"
-                  #local blog_content=$( echo ${blog_content} | perl -pe "s|#sitename|${site_name}|gs" )
-                  
                    blog_content=$(_last_updated "${blog_content}")
                    blog_content=$(_cleanup "${blog_content}")
                    
@@ -582,6 +578,7 @@ function _blogs() {
         _msg sub "- No new or updated Blogs found"
         export new_updated_blogs=false
     fi
+
 _blog_idx_for_index
 _blog_index
 
@@ -625,20 +622,24 @@ function _blog_idx_for_index() {
 
             local adate=( $( echo ${sdate} ) )
             local caladay="${adate[1]}"
-            local calnday="${adate[4]}"
-            local calmonth="${adate[3]}"
             local calyear="${adate[2]}"
+            local calmonth="${adate[3]}"
+            local calnday="${adate[4]}"
             
             local bdate="${adate[1]} - ${adate[4]}/${adate[3]}/${adate[2]}"
-            blog_list_content=$(echo "${blog_list_tpl}" | perl -pe "s|BLOGURL|${url}|g")
-            blog_list_content=$(echo "${blog_list_content}" | perl -pe "s|BLOGTITLE|${btitle}|g")
-            blog_list_content=$(echo "${blog_list_content}" | perl -pe "s|INGRESS|${ingress}|g")
-            blog_list_content=$(echo "${blog_list_content}" | perl -pe "s|BLOGDATE|${bdate}|g")
-            blog_list_content=$(echo "${blog_list_content}" | perl -pe "s|CALADAY|${caladay}|g")
-            blog_list_content=$(echo "${blog_list_content}" | perl -pe "s|CALNDAY|${calnday}|g")
-            blog_list_content=$(echo "${blog_list_content}" | perl -pe "s|CALMONTH|${calmonth}|g")
-            blog_list_content=$(echo "${blog_list_content}" | perl -pe "s|CALYEAR|${calyear}|g")
-        
+            blog_list_content=$(
+            echo "${blog_list_tpl}" | \
+              perl -pe "\
+              s|BLOGURL|${url}|g; \
+              s|BLOGTITLE|${btitle}|g; \
+              s|INGRESS|${ingress}|g; \
+              s|BLOGDATE|${bdate}|g; \
+              s|CALADAY|${caladay}|g; \
+              s|CALNDAY|${calnday}|g; \
+              s|CALMONTH|${calmonth}|g; \
+              s|CALYEAR|${calyear}|g \
+              ")
+                              
         done
           unset sdate btitle ingress url
     
@@ -981,6 +982,6 @@ function _zhtml() {
 
 # Time to run the first function
 _blogs
-_add_blog_list_to_index
+# _add_blog_list_to_index
 _pages
 _sitemap
