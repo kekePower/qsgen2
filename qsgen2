@@ -589,6 +589,8 @@ function _blog_idx_for_index() {
     
     local debug=false
     
+    _msg sub "- Populating ${project_dir}/blog/index.tmp.html"
+    
     if (${debug}) _msg debug "_blog_idx_for_index: Initiating function"
     
     local blog_list_tpl=$(<${project_dir}/themes/${theme}/blog_list.tpl)
@@ -690,6 +692,7 @@ function _add_blog_list_to_index() {
   
   # Let's find the file 'index.tpl' and add the blog if blog_in_index is true
   if [[ ${new_updated_blogs} == "true" ]] && [[ ${blog_in_index} == "true" ]]; then
+    _msg sub "- Adding blog list to ${www_root}/index.html"
     if (${debug}) _msg debug "_add_blog_list_to_index: Inserting blog list to index.html"
     local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
     local site_index_file=$(<${www_root}/index.html)
