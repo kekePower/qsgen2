@@ -593,9 +593,9 @@ function _blog_idx_for_index() {
 
             local adate=( $( echo ${sdate} ) )
             local caladay="${adate[1]}"
-            local calnday="${adate[2]}"
+            local calnday="${adate[4]}"
             local calmonth="${adate[3]}"
-            local calyear="${adate[4]}"
+            local calyear="${adate[2]}"
             
             local bdate="${adate[1]} - ${adate[4]}/${adate[3]}/${adate[2]}"
             blog_list_content=$(echo "${blog_list_tpl}" | perl -pe "s|BLOGURL|${url}|g")
