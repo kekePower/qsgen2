@@ -568,10 +568,12 @@ function _blogs() {
         _msg sub "- No new or updated Blogs found"
         export new_updated_blogs=false
     fi
-_msg sub "_blogs: Running _blog_idx_for_index"
-_blog_idx_for_index
-_msg sub "_blogs: Running _blog_index"
-_blog_index
+if [[ ${new_updated_blogs} == "true" ]]; then
+  if (${debug}) _msg sub "* _blogs: Running _blog_idx_for_index"
+  _blog_idx_for_index
+  if (${debug}) _msg sub "* _blogs: Running _blog_index"
+  _blog_index
+fi
 
 }
 
