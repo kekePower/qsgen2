@@ -145,24 +145,28 @@ export blogdate=$( date +%a-%Y-%b-%d )
 
 function _list_pages() {
     local debug=true
-    
+
+    # Initialize or clear the array to ensure it's empty before adding files
+    pages_file_array=()
+
     export no_pages_found=false
 
     # Temporarily set null_glob for this function
-    #setopt local_options null_glob
+    setopt local_options null_glob
 
-    # Check if there are any .blog files in the blog directory
-    local pages_files=$(ls *.${file_ext})
+    # Using an array to directly capture matching files
+    local -a pages_files=(*.${file_ext})
+
     if (( ${#pages_files} == 0 )); then
-        if (${debug}); then _msg debug "_list_pages: No Pages found with ext ${file_ext}."; fi
+        if ${debug}; then _msg debug "_list_pages: No Pages found with ext ${file_ext}."; fi
         export no_pages_found=true
         return
+    else
+        for file in "${pages_files[@]}"; do
+            if ${debug}; then _msg debug "_list_pages: Adding file to array: ${file}"; fi
+            pages_file_array+=("$file")
+        done
     fi
-
-    for file in $( echo ${pages_files} ); do
-        if (${debug}) _msg debug "_list_pages: Adding file to array: ${file}"
-        pages_file_array+=("$file")
-    done
 }
 
 function _list_blogs() {
