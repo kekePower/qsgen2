@@ -382,7 +382,7 @@ function _pages() {
             local pages_tpl="$(<${pages})"
         fi
         
-        _msg std "Generating Page: ${pages_in_array%.*}.html"
+        _msg std "- Generating Page: ${pages_in_array%.*}.html"
         # Read the file once
         if (${debug}) _msg debug "_pages: Loading page_content once - ${pages_in_array}"
         local page_content="$(<${pages_in_array})"
@@ -540,7 +540,7 @@ function _blogs() {
                     
                    if (${debug}) _msg debug "_blogs: Processing ${blog}"
                        
-                   _msg std "Generating Blog: ${blog_index}.html"
+                   _msg std "- Generating Blog: ${blog_index}.html"
 
                    # Prepare the blog template
                    if (${debug}) _msg debug "_blogs: Processing substitutes in ${blog}"
