@@ -408,18 +408,17 @@ function _pages() {
         pages_tpl=$( awk -v new_body="$page_content" '{sub(/BODY/, new_body)} 1' <(echo "${pages_tpl}") )
         
         # Replace every #pagetitle in pages_tpl
-        if (${debug}) _msg debug "_pages: Replacing #pagetitle in pages_tpl"
-        pages_tpl="${pages_tpl//#pagetitle/${page_title}}"
-        #local pages_tpl=$( echo ${pages_tpl} | perl -pe "s|#pagetitle|${page_title}|gs" )
+        if (${debug}) _msg debug "_pages: Replacing #pagetitle, #tagline and #sitename in pages_tpl"
+        pages_tpl=$(echo "${pages_tpl}" | perl -pe "s|#pagetitle|${page_title}|gs; s|#tagline|${site_tagline}|gs; s|#sitename|${site_name}|gs")
         
         # Replace every #tagline in pages_tpl
-        if (${debug}) _msg debug "_pages: Replacing tagline"
-        pages_tpl="${pages_tpl//#tagline/${site_tagline}}"
+        #if (${debug}) _msg debug "_pages: Replacing tagline"
+        #pages_tpl="${pages_tpl//#tagline/${site_tagline}}"
         #local pages_tpl=$( echo ${pages_tpl} | perl -pe "s|#tagline|${site_tagline}|gs" )
         
         # Replace every #sitename in pages_tpl
-        if (${debug}) _msg debug "_pages: Replacing sitename"
-        pages_tpl="${pages_tpl//#sitename/${site_name}}"
+        #if (${debug}) _msg debug "_pages: Replacing sitename"
+        #pages_tpl="${pages_tpl//#sitename/${site_name}}"
         #local pages_tpl=$( echo ${pages_tpl} | perl -pe "s|#sitename|${site_name}|gs" )
         
         # Replace #updated with today's date and #version with Name and Version to footer
