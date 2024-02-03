@@ -364,7 +364,7 @@ function _pages() {
         else
             # Read template once
             if (${debug}) _msg debug "_pages: Reading Pages template into pages_tpl"
-            pages_tpl="$(<${pages})"
+            local pages_tpl="$(<${pages})"
         fi
         
         _msg std "Generating Page: ${pages_in_array%.*}.html"
@@ -379,60 +379,60 @@ function _pages() {
         
         # Remove the #title line from the buffer. No longer needed.
         if (${debug}) _msg debug "_pages: Removing #title line from page_content"
-        local page_content=$( echo ${page_content} | grep -v \#title )
+        page_content=$( echo ${page_content} | grep -v \#title )
         
         # HTML'ify the page content
         if (${debug}) _msg debug "_pages: Running engine on ${pages_in_array}"
         if [[ ${file_ext} == "tpl" ]]; then
-            local page_content=$( ${engine} "$page_content" )
+            page_content=$( ${engine} "$page_content" )
             # Look for links, images and videos and convert them if present.
           if (${debug}) _msg debug "_pages: Checking for #link, #showimg and #ytvideo in page_content"
           if [[ $( echo ${page_content} | grep \#link ) ]]; then
             if (${debug}) _msg debug "_pages: #link is present, run _link: page_content"
-            local page_content=$( _link "${page_content}" )
+            page_content=$( _link "${page_content}" )
             fi
           if [[ $( echo ${page_content} | grep \#showimg ) ]]; then
             if (${debug}) _msg debug "_pages: #showimg is present, run _image: page_content"
-            local page_content=$( _image "${page_content}" )
+            page_content=$( _image "${page_content}" )
           fi
           if [[ $( echo ${page_content} | grep \#ytvideo ) ]]; then
             if (${debug}) _msg debug "_pages: #ytvideo is present, run _youtube: page_content"
-            local page_content=$( _youtube "${page_content}" )
+            page_content=$( _youtube "${page_content}" )
           fi
         elif [[ ${file_ext} == "md" ]]; then
-            local page_content=$(echo "$page_content" | ${engine})
+            page_content=$(echo "$page_content" | ${engine})
         fi
         
         if (${debug}) _msg debug "_pages: Replacing BODY with page_content in pages_tpl"
-        # Use Perl for multi-line and special character handling
-        local pages_tpl=$( awk -v new_body="$page_content" '{sub(/BODY/, new_body)} 1' <(echo "${pages_tpl}") )
+        # Use awk for multi-line and special character handling
+        pages_tpl=$( awk -v new_body="$page_content" '{sub(/BODY/, new_body)} 1' <(echo "${pages_tpl}") )
         
         # Replace every #pagetitle in pages_tpl
         if (${debug}) _msg debug "_pages: Replacing #pagetitle in pages_tpl"
-        local pages_tpl="${pages_tpl//#pagetitle/$page_title}"
+        pages_tpl="${pages_tpl//#pagetitle/$page_title}"
         #local pages_tpl=$( echo ${pages_tpl} | perl -pe "s|#pagetitle|${page_title}|gs" )
         
         # Replace every #tagline in pages_tpl
         if (${debug}) _msg debug "_pages: Replacing tagline"
-        local pages_tpl="${pages_tpl//#tagline/$site_tagline}"
+        pages_tpl="${pages_tpl//#tagline/$site_tagline}"
         #local pages_tpl=$( echo ${pages_tpl} | perl -pe "s|#tagline|${site_tagline}|gs" )
         
         # Replace every #sitename in pages_tpl
         if (${debug}) _msg debug "_pages: Replacing sitename"
-        local pages_tpl="${pages_tpl//#sitename/$site_name}"
+        pages_tpl="${pages_tpl//#sitename/$site_name}"
         #local pages_tpl=$( echo ${pages_tpl} | perl -pe "s|#sitename|${site_name}|gs" )
         
         # Replace #updated with today's date and #version with Name and Version to footer
         if (${debug}) _msg debug "_pages: _last_updated in pages_tpl"
-        local pages_tpl=$( _last_updated ${pages_tpl} )
+        pages_tpl=$( _last_updated ${pages_tpl} )
         
         # Always use lowercase for file names
         if (${debug}) _msg debug "_pages: Lowercase filnames, always"
-        local pages_title_lower=$( _file_to_lower "${pages_in_array}" )
+        pages_title_lower=$( _file_to_lower "${pages_in_array}" )
         
         # Clean up unused tags, if any
         if (${debug}) _msg debug "_pages: Running _cleanup"
-        local pages_tpl=$( _cleanup "${pages_tpl}" )
+        pages_tpl=$( _cleanup "${pages_tpl}" )
         
         # Write pages_tpl to disk
         # _msg std "Writing ${www_root}/${pages_title_lower%.*}.html to disk."
