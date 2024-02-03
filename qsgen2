@@ -501,9 +501,9 @@ function _blogs() {
                    if (${debug}) _msg debug "_blogs: Processing substitutes in ${blog}"
                    local blog_content=$(echo "${blog_tpl}" | perl -pe "s|BLOGTITLE|${btitle}|g")
                    blog_content=$(echo "${blog_content}" | perl -pe "s|CALADAY|${sdate[1]}|g")
-                   blog_content=$(echo "${blog_content}" | perl -pe "s|CALNDAY|${sdate[2]}|g")
+                   blog_content=$(echo "${blog_content}" | perl -pe "s|CALNDAY|${sdate[4]}|g")
                    blog_content=$(echo "${blog_content}" | perl -pe "s|CALMONTH|${sdate[3]}|g")
-                   blog_content=$(echo "${blog_content}" | perl -pe "s|CALYEAR|${sdate[4]}|g")
+                   blog_content=$(echo "${blog_content}" | perl -pe "s|CALYEAR|${sdate[2]}|g")
                    blog_content=$(echo "${blog_content}" | perl -pe "s|BLOGURL|${blog_url}|g")
                    blog_content=$(echo "${blog_content}" | perl -pe "s|\QINGRESS\E|${ingress}|g")
                    blog_content=$(echo "${blog_content}" | perl -pe "s|\QBODY\E|${body}|g")
