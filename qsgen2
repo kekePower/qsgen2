@@ -442,6 +442,17 @@ function _pages() {
       export new_updated_pages=true
       
     else
+      
+        # Insert the blog to the front page is blog_in_index is true and the file in the array is index.file_ext
+        # and if index.tmp.html exist and is not empty
+        if [[ ${pages_in_array} == "index.${file_ext}" &&  ${blog_in_index} == "true" && -s "${project_dir}/blog/index.tmp.html" ]]; then
+          _msg std "Updating index.html with new blog posts"
+          if (${debug}) _msg sub "- Parsing ${pages_in_array}"
+          if (${debug}) _msg sub "- blog_in_index = ${blog_in_index}"
+          if (${debug}) _msg sub "- Listing blog temp file:"
+          if (${debug}) ls -l ${project_dir}/blog/index.tmp.html
+          _add_blog_list_to_index
+        fi
         
         _msg sub "- No new or updated Pages found"
         export new_updated_pages=false
