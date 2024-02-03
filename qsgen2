@@ -464,6 +464,11 @@ function _pages() {
 function _blogs() {
     # This function either generates blog files or exports metadata based on the argument
     
+    if [[ ${no_blogs_found} == "true" ]]; then
+      _msg std "You do not have any blogs."
+      return
+    fi
+    
     _msg other "Generating Blogs"
 
     local debug=false
