@@ -355,7 +355,7 @@ function _pages() {
     _pages_cache
     
     if [[ ${no_pages_found} == "true" ]]; then
-      _msg std "* You do not have any pages *"
+      _msg sub "* You do not have any pages *"
       return
     fi
     
@@ -486,7 +486,7 @@ function _blogs() {
     _list_blogs
     
     if [[ ${no_blogs_found} == "true" ]]; then
-      _msg std "* You do not have any blogs *"
+      _msg sub "* You do not have any blogs *"
       return
     fi
     
