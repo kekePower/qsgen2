@@ -38,6 +38,72 @@ include common/colors
 
 echo "${magenta}${blue_bg} ${QSGEN} ${end}${white}${blue_bg}${VERSION} ${end}"
 
+_add_site() {
+    local site_name="${1}"
+    local project_dir="${2}"
+    local sites_file="${HOME}/.config/qsgen2/sites.qsc"
+
+    # Ensure the configuration directory and sites file exist
+    mkdir -p "${HOME}/.config/qsgen2"
+    touch "${sites_file}"
+
+    # Check if the site already exists in the file
+    if grep -q "^${site_name}|" "${sites_file}"; then
+        echo "Site '$site_name' already exists."
+        return 1 # Exit the function with an error status.
+    fi
+
+    # Validate project directory
+    if [[ ! -d "${project_dir}" ]]; then
+        echo "The specified project directory does not exist."
+        return 1 # Exit the function with an error status.
+    fi
+
+    # Add the site to the sites file
+    echo "${site_name}|${project_dir}" >> "${sites_file}"
+    echo "Site '${site_name}' added successfully."
+}
+
+_list_sites() {
+    local config_dir="${HOME}/.config/qsgen2"
+    local sites_file="${config_dir}/sites.qsc"
+
+    # Ensure the configuration directory exists; create it if it doesn't.
+    # This might be more relevant in other parts of your script.
+    mkdir -p "$config_dir"
+    touch "${sites_file}"
+
+    if [[ -f "$sites_file" ]]; then
+        echo "Registered qsgen2 Sites:"
+        while IFS='|' read -r site_name site_dir; do
+            echo "Site: $site_name - Directory: $site_dir"
+        done < "$sites_file"
+    else
+        echo "No sites registered."
+    fi
+}
+
+
+case "$1" in
+    add)
+        if [[ $# -eq 3 ]]; then
+            _add_site "$2" "$3"
+        else
+            echo "Usage: qsgen2 add \"Site Name\" \"/path/to/project\""
+        fi
+        exit
+        ;;
+    list)
+        _list_sites
+        exit
+        ;;
+    # Add cases for other commands like init, list, remove here
+    *)
+        echo "Usage: qsgen2 [command]"
+        exit
+        ;;
+esac
+
 function _version() {
     echo "${yellow}- Created by kekePower - 2018-$(date +%Y)${end}"
     echo "${yellow}- https://github.com/kekePower/qsgen2/${end}"
