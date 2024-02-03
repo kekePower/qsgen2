@@ -112,7 +112,7 @@ fi
 # We define the variable 'engine' based on what's in the 'config' file.
 if [[ ${generator} == "native" ]]; then
         # Usage: ${engine} ${1} - Where 1 is the file you want to convert
-        engine=_html
+        engine=_zhtml
         export file_ext=tpl
 elif [[ ${generator} == "markdown" ]]; then
     if [[ ! -f /usr/local/bin/pandoc ]]; then
@@ -122,18 +122,6 @@ elif [[ ${generator} == "markdown" ]]; then
     else
         # Usage: ${engine} ${1} - Where 1 is the file you want parsed
         engine=/usr/local/bin/pandoc
-#        function engine() {
-#  
-#          local command="/usr/bin/Markdown.pl"
-#          local c-opts=
-#  
-#          $(command) "$1"
-#          
-#          # Assign the output to the global variable named by $1
-#          # eval "$1=\${result}"
-#  
-#          # echo "${(P)1}"
-#        }
         export file_ext=md
     fi
 fi
@@ -293,13 +281,14 @@ function _pages_cache() {
 function _last_updated() {
     # This function updates #updated and #version tags in the provided string for buffers
 
-    local content="${1}"
     local debug=true
-    
-    local upd_msg="Last updated ${today} by <a href=\"https://blog.kekepower.com/qsgen2.html\">${QSGEN} ${VERSION}</a>"
 
     if (${debug}) _msg debug "_last_updated: Setting date and version in footer"
     if (${debug}) _msg debug "_last_updated: ${upd_msg}"
+      
+    local upd_msg="Last updated ${today} by <a href=\"https://blog.kekepower.com/qsgen2.html\">${QSGEN} ${VERSION}</a>"
+    
+    local content="${1}"
 
     # Perform the replacements
     local updated_content=$(echo "${content}" | sed \
@@ -311,15 +300,16 @@ function _last_updated() {
 
 function _f_last_updated() {
     # This function updates #updated and #version tags in the provided string in files
-
-    local content="${1}"
+    
     local debug=true
     
-    local upd_msg="Last updated ${today} by <a href=\"https://blog.kekepower.com/qsgen2.html\">${QSGEN} ${VERSION}</a>"
-
     if (${debug}) _msg debug "_f_last_updated: Setting date and version in footer of file ${1}"
     if (${debug}) _msg debug "_f_last_updated: ${upd_msg}"
-
+    
+    local upd_msg="Last updated ${today} by <a href=\"https://blog.kekepower.com/qsgen2.html\">${QSGEN} ${VERSION}</a>"
+    
+    local content="${1}"
+    
     # Perform the replacements
     tee < ${content} | sed \
         -e "s|#updated|${upd_msg}|" \
@@ -826,7 +816,7 @@ function _cleanup() {
     echo "${cleaned_content}"
 }
 
-_html() {
+function _html() {
     local content="$1"
     local debug=false
 
@@ -880,7 +870,69 @@ _html() {
     ' <<< "$content"
 }
 
-# Time to test the first function
+function _zhtml() {
+  # This function uses the regex module from Zsh to parse the QStags
+  
+    local content="$1"
+    local debug=false
+
+    if ${debug}; then
+        echo "_html: Converting QStags in content"
+    fi
+
+    # Load regex module
+    zmodload zsh/regex
+
+    # Define tag replacements as an associative array
+    typeset -A tags=(
+        "#BR" "<br/>\n"
+        "#BD" "<b>" "#EBD" "</b>"
+        "#I" "<i>" "#EI" "</i>\n"
+        "#P" "<p>" "#EP" "</p>\n"
+        "#Q" "<blockquote>" "#EQ" "</blockquote>\n"
+        "#C" "<code>" "#EC" "</code>\n"
+        "#H1" "<h1>" "#EH1" "</h1>\n"
+        "#H2" "<h2>" "#EH2" "</h2>\n"
+        "#H3" "<h3>" "#EH3" "</h3>\n"
+        "#H4" "<h4>" "#EH4" "</h4>\n"
+        "#H5" "<h5>" "#EH5" "</h5>\n"
+        "#H6" "<h6>" "#EH6" "</h6>\n"
+        "#STRONG" "<strong>" "#ESTRONG" "</strong>\n"
+        "#EM" "<em>" "#EEM" "</em>\n"
+        "#DV" "<div>" "#EDV" "</div>\n"
+        "#SPN" "<span>" "#ESPN" "</span>\n"
+        "#UL" "<ul>" "#EUL" "</ul>\n"
+        "#OL" "<ol>" "#EOL" "</ol>\n"
+        "#LI" "<li>" "#ELI" "</li>\n"
+        "#U" "<u>" "#EU" "</u>\n"
+        "#TBL" "<table>" "#ETBL" "</table>\n"
+        "#TR" "<tr>" "#ETR" "</tr>\n"
+        "#TD" "<td>" "#ETD" "</td>\n"
+        "#TH" "<th>" "#ETH" "</th>\n"
+        "#ART" "<article>" "#EART" "</article>\n"
+        "#SEC" "<section>" "#ESEC" "</section>\n"
+        "#ASIDE" "<aside>" "#EASIDE" "</aside>\n"
+        "#NAV" "<nav>" "#ENAV" "</nav>\n"
+        "#BTN" "<button>" "#EBTN" "</button>\n"
+        "#SEL" "<select>" "#ESEL" "</select>\n"
+        "#OPT" "<option>" "#EOPT" "</option>\n"
+        "#LT" "&lt;" "#GT" "&gt;" "#NUM" "&num;"
+    )
+
+    for tag html (${(kv)tags}); do
+        # Escape tag for regex use
+        local escapedTag=$(printf '%s' "$tag" | sed 's/[].\[^$*]/\\&/g')
+        if [[ "$content" =~ "$escapedTag" ]]; then
+            content=${content//($tag)/$html}
+        fi
+    done
+
+    echo "$content"
+}
+
+
+
+# Time to run the first function
 _blogs
 _pages
 _add_blog_list_to_index
