@@ -338,13 +338,18 @@ function _file_to_lower() {
 function _pages() {
     # This function generates all the new and updated Pages
     
-    _msg other "Generating Pages"
-    
     local debug=false
     
     # Load the cache for Pages
     if (${debug}) _msg debug "_pages: Running function _pages_cache"
     _pages_cache
+    
+    if [[ ${no_pages_found} == "true" ]]; then
+      _msg std "* You do not have any pages *"
+      return
+    fi
+    
+    _msg other "Generating Pages"
     
     if (( ${#pages_array[@]} > 0 )); then
     
