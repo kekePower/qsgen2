@@ -144,7 +144,7 @@ export blogdate=$( date +%a-%Y-%b-%d )
 # Let's create arrays of all the files we'll be working on
 
 function _list_pages() {
-    local debug=true
+    local debug=false
 
     # Initialize or clear the array to ensure it's empty before adding files
     pages_file_array=()
@@ -172,23 +172,29 @@ function _list_pages() {
 function _list_blogs() {
     local debug=false
     
+    # Initialize or clear the blogs array to ensure it's empty before adding files
+    blogs_file_array=()
+
     export no_blogs_found=false
 
     # Temporarily set null_glob for this function
     setopt local_options null_glob
 
-    # Check if there are any .blog files in the blog directory
-    local blog_files=(blog/*.blog)
-    if (( ${#blog_files} == 0 )); then
-        if (${debug}); then _msg debug "_list_blogs: No blog files found."; fi
+    # Directly capture matching blog files into an array
+    local -a blog_files=(blog/*.blog)
+
+    if (( ${#blog_files[@]} == 0 )); then
+        if ${debug}; then _msg debug "_list_blogs: No blog files found."; fi
         export no_blogs_found=true
         return
+    else
+        for file in "${blog_files[@]}"; do
+            if ${debug}; then _msg debug "_list_blogs: Adding file to array: $file"; fi
+            blogs_file_array+=("$file")
+        done
     fi
-
-    for file in $( ls -har blog/*.blog ); do
-        blogs_file_array+=("$file")
-    done
 }
+
 
 # BLOG CACHE
 function _blog_cache() {
