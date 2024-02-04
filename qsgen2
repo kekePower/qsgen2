@@ -36,10 +36,6 @@ function include () {
 # Including some colors to the script
 include common/colors
 
-# Define cache files for blogs and pages
-blog_cache_file="${project_dir}/.blog_cache"
-pages_cache_file="${project_dir}/.pages_cache"
-
 echo "${magenta}${blue_bg} ${QSGEN} ${end}${white}${blue_bg}${VERSION} ${end}"
 
 _add_site() {
@@ -128,6 +124,10 @@ if (${debug}); then
         echo "${yellow}${qslines}${end}"
     done
 fi
+
+# Define cache files for blogs and pages
+blog_cache_file="${project_dir}/.blog_cache"
+pages_cache_file="${project_dir}/.pages_cache"
 
 case "$1" in
     add)
