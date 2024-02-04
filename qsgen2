@@ -36,6 +36,10 @@ function include () {
 # Including some colors to the script
 include common/colors
 
+# Define cache files for blogs and pages
+blog_cache_file="${project_dir}/.blog_cache"
+pages_cache_file="${project_dir}/.pages_cache"
+
 echo "${magenta}${blue_bg} ${QSGEN} ${end}${white}${blue_bg}${VERSION} ${end}"
 
 _add_site() {
@@ -97,7 +101,10 @@ case "$1" in
         _list_sites
         exit
         ;;
-    # Add cases for other commands like init, list, remove here
+    force)
+        : >| "$blog_cache_file"  # Truncate the blog cache before doing update
+        : >| "$pages_cache_file"  # Truncate the page cache before doing update
+        ;;
     *)
         echo "Usage: qsgen2 [command]"
         exit
@@ -196,10 +203,6 @@ elif [[ ${generator} == "markdown" ]]; then
 fi
 
 if (${debug}); then _msg debug "Using the ${generator} engine for files: ${file_ext}"; fi
-
-# Define cache files for blogs and pages
-blog_cache_file="${project_dir}/.blog_cache"
-pages_cache_file="${project_dir}/.pages_cache"
 
 builtin cd ${project_dir}
 
