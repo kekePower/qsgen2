@@ -147,8 +147,8 @@ case "$1" in
         : >| "$pages_cache_file"  # Truncate the page cache before doing update
         ;;
     *)
-        echo "Usage: qsgen2 [command]"
-        exit
+        #echo "Usage: qsgen2 [command]"
+        continue
         ;;
 esac
 
