@@ -860,7 +860,7 @@ function _link() {
             local modified_link="<a href=\"${url_dest}\">${url_txt}"
             if [[ ${url_dest} =~ ^https?:// ]]; then
                 # Add external link icon for external URLs
-                modified_link+="<img class=\"exticon\" alt=\"External site icon\" src=\"/images/ext-url-black.svg\" width=\"14\" />"
+                modified_link+="<img class=\"exticon\" alt=\"External site icon\" src=\"/images/ext-url-black.svg\" width=\"10\" />"
             fi
             modified_link+="</a>"
             line=${line//"#link ${url_full}"/${modified_link}}
