@@ -88,29 +88,6 @@ _list_sites() {
 }
 
 
-case "$1" in
-    add)
-        if [[ $# -eq 3 ]]; then
-            _add_site "$2" "$3"
-        else
-            echo "Usage: qsgen2 add \"Site Name\" \"/path/to/project\""
-        fi
-        exit
-        ;;
-    list)
-        _list_sites
-        exit
-        ;;
-    force)
-        : >| "$blog_cache_file"  # Truncate the blog cache before doing update
-        : >| "$pages_cache_file"  # Truncate the page cache before doing update
-        ;;
-    *)
-        echo "Usage: qsgen2 [command]"
-        exit
-        ;;
-esac
-
 function _version() {
     echo "${yellow}- Created by kekePower - 2018-$(date +%Y)${end}"
     echo "${yellow}- https://github.com/kekePower/qsgen2/${end}"
@@ -151,6 +128,29 @@ if (${debug}); then
         echo "${yellow}${qslines}${end}"
     done
 fi
+
+case "$1" in
+    add)
+        if [[ $# -eq 3 ]]; then
+            _add_site "$2" "$3"
+        else
+            echo "Usage: qsgen2 add \"Site Name\" \"/path/to/project\""
+        fi
+        exit
+        ;;
+    list)
+        _list_sites
+        exit
+        ;;
+    force)
+        : >| "$blog_cache_file"  # Truncate the blog cache before doing update
+        : >| "$pages_cache_file"  # Truncate the page cache before doing update
+        ;;
+    *)
+        echo "Usage: qsgen2 [command]"
+        exit
+        ;;
+esac
 
 function _msg() {
     # Use this function to write out messages based on their type
