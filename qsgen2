@@ -617,14 +617,14 @@ function _blogs() {
                         echo "${blog_tpl}" | \
                           perl -pe "\
                           s|BLOGTITLE|${btitle}|g; \
-                          s|CALADAY|${sdate[1]}|g; \
-                          s|CALNDAY|${sdate[4]}|g; \
-                          s|CALMONTH|${sdate[3]}|g; \
-                          s|CALYEAR|${sdate[2]}|g; \
                           s|BLOGURL|${blog_url}|g; \
                           s|\QINGRESS\E|${ingress}|g; \
                           s|\QBODY\E|${body}|g \
                         ")
+                    blog_content="${blog_content//CALNDAY/${sdate[4]}}"
+                    blog_content="${blog_content//CALYEAR/${sdate[2]}}"
+                    blog_content="${blog_content//CALMONTH/${sdate[3]}}"
+                    blog_content="${blog_content//CALADAY/${sdate[1]}}"
 
                    if (${debug}) _msg debug "_blogs: Running function $engine for ${blog}"
                   if [[ ${file_ext} == "qst" ]]; then
