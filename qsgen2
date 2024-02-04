@@ -148,7 +148,6 @@ case "$1" in
         ;;
     *)
         #echo "Usage: qsgen2 [command]"
-        continue
         ;;
 esac
 
