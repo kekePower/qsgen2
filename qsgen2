@@ -111,6 +111,7 @@ fi
 
 # Loading Zsh modules
 zmodload zsh/files
+autoload -Uz zsh/datetime
 
 # Check for, an source, the config file for this specific website
 if [[ -f $(pwd)/config ]]; then
