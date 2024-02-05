@@ -202,6 +202,7 @@ case "$1" in
         ;;
     cd)
         _cd_to_site ${2}
+        exit
         ;;
     force)
         _msg sub "- Forced Update: Generating Everything"
