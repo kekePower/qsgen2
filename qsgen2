@@ -158,7 +158,7 @@ function _msg() {
     esac
 }
 
-case "$1" in
+case ${1} in
     add)
         if [[ $# -eq 3 ]]; then
             _add_site "$2" "$3"
@@ -550,7 +550,7 @@ function _pages() {
 function _blogs() {
     # This function either generates blog files or exports metadata based on the argument
 
-    local debug=true
+    local debug=false
 
     # Running function _list_blogs
     if (${debug}) _msg debug "_blogs: Running function _list_blogs"
@@ -755,7 +755,7 @@ function _blog_idx_for_index() {
 
 function _blog_index() {
   
-  local debug=true
+  local debug=false
 
     # This function generates the /blog/index.html file that gets its data from _blog_list_for_index()
     # ${new_updated_blogs} comes from the function _blogs if anything new or updated is detected
