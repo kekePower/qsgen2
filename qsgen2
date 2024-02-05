@@ -58,9 +58,11 @@ _add_site() {
         echo "The specified project directory does not exist."
         return 1 # Exit the function with an error status.
     fi
-
+    # Determine the new site number by counting existing lines
+    local site_number=$(( $(wc -l < "${sites_file}") + 1 ))
+    
     # Add the site to the sites file
-    echo "${site_name}|${project_dir}" >> "${sites_file}"
+    echo "${site_number}|${site_name}|${project_dir}" >> "${sites_file}"
     echo "Site '${site_name}' added successfully."
 }
 
@@ -81,6 +83,35 @@ _list_sites() {
     else
         echo "No sites registered."
     fi
+}
+
+_cd_to_site() {
+    local site_number="${1}"
+    local sites_file="${HOME}/.config/qsgen2/sites.qsc"
+    
+    # Check if sites file exists
+    if [[ ! -f "${sites_file}" ]]; then
+        echo "Sites file not found."
+        return 1 # Exit the function with an error status.
+    fi
+
+    # Get the directory for the site number
+    local project_dir=$(awk -F'|' -v num="${site_number}" '$1 == num {print $3}' "${sites_file}")
+    
+    # Check if the directory was found
+    if [[ -z "${project_dir}" ]]; then
+        echo "Site with number ${site_number} not found."
+        return 1 # Exit the function with an error status.
+    fi
+
+    # Check if the directory exists
+    if [[ ! -d "${project_dir}" ]]; then
+        echo "The directory for site number ${site_number} does not exist."
+        return 1 # Exit the function with an error status.
+    fi
+
+    # Print the cd command
+    builtin cd ${project_dir}
 }
 
 
@@ -168,6 +199,9 @@ case "$1" in
     list)
         _list_sites
         exit
+        ;;
+    cd)
+        _cd_to_site ${2}
         ;;
     force)
         _msg sub "- Forced Update: Generating Everything"
