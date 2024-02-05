@@ -1049,7 +1049,7 @@ function _zhtml() {
         "#SPN" "<span>" "#ESPN" "</span>\n"
         "#UL" "<ul>" "#EUL" "</ul>\n"
         "#OL" "<ol>" "#EOL" "</ol>\n"
-        "#LI" "<li>" "#ELI" "</li>\n"
+        "#LI" "<li class=\"libody\">" "#ELI" "</li>\n"
         "#IU" "<u>" "#EIU" "</u>\n"
         "#TBL" "<table>" "#ETBL" "</table>\n"
         "#TR" "<tr>" "#ETR" "</tr>\n"
