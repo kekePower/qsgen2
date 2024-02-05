@@ -113,9 +113,16 @@ fi
 zmodload zsh/files
 zmodload zsh/datetime
 
+if [[ ${globaldebug} == "true" ]]; then
+  local debug=true
+else
+  # If you want to debug this function only, set this to true
+  local debug=false
+fi
+  
 # Check for, an source, the config file for this specific website
 if [[ -f $(pwd)/config ]]; then
-    if (${debug}); then echo "${red}Config file found and sourced${end}\n- ${yellow} - $(pwd)/config${end}"; fi
+  if (${debug}); then echo "${red}Config file found and sourced${end}\n- ${yellow} - $(pwd)/config${end}"; fi
 	# CONFIG=$(pwd)/config
 	builtin source $(pwd)/config
 else
