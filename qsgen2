@@ -111,7 +111,7 @@ _cd_to_site() {
     fi
 
     # Print the cd command
-    builtin cd ${project_dir}
+    eval $( cd ${project_dir} )
 }
 
 
