@@ -201,7 +201,8 @@ case "$1" in
         exit
         ;;
     cd)
-        eval $( _cd_to_site ${2} )
+        alias qsgen2cd='_cd_to_site_output() { eval $(_cd_to_site "$@"); }; _cd_to_site_output'
+        qsgen2cd
         exit
         ;;
     force)
