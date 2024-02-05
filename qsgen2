@@ -85,35 +85,6 @@ _list_sites() {
     fi
 }
 
-_cd_to_site() {
-    local site_number="${1}"
-    local sites_file="${HOME}/.config/qsgen2/sites.qsc"
-    
-    # Check if sites file exists
-    if [[ ! -f "${sites_file}" ]]; then
-        echo "Sites file not found."
-        return 1 # Exit the function with an error status.
-    fi
-
-    # Get the directory for the site number
-    local project_dir=$(awk -F'|' -v num="${site_number}" '$1 == num {print $3}' "${sites_file}")
-    
-    # Check if the directory was found
-    if [[ -z "${project_dir}" ]]; then
-        echo "Site with number ${site_number} not found."
-        return 1 # Exit the function with an error status.
-    fi
-
-    # Check if the directory exists
-    if [[ ! -d "${project_dir}" ]]; then
-        echo "The directory for site number ${site_number} does not exist."
-        return 1 # Exit the function with an error status.
-    fi
-
-    # Print the cd command
-    echo "cd ${project_dir}"
-}
-
 
 function _version() {
     echo "${yellow}- Created by kekePower - 2018-$(date +%Y)${end}"
@@ -198,10 +169,6 @@ case "$1" in
         ;;
     list)
         _list_sites
-        exit
-        ;;
-    cd)
-        _cd_to_site_output() { eval $(_cd_to_site "$1"); }; _cd_to_site_output $2
         exit
         ;;
     force)
