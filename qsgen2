@@ -14,7 +14,8 @@ VERSION="0.3.2" # Mon-2024-02-05
 QSGEN="Quick Site Generator 2"
 
 # Set to true or false
-# This will show debug information from almost every function in this script
+# This will show debug information from every function in this script
+# You can also set debug=true in a single function if you want to debug only that specific one.
 globaldebug=false
 
 function include () {
@@ -36,7 +37,7 @@ function include () {
 # Including some colors to the script
 include common/colors
 
-echo "${magenta}${blue_bg} ${QSGEN} ${end}${white}${blue_bg}${VERSION} ${end}"
+echo "${magenta}${blue_bg} ${QSGEN} ${end}${bold_white}${blue_bg}${VERSION} ${end}"
 
 _add_site() {
     local site_name="${1}"
@@ -87,7 +88,7 @@ _list_sites() {
 
 
 function _version() {
-    echo "${yellow}- Created by kekePower - 2018-$(date +%Y)${end}"
+    echo "${yellow}- Created by kekePower - 2018-$(strftime "%Y")${end}"
     echo "${yellow}- https://github.com/kekePower/qsgen2/${end}"
     echo "${yellow}- See '${1} help' for more information.${end}"
     exit
@@ -209,8 +210,8 @@ if (${debug}); then _msg debug "Using the ${generator} engine for files: ${file_
 builtin cd ${project_dir}
 
 # Let's put these here for now.
-export today=$( date "+%Y-%m-%d - %T" )
-export blogdate=$( date +%a-%Y-%b-%d )
+export today=$(strftime "%Y-%m-%d - %T")
+export blogdate=$(strftime "%a-%Y-%b-%d")
 
 # Let's create arrays of all the files we'll be working on
 
