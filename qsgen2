@@ -10,7 +10,7 @@
 # https://github.com/kekePower/qsgen2/
 # 
 
-VERSION="0.3.2" # Mon-2024-02-05
+VERSION="0.3.3" # Mon-2024-02-05
 QSGEN="Quick Site Generator 2"
 
 # Set to true or false
