@@ -137,30 +137,31 @@ blog_cache_file="${project_dir}/.blog_cache"
 pages_cache_file="${project_dir}/.pages_cache"
 
 function _msg() {
-    # Use this function to write out messages based on their type
-    # Types are: std=green - info=yellow - debug=red other=bold_yellow
-    # Usage: _msg <type> "<message>"
+  # Use this function to write out messages based on their type
+  # Types are: std=green - info=yellow - debug=red other=bold_yellow
+  # Usage: _msg <type> "<message>"
     
-    case ${1} in
-        std)
-            echo "${yellow}${2}${end}"
-        ;;
-        info)
-            echo "${green}${2}${end}"
-        ;;
-        debug)
-            echo "${red}${2}${end}"
-        ;;
-        other)
-            echo "${bold_yellow}${2}${end}"
-        ;;
-        sub)
-            echo "${magenta}${2}${end}"
-        ;;
-        *)
-            echo "${2}"
-        ;;
-    esac
+  case ${1} in
+    std)
+        echo "${yellow}${2}${end}"
+    ;;
+    info)
+        echo "${green}${2}${end}"
+    ;;
+    debug)
+        echo "${red}${2}${end}"
+    ;;
+    other)
+        echo "${bold_yellow}${2}${end}"
+    ;;
+    sub)
+        echo "${magenta}${2}${end}"
+    ;;
+    *)
+        echo "${2}"
+    ;;
+  esac
+  
 }
 
 case ${1} in
@@ -171,19 +172,19 @@ case ${1} in
             echo "Usage: qsgen2 add \"Site Name\" \"/path/to/project\""
         fi
         exit
-        ;;
+    ;;
     list)
         _list_sites
         exit
-        ;;
+    ;;
     force)
         _msg sub "- Forced Update: Generating Everything"
         : >| "$blog_cache_file"  # Truncate the blog cache before doing update
         : >| "$pages_cache_file"  # Truncate the page cache before doing update
-        ;;
+    ;;
     *)
         #echo "Usage: qsgen2 [command]"
-        ;;
+    ;;
 esac
 
 # Let's check if qsgen2 can generate this site by checking if 'generator' is available
@@ -220,6 +221,7 @@ export blogdate=$(strftime "%a-%Y-%b-%d")
 # Let's create arrays of all the files we'll be working on
 
 function _list_pages() {
+
   if [[ ${globaldebug} == "true" ]]; then
     local debug=true
   else
@@ -227,30 +229,32 @@ function _list_pages() {
     local debug=false
   fi
 
-    # Initialize or clear the array to ensure it's empty before adding files
-    pages_file_array=()
+  # Initialize or clear the array to ensure it's empty before adding files
+  pages_file_array=()
 
-    export no_pages_found=false
+  export no_pages_found=false
 
-    # Temporarily set null_glob for this function
-    setopt local_options null_glob
+  # Temporarily set null_glob for this function
+  setopt local_options null_glob
 
-    # Using an array to directly capture matching files
-    local -a pages_files=(*.${file_ext})
+  # Using an array to directly capture matching files
+  local -a pages_files=(*.${file_ext})
 
-    if (( ${#pages_files} == 0 )); then
-        if ${debug}; then _msg debug "_list_pages: No Pages found with ext ${file_ext}."; fi
-        export no_pages_found=true
-        return
-    else
-        for file in "${pages_files[@]}"; do
-            if ${debug}; then _msg debug "_list_pages: Adding file to array: ${file}"; fi
-            pages_file_array+=("$file")
-        done
-    fi
+  if (( ${#pages_files} == 0 )); then
+    if ${debug}; then _msg debug "_list_pages: No Pages found with ext ${file_ext}."; fi
+    export no_pages_found=true
+    return
+  else
+    for file in "${pages_files[@]}"; do
+      if ${debug}; then _msg debug "_list_pages: Adding file to array: ${file}"; fi
+      pages_file_array+=("$file")
+    done
+  fi
+
 }
 
 function _list_blogs() {
+
   if [[ ${globaldebug} == "true" ]]; then
     local debug=true
   else
@@ -258,32 +262,35 @@ function _list_blogs() {
     local debug=false
   fi
     
-    # Initialize or clear the blogs array to ensure it's empty before adding files
-    blogs_file_array=()
+  # Initialize or clear the blogs array to ensure it's empty before adding files
+  blogs_file_array=()
 
-    export no_blogs_found=false
+  export no_blogs_found=false
 
-    # Temporarily set null_glob for this function
-    setopt local_options null_glob
+  # Temporarily set null_glob for this function
+  setopt local_options null_glob
 
-    # Directly capture matching blog files into an array
-    local -a blog_files=(blog/*.blog(On))
+  # Directly capture matching blog files into an array
+  local -a blog_files=(blog/*.blog(On))
 
-    if (( ${#blog_files[@]} == 0 )); then
-        if ${debug}; then _msg debug "_list_blogs: No blog files found."; fi
-        export no_blogs_found=true
-        return
-    else
-        for file in "${blog_files[@]}"; do
-            if ${debug}; then _msg debug "_list_blogs: Adding file to array: $file"; fi
-            blogs_file_array+=("$file")
-        done
-    fi
+  if (( ${#blog_files[@]} == 0 )); then
+    if ${debug}; then _msg debug "_list_blogs: No blog files found."; fi
+    export no_blogs_found=true
+    return
+  else
+    for file in "${blog_files[@]}"
+      do
+        if ${debug}; then _msg debug "_list_blogs: Adding file to array: $file"; fi
+          blogs_file_array+=("$file")
+    done
+  fi
+
 }
 
 
 # BLOG CACHE
 function _blog_cache() {
+
   if [[ ${globaldebug} == "true" ]]; then
     local debug=true
   else
@@ -332,12 +339,14 @@ function _blog_cache() {
   for name in "${(@k)blog_cache}"; do
     echo "$name:${blog_cache[$name]}" >> "$blog_cache_file"
   done
+
 }
 
 
 # PAGES CACHE
 # Returns the array pages_array()
 function _pages_cache() {
+
   if [[ ${globaldebug} == "true" ]]; then
     local debug=true
   else
@@ -387,6 +396,7 @@ function _pages_cache() {
   for name in "${(@k)pages_cache}"; do
     echo "$name:${pages_cache[$name]}" >> "$pages_cache_file"
   done
+
 }
 
 function _last_updated() {
