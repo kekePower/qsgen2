@@ -730,7 +730,7 @@ function _blog_idx_for_index() {
             blog_list_content=$(
             echo "${blog_list_tpl}" | \
               perl -pe "\
-              s|BLOGURL|${url}|g; \
+              s|BLOGURL|${site_url}/${url}|g; \
               s|BLOGTITLE|${btitle}|g; \
               s|INGRESS|${ingress}|g; \
               s|BLOGDATE|${bdate}|g; \
