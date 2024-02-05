@@ -15,7 +15,7 @@ QSGEN="Quick Site Generator 2"
 
 # Set to true or false
 # This will show debug information from almost every function in this script
-debug=false
+globaldebug=false
 
 function include () {
     
@@ -215,7 +215,12 @@ export blogdate=$( date +%a-%Y-%b-%d )
 # Let's create arrays of all the files we'll be working on
 
 function _list_pages() {
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    # If you want to debug this function only, set this to true
     local debug=false
+  fi
 
     # Initialize or clear the array to ensure it's empty before adding files
     pages_file_array=()
@@ -241,7 +246,12 @@ function _list_pages() {
 }
 
 function _list_blogs() {
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    # If you want to debug this function only, set this to true
     local debug=false
+  fi
     
     # Initialize or clear the blogs array to ensure it's empty before adding files
     blogs_file_array=()
@@ -269,7 +279,12 @@ function _list_blogs() {
 
 # BLOG CACHE
 function _blog_cache() {
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    # If you want to debug this function only, set this to true
     local debug=false
+  fi
 
     _list_blogs
 
@@ -318,7 +333,12 @@ function _blog_cache() {
 # PAGES CACHE
 # Returns the array pages_array()
 function _pages_cache() {
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    # If you want to debug this function only, set this to true
     local debug=false
+  fi
     # Create an associative array for the pages cache
     typeset -A pages_cache
     
@@ -365,7 +385,12 @@ function _pages_cache() {
 function _last_updated() {
     # This function updates #updated and #version tags in the provided string for buffers
 
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    # If you want to debug this function only, set this to true
     local debug=false
+  fi
 
     if (${debug}); then _msg debug "_last_updated: Setting date and version in footer"; fi
     if (${debug}); then _msg debug "_last_updated: ${upd_msg}"; fi
@@ -385,7 +410,12 @@ function _last_updated() {
 function _f_last_updated() {
     # This function updates #updated and #version tags in the provided string in files
     
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    # If you want to debug this function only, set this to true
     local debug=false
+  fi
     
     if (${debug}); then _msg debug "_f_last_updated: Setting date and version in footer of file ${1}"; fi
     if (${debug}); then _msg debug "_f_last_updated: ${upd_msg}"; fi
@@ -419,7 +449,12 @@ function _file_to_lower() {
 function _pages() {
     # This function generates all the new and updated Pages
     
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    # If you want to debug this function only, set this to true
     local debug=false
+  fi
     
     # Load the cache for Pages
     if (${debug}) _msg debug "_pages: Running function _pages_cache"
@@ -550,7 +585,12 @@ function _pages() {
 function _blogs() {
     # This function either generates blog files or exports metadata based on the argument
 
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    # If you want to debug this function only, set this to true
     local debug=false
+  fi
 
     # Running function _list_blogs
     if (${debug}) _msg debug "_blogs: Running function _list_blogs"
@@ -687,7 +727,12 @@ fi
 function _blog_idx_for_index() {
     # This function generates the file blog/index.tmp.html
     
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    # If you want to debug this function only, set this to true
     local debug=false
+  fi
     
     _msg sub "- Populating ${project_dir}/blog/index.tmp.html"
     
@@ -704,7 +749,7 @@ function _blog_idx_for_index() {
     do
         if (${debug}) _msg debug "_blog_idx_for_index: meta_str from BLOG_META_STR_ARRAY from _blogs"
         if (${debug}) _msg debug "_blog_idx_for_index: ${meta_str}"
-        local debug=false
+
         # Split meta_str into individual metadata components
         local -a meta_array=("${(@s/||/)meta_str}")
 
@@ -714,7 +759,7 @@ function _blog_idx_for_index() {
         # Iterate over each component and extract information
         if (${debug}) _msg debug "_blog_idx_for_index: Iterate over each component and extract information"
         for component in "${meta_array[@]}"; do
-            local debug=false
+
             case "${component}" in
                 SDATE:*) sdate=${component#SDATE: } ;;
                 BTITLE:*) btitle=${component#BTITLE: } ;;
@@ -758,7 +803,12 @@ function _blog_idx_for_index() {
 
 function _blog_index() {
   
-  local debug=false
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    # If you want to debug this function only, set this to true
+    local debug=false
+  fi
 
     # This function generates the /blog/index.html file that gets its data from _blog_list_for_index()
     # ${new_updated_blogs} comes from the function _blogs if anything new or updated is detected
@@ -769,7 +819,6 @@ function _blog_index() {
 
         _msg std "- Generating the Blog index file"
 
-        local debug=false
         local blog_index_tpl=$(<${project_dir}/themes/${theme}/blog_index.tpl)
         local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
         
@@ -784,7 +833,12 @@ function _blog_index() {
 
 function _add_blog_list_to_index() {
   
-  local debug=false
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    # If you want to debug this function only, set this to true
+    local debug=false
+  fi
   
   # Let's find the file 'index.qst' and add the blog if blog_in_index is true
   #if [[ ${new_updated_blogs} == "true" ]] && [[ ${blog_in_index} == "true" ]]; then
@@ -846,7 +900,12 @@ function _link() {
 
     local content="${1}"
     local modified_content=""
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    # If you want to debug this function only, set this to true
     local debug=false
+  fi
 
     # Process the content line by line
     echo "${content}" | while IFS= read -r line; do
@@ -882,7 +941,12 @@ function _image() {
 
     local content="${1}"
     local modified_content=""
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    # If you want to debug this function only, set this to true
     local debug=false
+  fi
 
     # Process the content line by line
     echo "${content}" | while IFS= read -r line; do
@@ -920,7 +984,12 @@ function _youtube() {
 
     local content="${1}"
     local modified_content=""
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    # If you want to debug this function only, set this to true
     local debug=false
+  fi
 
     # Process the content line by line
     echo "${content}" | while IFS= read -r line; do
@@ -945,7 +1014,12 @@ function _cleanup() {
     # This removes tags used in the templates that may be left over for some reason
 
     local content="${1}"
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    # If you want to debug this function only, set this to true
     local debug=false
+  fi
 
     if (${debug}) _msg debug "_cleanup: Cleaning up tags in content"
 
@@ -964,7 +1038,12 @@ function _cleanup() {
 
 function _html() {
     local content="$1"
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    # If you want to debug this function only, set this to true
     local debug=false
+  fi
 
     if ${debug}; then
         echo "_html: Converting QStags in content"
@@ -1020,7 +1099,12 @@ function _zhtml() {
   # This function uses the regex module from Zsh to parse the QStags
   
     local content="$1"
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    # If you want to debug this function only, set this to true
     local debug=false
+  fi
 
     if ${debug}; then
         echo "_html: Converting QStags in content"
