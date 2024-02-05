@@ -201,7 +201,7 @@ case "$1" in
         exit
         ;;
     cd)
-        _cd_to_site_output() { eval $(_cd_to_site "$@"); }; _cd_to_site_output
+        _cd_to_site_output() { eval $(_cd_to_site "$1"); }; _cd_to_site_output $2
         exit
         ;;
     force)
