@@ -181,7 +181,7 @@ esac
 
 # Let's check if qsgen2 can generate this site by checking if 'generator' is available
 if [[ ! ${generator} ]] || [[ -d $(pwd)/.git ]]; then
-    _msg sub "${0:t} cannot parse this site. Exiting."
+    _msg debug "* ${0:t} cannot parse this site. Exiting. *"
     exit
 fi
 
