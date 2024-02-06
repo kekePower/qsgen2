@@ -147,7 +147,7 @@ function _msg() {
         echo "${magenta}${2}${end}"
     ;;
     main)
-        echo "${white_bg}${green} ${2} ${end}"
+        echo "${green}${white_bg} ${2} ${end}"
     ;;
     *)
         echo "${2}"
