@@ -833,7 +833,7 @@ function _blog_index() {
     local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
 
     local blog_index_content=$(echo "${blog_index_tpl}" | perl -pe "s|#sitename|${site_name}|gs; s|#tagline|${site_tagline}|gs")
-    blog_index_content=$( awk -v new_body="$blog_index_list" '{sub(/BODY/, new_body)} 1' <(echo "${blog_index_tpl}") )
+    blog_index_content=$( awk -v new_body="$blog_index_list" '{sub(/BODY/, new_body)} 1' <(echo "${blog_index_content}") )
 
     echo "${blog_index_content}" > ${www_root}/blog/index.html
     _f_last_updated ${www_root}/blog/index.html
