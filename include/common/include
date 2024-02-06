@@ -1,0 +1,15 @@
+function include() {
+    
+    # This function is used to include other functions that will normally be in
+    # ${HOME}/bin/include/
+
+        # Edit this path to reflect your installation
+        local inc_file=${HOME}/bin/include/${1}.inc
+        if [[ ! -f ${inc_file} ]]; then
+                local inc_opt=$( echo ${1} | cut -d\/ -f2 )
+                echo "Supplied option \"${inc_opt}\" is not a valid include."
+        else
+                builtin source ${inc_file} ${2}
+        fi
+
+}

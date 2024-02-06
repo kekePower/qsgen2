@@ -18,21 +18,10 @@ QSGEN="Quick Site Generator 2"
 # You can also set debug=true in a single function if you want to debug only that specific one.
 globaldebug=false
 
-function include () {
-    
-    # This function is used to include other functions that will normally be in
-    # ${HOME}/bin/include/
-
-        # Edit this path to reflect your installation
-        local inc_file=${HOME}/bin/include/${1}.inc
-        if [[ ! -f ${inc_file} ]]; then
-                local inc_opt=$( echo ${1} | cut -d\/ -f2 )
-                echo "Supplied option \"${inc_opt}\" is not a valid include."
-        else
-                builtin source ${inc_file} ${2}
-        fi
-
-}
+# Use Zsh fpath to set the path to some extra functions
+fpath=(${HOME}/bin/include/common $fpath)
+# In this case, let's load the 'include' function
+autoload include
 
 # Including some colors to the script
 include common/colors
@@ -113,17 +102,9 @@ fi
 zmodload zsh/files
 zmodload zsh/datetime
 
-if [[ ${globaldebug} == "true" ]]; then
-  local debug=true
-else
-  # If you want to debug this function only, set this to true
-  local debug=false
-fi
-  
 # Check for, an source, the config file for this specific website
 if [[ -f $(pwd)/config ]]; then
-  if (${debug}); then echo "${red}Config file found and sourced${end}\n- ${yellow} - $(pwd)/config${end}"; fi
-	# CONFIG=$(pwd)/config
+  if (${globaldebug}); then echo "${red}Config file found and sourced${end}\n- ${yellow} - $(pwd)/config${end}"; fi
 	builtin source $(pwd)/config
 else
 	echo "${red}Cannot find configuration file.${end}"
@@ -131,7 +112,7 @@ else
 	exit
 fi
 
-if (${debug}); then
+if (${globaldebug}); then
     qsconfig=$( cat $(pwd)/config | grep -v \# | awk '{print substr($0, index($0, " ") + 1)}' )
 	echo "${red}Contents of Config file:${end}"
     for qslines in ${qsconfig}
@@ -165,6 +146,8 @@ function _msg() {
     sub)
         echo "${magenta}${2}${end}"
     ;;
+    main)
+        echo "${white_bg}${green} ${2} ${end}"
     *)
         echo "${2}"
     ;;
@@ -177,7 +160,7 @@ case ${1} in
         if [[ $# -eq 3 ]]; then
             _add_site "$2" "$3"
         else
-            echo "Usage: qsgen2 add \"Site Name\" \"/path/to/project\""
+            _msg info "Usage: qsgen2 add \"Site Name\" \"/path/to/project\""
         fi
         exit
     ;;
@@ -191,7 +174,7 @@ case ${1} in
         : >| "$pages_cache_file"  # Truncate the page cache before doing update
     ;;
     *)
-        #echo "Usage: qsgen2 [command]"
+        # Nothing
     ;;
 esac
 
@@ -218,7 +201,7 @@ elif [[ ${generator} == "markdown" ]]; then
   fi
 fi
 
-if (${debug}); then _msg debug "Using the ${generator} engine for files: ${file_ext}"; fi
+if (${globaldebug}); then _msg debug "Using the ${generator} engine for files: ${file_ext}"; fi
 
 builtin cd ${project_dir}
 
@@ -491,7 +474,7 @@ function _pages() {
     return
   fi
     
-  _msg info "Generating Pages"
+  _msg main "Generating Pages"
     
   if (( ${#pages_array[@]} > 0 )); then
     
@@ -626,7 +609,7 @@ function _blogs() {
     return
   fi
     
-  _msg info "Generating Blogs"
+  _msg main "Generating Blogs"
     
   # Running function _blog_cache
   if (${debug}) _msg debug "_blogs: Running function _blog_cache"
@@ -886,7 +869,7 @@ function _sitemap() {
 # Check if sitemap is set to true and if there are updated Blogs or Pages before updating the sitemap.xml file.
 if [[ ${sitemap} == "true" ]] && ( [[ ${new_updated_blogs} == "true" ]] || [[ ${new_updated_pages} == "true" ]] ); then
 
-  _msg info "Updating sitemap.xml"
+  _msg main "Generating Sitemap"
 
   local sitemap_file="${www_root}/sitemap.xml"
 
@@ -1085,7 +1068,7 @@ function _html() {
     local debug=false
   fi
   
-  local content="$1"
+  local content="${1}"
 
   if ${debug}; then
     _msg debug "_html: Converting QStags in content"
@@ -1149,10 +1132,10 @@ function _zhtml() {
     local debug=false
   fi
   
-  local content="$1"
+  local content="${1}"
 
   if ${debug}; then
-    echo "_html: Converting QStags in content"
+    _msg debug "_html: Converting QStags in content"
   fi
 
   # Load regex module
@@ -1203,7 +1186,7 @@ function _zhtml() {
         fi
     done
 
-    echo "$content"
+    echo "${content}"
 
 }
 
