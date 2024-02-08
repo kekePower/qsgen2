@@ -19,7 +19,7 @@ QSGEN="Quick Site Generator 2"
 globaldebug=false
 
 # Use Zsh fpath to set the path to some extra functions
-fpath=(${HOME}/bin/include/common $fpath)
+fpath=(${HOME}/bin/include/common ${HOME}/.config/qsgen2/plugins $fpath)
 # In this case, let's load the 'include' function
 autoload include
 
@@ -197,9 +197,12 @@ elif [[ ${generator} == "markdown" ]]; then
     exit
   else
     # Usage: ${engine} ${1} - Where 1 is the file you want parsed
-    engine=/usr/local/bin/pandoc
+    engine="/usr/local/bin/pandoc --from=markdown --to=html"
     export file_ext="md"
   fi
+else
+  _msg debug "No valid generator found. Are you sure you've selected the correct generator in 'config'?"
+  exit
 fi
 
 if (${globaldebug}); then _msg debug "Using the ${generator} engine for files: ${file_ext}"; fi
@@ -514,7 +517,7 @@ function _pages() {
         
         # HTML'ify the page content
         if (${debug}) _msg debug "_pages: Running engine on ${pages_in_array}"
-        if [[ ${file_ext} == "qst" ]]; then
+        if [[ ${generator} == "native" ]]; then
           page_content=$( ${engine} "$page_content" )
           # Look for links, images and videos and convert them if present.
           if (${debug}) _msg debug "_pages: Checking for #link, #showimg and #ytvideo in page_content"
@@ -530,7 +533,7 @@ function _pages() {
             if (${debug}) _msg debug "_pages: #ytvideo is present, run _youtube: page_content"
             page_content=$( _youtube "${page_content}" )
           fi
-        elif [[ ${file_ext} == "md" ]]; then
+        elif [[ ${generator} == "markdown" ]]; then
             page_content=$(echo "$page_content" | ${engine})
         fi
         
@@ -677,7 +680,7 @@ function _blogs() {
             blog_content="${blog_content//CALADAY/${sdate[1]}}"
 
             if (${debug}) _msg debug "_blogs: Running function $engine for ${blog}"
-            if [[ ${file_ext} == "qst" ]]; then
+            if [[ ${generator} == "native" ]]; then
               blog_content=$( ${engine} "${blog_content}" )
               # Look for links, images and videos and convert them if present.
               if (${debug}) _msg debug "_blogs: Checking for #link, #showimg and #ytvideo in blog_content"
@@ -693,7 +696,7 @@ function _blogs() {
                 if (${debug}) _msg debug "_blogs: #ytvideo is present, run _link: blog_content"
                 blog_content=$(_youtube "${blog_content}")
               fi
-            elif [[ ${file_ext} == "md" ]]; then
+            elif [[ ${generator} == "markdown" ]]; then
               blog_content=$(echo "$blog_content" | ${engine})
             fi
                   
@@ -1124,6 +1127,7 @@ function _html() {
 }
 
 function _zhtml() {
+  
   # This function uses the regex module from Zsh to parse the QStags
   
   if [[ ${globaldebug} == "true" ]]; then
