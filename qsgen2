@@ -10,7 +10,7 @@
 # https://github.com/kekePower/qsgen2/
 # 
 
-VERSION="0.3.3" # Mon-2024-02-05
+VERSION="0.3.4" # Thu-2024-02-08
 QSGEN="Quick Site Generator 2"
 
 # Set to true or false
@@ -639,6 +639,12 @@ function _blogs() {
                 
       local content="$(<"${blog}")"
       local sdate btitle ingress body blog_index blog_dir blog_url
+      
+      # Check for the DATE line
+      if ! echo "$content" | grep -q "^DATE "; then
+        _msg debug "_blogs: DATE metadata missing in ${blog}."
+        continue  # Skip this file and move to the next
+      fi
 
       # Extract blog information
       sed -i "s/GETDATE/${blogdate}/" ${blog}
