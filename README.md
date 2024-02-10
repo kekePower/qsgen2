@@ -1,7 +1,7 @@
 <img src="qsg2-square.png" width="150" align="left">
 
 # Quick Site Generator 2
-Quick Site Generator 2 is a static website generator inspired by [Nikola](https://github.com/getnikola/nikola) and written using Zsh.
+Quick Site Generator 2 is a static website generator inspired by [Nikola](https://github.com/getnikola/nikola) and written for [Zsh](https://zsh.sourceforge.io/).
 
 <br><br>
 
@@ -13,7 +13,7 @@ It all started with a simple script I wrote that I called ```myjourney``` to wri
 
 So I started to write another script I aptly called ```generate```.This also worked really great. It was, however, very limited and not very portable.
 
-Then this script was born. It has the same ideas as the first two, but is an almost complete rewrite of ```generate```. It does, however, use some of the same functions and is also more portable. The next steps is to try to use more of the Zsh modules instead of relying on external tools like Perl, sed and awk. In other words, a work in progress.
+Then this script was born. It has the same ideas as the first two, but is an almost complete rewrite of ```generate```. It does, however, use some of the same functions and is also more portable. The next steps is to try to use more of the Zsh modules instead of always relying on external tools like Perl, sed and awk. In other words, a work in progress.
 
 ## What is qsgen2?
 

@@ -1,0 +1,65 @@
+
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                                                     Usage: _msg  ""                                                      ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+                                                                                                                            
+         _msg info "Bruk: qsgen2 add \"Nettstednavn\" \"/sti/til/prosjekt\""                                                
+     _msg sub "- Tvungen oppdatering: Genererer alt"                                                                        
+ _msg debug "* ${0:t} kan ikke analysere dette nettstedet. Avslutter. *"                                                    
+ _msg other "Vennligst installer Pandoc."                                                                                   
+ _msg other "https://github.com/jgm/pandoc/releases"                                                                        
+                                                                                                                            
+
+
+
+_msg debug "Ingen gyldig generator funnet. Er du sikker på at du har valgt riktig generator i 'config'?" if                 
+(${globaldebug}); then _msg debug "Bruker ${generator}-motoren for filer: ${file_ext}"; fi if ${debug}; then _msg debug     
+"_list_pages: Ingen sider funnet med filtype ${file_ext}."; fi if ${debug}; then _msg debug "_list_pages: Legger til fil i  
+array: ${file}"; fi if ${debug}; then _msg debug "_list_blogs: Ingen bloggfiler funnet."; fi if ${debug}; then _msg debug   
+"_list_blogs: Legger til fil i array: $file"; fi if (${debug}) _msg debug "_blog_cache: HASH-VERDI: ${blog_cache[${name}]}" 
+if (${debug}) _msg debug "1. _blog_cache: ${blog_file}" if (${debug}) _msg debug "2. _blog_cache: current_cache:            
+${current_hash}" if (${debug}) _msg debug "3. _blog_cache: new_cache_file: ${blog_file}$" if (${debug}) _msg debug "4.      
+_blog_cache: new_current_cache: ${current_hash}" if (${debug}) _msg debug "SIDER HASH-VERDI: ${pages_cache[${name}]}" if    
+(${debug}) _msg debug "1. pages_cache: ${pages_cache[$file]}" if (${debug}) _msg debug "1. _pages_cache: current_cache:     
+${current_hash}" if (${debug}) _msg debug "2. _pages_cache: pages_file: ${pages_cache[$file]}" if (${debug}) _msg debug "2. 
+_pages_cache: current_cache: ${current_hash}" if (${debug}); then _msg debug "_last_updated: Setter dato og versjon i       
+bunnteksten"; fi if (${debug}); then _msg debug "_last_updated: ${upd_msg}"; fi local upd_msg="Sist oppdatert ${today} av <a
+href="https://blog.kekepower.com/qsgen2.html">${QSGEN} ${VERSION}" -e "s|#updated|${upd_msg}|") if (${debug}); then _msg    
+debug "_f_last_updated: Setter dato og versjon i bunnteksten til filen ${1}"; fi if (${debug}); then _msg debug             
+"_f_last_updated: ${upd_msg}"; fi local upd_msg="Sist oppdatert ${today} av <a                                              
+href="https://blog.kekepower.com/qsgen2.html">${QSGEN} ${VERSION}" -e "s|#updated|${upd_msg}|"                              
+if (${debug}) _msg debug "_pages: Kjører funksjonen _pages_cache" _msg sub "* Du har ingen sider " _msg main "Genererer     
+Sider" if (${debug}) _msg debug "_pages: pages_array er ikke tom" if (${debug}) _msg debug "_pages: Setter Sider-malen" _msg
+info "Kan ikke finne Sider-malen: ${pages}" if (${debug}) _msg debug "_pages: Leser inn Sider-malen i pages_tpl" _msg std "-
+Genererer Side: ${pages_in_array%.}.html" if (${debug}) _msg debug "_pages: Laster inn sideinnhold én gang -                
+${pages_in_array}" if (${debug}) _msg debug "_pages: Grep etter side_tittel" if (${debug}) _msg debug "_pages:              
+${page_title}" if (${debug}) _msg debug "_pages: Fjerner #tittel-linjen fra sideinnholdet" if (${debug}) _msg debug "_pages:
+Kjører motoren på ${pages_in_array}" if (${debug}) _msg debug "_pages: Sjekker etter #link, #showimg og #ytvideo i          
+sideinnholdet" if (${debug}) _msg debug "_pages: #link er tilstede, kjør _link: sideinnholdet" if (${debug}) _msg debug     
+"_pages: #showimg er tilstede, kjør _image: sideinnholdet" if (${debug}) _msg debug "_pages: #ytvideo er tilstede, kjør     
+_youtube: sideinnholdet" if (${debug}) _msg debug "_pages: Erstatter BODY med sideinnholdet i pages_tpl" if (${debug}) _msg 
+debug "_pages: Erstatter #sidetittel, #tagline og #nettstednavn i pages_tpl" if (${debug}) _msg debug "_pages: _last_updated
+i pages_tpl" if (${debug}) _msg debug "_pages: Filnavn i små bokstaver, alltid" if (${debug}) _msg debug "_pages: Kjører    
+_cleanup" # _msg std "Skriver ${www_root}/${pages_title_lower%.}.html til disk." if (${debug}) _msg sub "- Analyserer       
+${pages_in_array}" if (${debug}) _msg sub "- blog_in_index = ${blog_in_index}" if (${debug}) _msg sub "- List opp           
+midlertidig bloggfil:" _msg std "Oppdaterer index.html med nye blogginnlegg" if (${debug}) _msg sub "- Analyserer           
+${pages_in_array}" if (${debug}) _msg sub "- blog_in_index = ${blog_in_index}" if (${debug}) _msg sub "- List opp           
+midlertidig bloggfil:" _msg sub "- Ingen nye eller oppdaterte Sider funnet" if (${debug}) _msg debug "_blogs: Kjører        
+funksjonen _list_blogs" _msg sub " Du har ingen blogger " _msg main "Genererer Blogger" if (${debug}) _msg debug "_blogs:   
+Kjører funksjonen _blog_cache" _msg info "Kan ikke finne temamalen for Blogger." if (${debug}) _msg debug "_blogs: Behandler
+pre-data for ${blog}" _msg debug "_blogs: DATO-metadata mangler i ${blog}." if (${debug}) _msg debug "_blogs: Legger til    
+data for ${blog} i array for eksport" if (${debug}) _msg debug "_blogs: Behandler ${blog}" _msg std "- Genererer Blogg:     
+${blog_index}.html" if (${debug}) _msg debug "_blogs: Behandler erstatninger i ${blog}" if (${debug}) _msg debug "_blogs:   
+Kjører funksjonen $engine for ${blog}" if (${debug}) _msg debug "_blogs: Sjekker etter #link, #showimg og #ytvideo i        
+blogginnholdet" if (${debug}) _msg debug "_blogs: #link er tilstede, kjør _link: blogginnholdet" if (${debug}) _msg debug   
+"_blogs: #showimg er tilstede, kjør _link: blogginnholdet" if (${debug}) _msg debug "_blogs: #ytvideo er tilstede, kjør     
+_link: blogginnholdet" if (${debug}) _msg debug "_blogs: Erstatter tagline, nettstednavn og sidetittel" if (${debug}) _msg  
+debug "_blogs: Oppretter katalogen ${www_root}/${blog_dir}" if (${debug}) _msg debug "_blogs: Skriver blogg til disk:       
+${www_root}${blog_url}" _msg sub "- Ingen nye eller oppdaterte Blogger funnet" if (${debug}) _msg sub " _blogs: Kjører      
+_blog_idx_for_index" if (${debug}) _msg sub "* _blogs: Kjører _blog_index" _msg sub "- Fyller                               
+${project_dir}/blog/index.tmp.html" if (${debug}) _msg debug "_blog_idx_for_index: Starter funksjonen" if (${debug}) _msg   
+debug "_blog_idx_for_index: BLOG_META_STR_ARRAY: ${BLOG_META_STR_ARRAY[@]}" if (${debug}) _msg debug "_blog_idx_for_index:  
+meta_str fra BLOG_META_STR_ARRAY fra _blogs" if (${debug}) _msg debug "_blog_idx_for_index: ${meta_str}" if (${debug}) _msg 
+debug "_blog_idx_for_index: Gå gjenn                                                                                        
