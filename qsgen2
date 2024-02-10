@@ -514,6 +514,7 @@ function _pages() {
           if [[ "${page_content}" =~ ^#title=(.*) ]]; then
             local page_title=$match[1]
           #local page_title=$( echo ${page_content} | head -2 | grep \#title | cut -d= -f2 )
+          fi
         elif [[ ${generator} == "markdown" ]]; then
           while IFS= read -r line
             do
@@ -698,6 +699,7 @@ function _blogs() {
         if [[ "${content}" =~ "^BLOG_TITLE (.*)$" ]]; then
           btitle=$match[1]
         #btitle=$( echo ${content} | grep BLOG_TITLE | cut -d' ' -f2- )
+        fi
       elif [[ ${generator} == "markdown" ]]; then
         while IFS= read -r line
           do
