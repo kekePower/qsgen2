@@ -658,12 +658,12 @@ function _blogs() {
       local sdate btitle ingress body blog_index blog_dir blog_url
       
       # Check for the DATE line
-      if [[ ! "${content}" =~ ^DATE\ ]]; then
+      if [[ ! "${content}" =~ ^DATE\  ]]; then
         _msg debug "_blogs: DATE metadata missing in ${blog}."
         continue  # Skip this file and move to the next
       fi
       # Check for the BLOG_TITLE line
-      if [[ ! "${content}" =~ ^BLOG_TITLE\ ]]; then
+      if [[ ! "${content}" =~ ^BLOG_TITLE\  ]]; then
         _msg debug "_blogs: BLOG_TITLE metadata missing in ${blog}."
         continue  # Skip this file and move to the next
       fi
