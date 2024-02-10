@@ -657,13 +657,34 @@ function _blogs() {
       local content="$(<"${blog}")"
       local sdate btitle ingress body blog_index blog_dir blog_url
       
-      # Check for the DATE line
-      if [[ ! "${content}" =~ ^DATE\  ]]; then
+      # Initialize variables to track if DATE and BLOG_TITLE are found
+      local date_found=false
+      local title_found=false
+
+      # Process content line by line
+      while IFS= read -r line
+        do
+        # Check for the DATE line
+        if [[ "${line}" == "DATE "* ]]; then
+          date_found=true
+        fi
+        # Check for the BLOG_TITLE line
+        if [[ "${line}" == "BLOG_TITLE "* ]]; then
+          title_found=true
+        fi
+        # If both DATE and BLOG_TITLE are found, no need to continue checking
+        if [[ "${date_found}" == true && "${title_found}" == true ]]; then
+          break
+        fi
+      done <<< "${content}"
+
+      # Check if DATE or BLOG_TITLE metadata is missing and log message
+      if [[ "${date_found}" == false ]]; then
         _msg debug "_blogs: DATE metadata missing in ${blog}."
         continue  # Skip this file and move to the next
       fi
-      # Check for the BLOG_TITLE line
-      if [[ ! "${content}" =~ ^BLOG_TITLE\  ]]; then
+
+      if [[ "${title_found}" == false ]]; then
         _msg debug "_blogs: BLOG_TITLE metadata missing in ${blog}."
         continue  # Skip this file and move to the next
       fi
