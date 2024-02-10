@@ -197,7 +197,8 @@ elif [[ ${generator} == "markdown" ]]; then
     exit
   else
     # Usage: ${engine} ${1} - Where 1 is the file you want parsed
-    engine="/usr/local/bin/pandoc --from=markdown --to=html"
+    engine="/usr/local/bin/pandoc"
+    engine_opts="--from=markdown --to=html"
     export file_ext="md"
   fi
 else
@@ -523,7 +524,7 @@ function _pages() {
               page_title="${page_title#"${page_title%%[![:space:]]*}"}" # Trim leading whitespace
               break # Exit the loop after finding the first heading
             fi
-          done < ${page_content}
+          done <<< ${page_content}
         fi
         if (${debug}) _msg debug "_pages: ${page_title}"
         
@@ -550,7 +551,7 @@ function _pages() {
             page_content=$( _youtube "${page_content}" )
           fi
         elif [[ ${generator} == "markdown" ]]; then
-            page_content=$(echo "$page_content" | ${engine})
+            page_content=$(echo "$page_content" | ${engine} ${engine_opts})
         fi
         
         if (${debug}) _msg debug "_pages: Replacing BODY with page_content in pages_tpl"
@@ -685,7 +686,7 @@ function _blogs() {
             btitle="${btitle#"${btitle%%[![:space:]]*}"}" # Trim leading whitespace
             break # Exit the loop after finding the first heading
           fi
-        done < ${content}
+        done <<< ${content}
       fi
       ingress=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#INGRESS_START\K(.*?)#INGRESS_STOP" | sed "s|\ \#INGRESS_STOP||" | sed "s|^\ ||" )
       body=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#BODY_START\K(.*?)#BODY_STOP" | sed "s|\ \#BODY_STOP||" | sed "s|^\ ||" )
@@ -739,7 +740,7 @@ function _blogs() {
                 blog_content=$(_youtube "${blog_content}")
               fi
             elif [[ ${generator} == "markdown" ]]; then
-              blog_content=$(echo "$blog_content" | ${engine})
+              blog_content=$(echo "$blog_content" | ${engine} ${engine_opts})
             fi
                   
             # Replace every #tagline in blog_content
