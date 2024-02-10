@@ -511,7 +511,7 @@ function _pages() {
         if (${debug}) _msg debug "_pages: Finding page_title"
         if [[ ${generator} == "native" ]]; then
           # Use Zsh built in functions to find page_title
-          [[ "${page_content}" =~ ^#title=(.*) ]] && local page_title=${match[1]}
+          [[ "${page_content}" =~ ^#title=(.*) ]] && local page_title=$match[1]
           #local page_title=$( echo ${page_content} | head -2 | grep \#title | cut -d= -f2 )
         elif [[ ${generator} == "markdown" ]]; then
           while IFS= read -r line
@@ -694,7 +694,7 @@ function _blogs() {
       # Array sdate = Name day=1, Year=2, Month=3, Number day=4
       sdate=( $( echo ${content} | grep DATE | sed "s|DATE\ ||" | sed "s|\-|\ |g" ) )
       if [[ ${generator} == "native" ]]; then
-        if [[ "${content}" =~ "^BLOG_TITLE (.*)$" ]] && btitle=${match[1]}
+        if [[ "${content}" =~ "^BLOG_TITLE (.*)$" ]] && btitle=$match[1]
         #btitle=$( echo ${content} | grep BLOG_TITLE | cut -d' ' -f2- )
       elif [[ ${generator} == "markdown" ]]; then
         while IFS= read -r line
