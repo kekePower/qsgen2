@@ -198,7 +198,7 @@ elif [[ ${generator} == "markdown" ]]; then
   else
     # Usage: ${engine} ${1} - Where 1 is the file you want parsed
     engine="/usr/local/bin/pandoc"
-    engine_opts="--from=markdown --to=html"
+    engine_opts=" --from=markdown --to=html "
     export file_ext="md"
   fi
 else
