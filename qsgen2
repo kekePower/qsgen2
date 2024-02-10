@@ -696,22 +696,23 @@ function _blogs() {
       # Array sdate = Name day=1, Year=2, Month=3, Number day=4
       sdate=( $( echo ${content} | grep DATE | sed "s|DATE\ ||" | sed "s|\-|\ |g" ) )
       if [[ ${generator} == "native" ]]; then
-        if [[ "${content}" =~ "^BLOG_TITLE (.*)$" ]]; then
-          btitle=$match[1]
-        #btitle=$( echo ${content} | grep BLOG_TITLE | cut -d' ' -f2- )
-        fi
+        while IFS= read -r line; do
+          if [[ "$line" == "BLOG_TITLE "* ]]; then
+            btitle="${line#BLOG_TITLE }"
+            break
+          fi
+        done <<< "$content"
       elif [[ ${generator} == "markdown" ]]; then
-        while IFS= read -r line
-          do
-          # Check if the line starts with '#' and capture the line
+        local b_title=""
+        while IFS= read -r line; do
           if [[ "$line" == \#* ]]; then
-            # Remove all leading '#' characters and the first space (if present)
-            btitle="${line#\#}" # Remove the first '#' character
-            btitle="${btitle#\#}" # Remove the second '#' character if present
-            btitle="${btitle#"${btitle%%[![:space:]]*}"}" # Trim leading whitespace
+            b_title="${line#\#}" # Remove the first '#' character
+            b_title="${b_title#\#}" # Remove the second '#' character if present
+            b_title="${b_title#"${b_title%%[![:space:]]*}"}" # Trim leading whitespace
             break # Exit the loop after finding the first heading
           fi
-        done <<< ${content}
+        done <<< "$content"
+        btitle=${b_title}
       fi
       ingress=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#INGRESS_START\K(.*?)#INGRESS_STOP" | sed "s|\ \#INGRESS_STOP||" | sed "s|^\ ||" )
       body=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#BODY_START\K(.*?)#BODY_STOP" | sed "s|\ \#BODY_STOP||" | sed "s|^\ ||" )
