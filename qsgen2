@@ -920,9 +920,9 @@ function _blog_index() {
       #_msg debug "_blog_index: Content of blog_index_content"
       #_msg sub "${blog_index_content}"
     fi
-    exec 3>${www_root}/blog/index.html
-    print -r -- "$blog_index_content" >&3
-    exec 3>&-
+    echo "$blog_index_content" > /tmp/blog_index_temp.html
+    cp -f /tmp/blog_index_temp.html ${www_root}/blog/index.html
+
     _f_last_updated ${www_root}/blog/index.html
   fi
 
