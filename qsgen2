@@ -895,7 +895,7 @@ function _blog_index() {
     local debug=true
   else
     # If you want to debug this function only, set this to true
-    local debug=true
+    local debug=false
   fi
 
   # This function generates the www_root/blog/index.html file that gets its data from _blog_list_for_index()
@@ -923,10 +923,8 @@ function _blog_index() {
       #_msg debug "_blog_index: Content of blog_index_content"
       #_msg sub "${blog_index_content}"
     fi
-    echo "$blog_index_content" > /tmp/blog_index_temp.html
-    _f_last_updated /tmp/blog_index_temp.html
-    # _f_last_updated ${www_root}/blog/index.html
-    cp -f /tmp/blog_index_temp.html ${www_root}/blog/index.html
+    echo "$blog_index_content" > ${www_root}/blog/index.html
+    _f_last_updated ${www_root}/blog/index.html
 
   fi
 
