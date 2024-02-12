@@ -920,7 +920,7 @@ function _blog_index() {
       #_msg debug "_blog_index: Content of blog_index_content"
       #_msg sub "${blog_index_content}"
     fi
-    echo "$blog_index_content" | tee -overwrite ${www_root}/blog/index.html > /dev/null
+    echo "$blog_index_content" | tee ${www_root}/blog/index.html > /dev/null
     _f_last_updated ${www_root}/blog/index.html
   fi
 
