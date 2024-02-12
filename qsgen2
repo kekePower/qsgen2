@@ -444,8 +444,9 @@ function _f_last_updated() {
   # Perform the replacement
   content="${content//#updated/${upd_msg}}"
 
+  sed -i '' -e "s|#updated|${upd_msg}|" "${file_path}"
   # Write the updated content back to the file
-  print -r -- "$content" >| "${file_path}"
+  #print -r -- "$content" >| "${file_path}"
 }
 
 function _file_to_lower() {
