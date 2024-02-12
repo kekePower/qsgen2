@@ -919,7 +919,10 @@ function _blog_index() {
       _msg debug "_blog_index: Content of blog_index_content"
       _msg sub "${blog_index_content}"
     fi
-    echo "$blog_index_content" > ${www_root}/blog/index.html
+    echo "$blog_index_content" > ${www_root}/blog/index.html || {
+     echo "Failed to write to ${www_root}/blog/index.html"
+     exit 1
+    }
     _f_last_updated ${www_root}/blog/index.html
   fi
 
