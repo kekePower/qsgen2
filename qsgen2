@@ -917,13 +917,10 @@ function _blog_index() {
     if (${debug}); then
       _msg debug "_blog_index: Writing ${www_root}/blog/index.html"
       _msg debug "_blog_index: Content length of blog_index_content: ${#blog_index_content}"
-      _msg debug "_blog_index: Content of blog_index_content"
-      _msg sub "${blog_index_content}"
+      #_msg debug "_blog_index: Content of blog_index_content"
+      #_msg sub "${blog_index_content}"
     fi
-    printf "%s" "$blog_index_content" > ${www_root}/blog/index.html || {
-     echo "Failed to write to ${www_root}/blog/index.html"
-     exit 1
-    }
+    echo "$blog_index_content" | tee -overwrite ${www_root}/blog/index.html > /dev/null
     _f_last_updated ${www_root}/blog/index.html
   fi
 
