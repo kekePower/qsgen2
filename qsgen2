@@ -921,7 +921,8 @@ function _blog_index() {
       #_msg sub "${blog_index_content}"
     fi
     echo "$blog_index_content" > /tmp/blog_index_temp.html
-    _f_last_updated ${www_root}/blog/index.html
+    _f_last_updated /tmp/blog_index_temp.html
+    # _f_last_updated ${www_root}/blog/index.html
     cp -f /tmp/blog_index_temp.html ${www_root}/blog/index.html
 
   fi
