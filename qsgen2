@@ -914,6 +914,11 @@ function _blog_index() {
     if (${debug}) _msg debug "_blog_index: Replacing BODY with content of ${project_dir}/blog/index.tmp.html"
     blog_index_content=$( awk -v new_body="$blog_index_list" '{sub(/BODY/, new_body)} 1' <(echo "${blog_index_content}") )
 
+    if (${debug}); then
+      _msg debug "_blog_index: Writing ${www_root}/blog/index.html"
+      _msg debug "_blog_index: Content of blog_index_content"
+      _msg info "${blog_index_content}"
+    fi
     echo "${blog_index_content}" > ${www_root}/blog/index.html
     _f_last_updated ${www_root}/blog/index.html
   fi
