@@ -422,27 +422,30 @@ function _last_updated() {
 }
 
 function _f_last_updated() {
-  # This function updates #updated and #version tags in the provided string in files
-    
+  # Updates #updated and #version tags in the provided file using Zsh
+
   if [[ ${globaldebug} == "true" ]]; then
     local debug=true
   else
-    # If you want to debug this function only, set this to true
     local debug=false
   fi
-    
-  if (${debug}); then _msg debug "_f_last_updated: Setting date and version in footer of file ${1}"; fi
-  if (${debug}); then _msg debug "_f_last_updated: ${upd_msg}"; fi
-    
-  local upd_msg="Last updated ${today} by <a href=\"https://blog.kekepower.com/qsgen2.html\">${QSGEN} ${VERSION}</a>"
-    
-  local content="${1}"
-    
-  # Perform the replacements
-  tee < ${content} | sed \
-    -e "s|#updated|${upd_msg}|" \
-    > ${content}
 
+  local file_path="${1}"
+  local upd_msg="Last updated ${today} by <a href=\"https://blog.kekepower.com/qsgen2.html\">${QSGEN} ${VERSION}</a>"
+
+  if ${debug}; then
+    _msg debug "_f_last_updated: Setting date and version in footer of file ${file_path}"
+    _msg debug "_f_last_updated: ${upd_msg}"
+  fi
+
+  # Read the file content into a variable
+  local content="$(<${file_path})"
+
+  # Perform the replacement
+  content="${content//#updated/${upd_msg}}"
+
+  # Write the updated content back to the file
+  print -r -- "$content" >| "${file_path}"
 }
 
 function _file_to_lower() {
