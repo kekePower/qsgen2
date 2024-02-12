@@ -467,7 +467,7 @@ function _pages() {
     local debug=true
   else
     # If you want to debug this function only, set this to true
-    local debug=true
+    local debug=false
   fi
     
   # Load the cache for Pages
@@ -891,7 +891,7 @@ function _blog_index() {
     local debug=true
   else
     # If you want to debug this function only, set this to true
-    local debug=false
+    local debug=true
   fi
 
   # This function generates the /blog/index.html file that gets its data from _blog_list_for_index()
