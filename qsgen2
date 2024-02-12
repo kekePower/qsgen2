@@ -556,13 +556,13 @@ function _pages() {
             page_content=$(echo "$page_content" | ${engine} ${engine_opts})
         fi
         
-        if (${debug}) _msg debug "_pages: Replacing BODY with page_content in pages_tpl"
-        # Use awk for multi-line and special character handling
-        pages_tpl=$( awk -v new_body="$page_content" '{sub(/BODY/, new_body)} 1' <(echo "${pages_tpl}") )
-        
         # Replace every #pagetitle in pages_tpl
         if (${debug}) _msg debug "_pages: Replacing #pagetitle, #tagline and #sitename in pages_tpl"
         pages_tpl=$(echo "${pages_tpl}" | perl -pe "s|#pagetitle|${page_title}|gs; s|#tagline|${site_tagline}|gs; s|#sitename|${site_name}|gs")
+        
+        if (${debug}) _msg debug "_pages: Replacing BODY with page_content in pages_tpl"
+        # Use awk for multi-line and special character handling
+        pages_tpl=$( awk -v new_body="$page_content" '{sub(/BODY/, new_body)} 1' <(echo "${pages_tpl}") )
         
         # Replace #updated with today's date and #version with Name and Version to footer
         if (${debug}) _msg debug "_pages: _last_updated in pages_tpl"
@@ -610,7 +610,7 @@ function _pages() {
       export new_updated_pages=false
 
   fi
-    
+
 }
 
 function _blogs() {
@@ -898,7 +898,7 @@ function _blog_index() {
     if (${debug}) _msg debug "Running function _blog_index"
     if (${debug}) _msg debug "_blog_index: blog_in_index = ${blog_in_index}"
 
-    _msg std "- Generating the Blog index file"
+    _msg std "- Generating Page: blog/index.html"
 
     local blog_index_tpl=$(<${project_dir}/themes/${theme}/blog_index.tpl)
     local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
