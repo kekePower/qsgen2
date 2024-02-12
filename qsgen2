@@ -467,7 +467,7 @@ function _pages() {
     local debug=true
   else
     # If you want to debug this function only, set this to true
-    local debug=false
+    local debug=true
   fi
     
   # Load the cache for Pages
