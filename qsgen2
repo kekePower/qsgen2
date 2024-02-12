@@ -427,7 +427,7 @@ function _f_last_updated() {
   if [[ ${globaldebug} == "true" ]]; then
     local debug=true
   else
-    local debug=false
+    local debug=true
   fi
 
   local file_path="${1}"
