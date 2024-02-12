@@ -779,7 +779,7 @@ function _blogs() {
             blog_content=$(_cleanup "${blog_content}")
                    
             # Create directory if it doesn't exist
-            if (${debug}) _msg debug "_blogs: Creating directoty ${www_root}/${blog_dir}"
+            if (${debug}) _msg debug "_blogs: Creating directory ${www_root}${blog_dir}"
             [[ ! -d "${www_root}/${blog_dir}" ]] && mkdir -p "${www_root}/${blog_dir}"
 
             # Write to file
@@ -791,6 +791,7 @@ function _blogs() {
     done
     # Now BLOG_META_STR_ARRAY contains the metadata string for each blog post
     export BLOG_META_STR_ARRAY
+    if (${debug}) _msg debug "_blogs: new_updated_blogs=true"
     export new_updated_blogs=true
 
   else
@@ -894,14 +895,16 @@ function _blog_index() {
     local debug=true
   fi
 
-  # This function generates the /blog/index.html file that gets its data from _blog_list_for_index()
+  # This function generates the www_root/blog/index.html file that gets its data from _blog_list_for_index()
   # ${new_updated_blogs} comes from the function _blogs if anything new or updated is detected
   if [[ ${blog_in_index} == "false" ]] && [[ ${new_updated_blogs} = "true" ]]; then
 
-    if (${debug}) _msg debug "Running function _blog_index"
+    if (${debug}) _msg debug "_blog_index: blog_in_index=${blog_in_index}"
+    if (${debug}) _msg debug "_blog_index: new_updated_blogs=${new_updated_blogs}"
+    if (${debug}) _msg debug "_blog_index: Running function _blog_index"
     if (${debug}) _msg debug "_blog_index: blog_in_index = ${blog_in_index}"
 
-    _msg std "- Generating Page: blog/index.html"
+    _msg std "- Generating Page: ${www_root}/blog/index.html"
 
     local blog_index_tpl=$(<${project_dir}/themes/${theme}/blog_index.tpl)
     local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
