@@ -113,11 +113,11 @@ else
 fi
 
 if (${globaldebug}); then
-    qsconfig=$( cat $(pwd)/config | grep -v \# | awk '{print substr($0, index($0, " ") + 1)}' )
+  qsconfig=$( cat $(pwd)/config | grep -v \# | awk '{print substr($0, index($0, " ") + 1)}' )
 	echo "${red}Contents of Config file:${end}"
     for qslines in ${qsconfig}
-    do
-        echo "${yellow}${qslines}${end}"
+      do
+      echo "${yellow}${qslines}${end}"
     done
 fi
 
@@ -218,12 +218,7 @@ export blogdate=$(strftime "%a-%Y-%b-%d")
 
 function _list_pages() {
 
-  if [[ ${globaldebug} == "true" ]]; then
-    local debug=true
-  else
-    # If you want to debug this function only, set this to true
-    local debug=false
-  fi
+  local debug=${globaldebug:-false}
 
   # Initialize or clear the array to ensure it's empty before adding files
   pages_file_array=()
@@ -251,12 +246,7 @@ function _list_pages() {
 
 function _list_blogs() {
 
-  if [[ ${globaldebug} == "true" ]]; then
-    local debug=true
-  else
-    # If you want to debug this function only, set this to true
-    local debug=false
-  fi
+  local debug=${globaldebug:-false}
     
   # Initialize or clear the blogs array to ensure it's empty before adding files
   blogs_file_array=()
@@ -287,12 +277,7 @@ function _list_blogs() {
 # BLOG CACHE
 function _blog_cache() {
 
-  if [[ ${globaldebug} == "true" ]]; then
-    local debug=true
-  else
-    # If you want to debug this function only, set this to true
-    local debug=false
-  fi
+  local debug=${globaldebug:-false}
 
   _list_blogs
 
@@ -343,12 +328,7 @@ function _blog_cache() {
 # Returns the array pages_array()
 function _pages_cache() {
 
-  if [[ ${globaldebug} == "true" ]]; then
-    local debug=true
-  else
-    # If you want to debug this function only, set this to true
-    local debug=false
-  fi
+  local debug=${globaldebug:-false}
   
   # Create an associative array for the pages cache
   typeset -A pages_cache
@@ -398,12 +378,7 @@ function _pages_cache() {
 function _last_updated() {
   # This function updates #updated and #version tags in the provided string for buffers
 
-  if [[ ${globaldebug} == "true" ]]; then
-    local debug=true
-  else
-    # If you want to debug this function only, set this to true
-    local debug=false
-  fi
+  local debug=${globaldebug:-false}
 
   if (${debug}); then _msg debug "_last_updated: Setting date and version in footer"; fi
   if (${debug}); then _msg debug "_last_updated: ${upd_msg}"; fi
@@ -424,11 +399,7 @@ function _last_updated() {
 function _f_last_updated() {
   # Updates #updated and #version tags in the provided file using Zsh
 
-  if [[ ${globaldebug} == "true" ]]; then
-    local debug=true
-  else
-    local debug=false
-  fi
+  local debug=${globaldebug:-false}
 
   # local file_path="${1}"
   local upd_msg="Last updated ${today} by <a href=\"https://blog.kekepower.com/qsgen2.html\">${QSGEN} ${VERSION}</a>"
@@ -470,12 +441,7 @@ function _file_to_lower() {
 function _pages() {
     # This function generates all the new and updated Pages
     
-  if [[ ${globaldebug} == "true" ]]; then
-    local debug=true
-  else
-    # If you want to debug this function only, set this to true
-    local debug=false
-  fi
+  local debug=${globaldebug:-false}
     
   # Load the cache for Pages
   if (${debug}) _msg debug "_pages: Running function _pages_cache"
@@ -626,12 +592,7 @@ function _pages() {
 function _blogs() {
   # This function either generates blog files or exports metadata based on the argument
 
-  if [[ ${globaldebug} == "true" ]]; then
-    local debug=true
-  else
-    # If you want to debug this function only, set this to true
-    local debug=false
-  fi
+  local debug=${globaldebug:-false}
 
   # Running function _list_blogs
   if (${debug}) _msg debug "_blogs: Running function _list_blogs"
@@ -818,12 +779,7 @@ function _blogs() {
 function _blog_idx_for_index() {
   # This function generates the file blog/index.tmp.html
     
-  if [[ ${globaldebug} == "true" ]]; then
-    local debug=true
-  else
-    # If you want to debug this function only, set this to true
-    local debug=false
-  fi
+  local debug=${globaldebug:-false}
     
   _msg sub "- Populating ${project_dir}/blog/index.tmp.html"
     
@@ -895,12 +851,7 @@ function _blog_idx_for_index() {
 
 function _blog_index() {
   
-  if [[ ${globaldebug} == "true" ]]; then
-    local debug=true
-  else
-    # If you want to debug this function only, set this to true
-    local debug=false
-  fi
+  local debug=${globaldebug:-false}
 
   # This function generates the www_root/blog/index.html file that gets its data from _blog_list_for_index()
   # ${new_updated_blogs} comes from the function _blogs if anything new or updated is detected
@@ -936,12 +887,7 @@ function _blog_index() {
 
 function _add_blog_list_to_index() {
   
-  if [[ ${globaldebug} == "true" ]]; then
-    local debug=true
-  else
-    # If you want to debug this function only, set this to true
-    local debug=false
-  fi
+  local debug=${globaldebug:-false}
   
   # Let's find the file 'index.qst' and add the blog if blog_in_index is true
   if (${debug}) _msg debug "_add_blog_list_to_index: Inserting blog list to index.html"
@@ -953,12 +899,7 @@ function _add_blog_list_to_index() {
 
 function _sitemap() {
   
-  if [[ ${globaldebug} == "true" ]]; then
-    local debug=true
-  else
-    # If you want to debug this function only, set this to true
-    local debug=false
-  fi
+  local debug=${globaldebug:-false}
     
   # Check if sitemap is set to true and if there are updated Blogs or Pages before updating the sitemap.xml file.
   if [[ ${sitemap} == "true" ]] && ( [[ ${new_updated_blogs} == "true" ]] || [[ ${new_updated_pages} == "true" ]] ); then
@@ -1007,12 +948,7 @@ function _sitemap() {
 function _link() {
   # This converts #link tags to actual clickable links in a provided string
   
-  if [[ ${globaldebug} == "true" ]]; then
-    local debug=true
-  else
-    # If you want to debug this function only, set this to true
-    local debug=false
-  fi
+  local debug=${globaldebug:-false}
   
   local content="${1}"
   local modified_content=""
@@ -1050,12 +986,7 @@ function _link() {
 function _image() {
     # This replaces #showimg tags with actual HTML img tags in a provided string
 
-  if [[ ${globaldebug} == "true" ]]; then
-    local debug=true
-  else
-    # If you want to debug this function only, set this to true
-    local debug=false
-  fi
+  local debug=${globaldebug:-false}
   
   local content="${1}"
   local modified_content=""
@@ -1095,12 +1026,7 @@ function _image() {
 function _youtube() {
   # This embeds a YouTube video in a provided string
 
-  if [[ ${globaldebug} == "true" ]]; then
-    local debug=true
-  else
-    # If you want to debug this function only, set this to true
-    local debug=false
-  fi
+  local debug=${globaldebug:-false}
   
   local content="${1}"
   local modified_content=""
@@ -1128,12 +1054,7 @@ function _youtube() {
 function _cleanup() {
   # This removes tags used in the templates that may be left over for some reason
 
-  if [[ ${globaldebug} == "true" ]]; then
-    local debug=true
-  else
-    # If you want to debug this function only, set this to true
-    local debug=false
-  fi
+  local debug=${globaldebug:-false}
   
   local content="${1}"
 
@@ -1155,12 +1076,7 @@ function _cleanup() {
 
 function _html() {
 
-  if [[ ${globaldebug} == "true" ]]; then
-    local debug=true
-  else
-    # If you want to debug this function only, set this to true
-    local debug=false
-  fi
+  local debug=${globaldebug:-false}
   
   local content="${1}"
 
@@ -1220,12 +1136,7 @@ function _zhtml() {
   
   # This function uses the regex module from Zsh to parse the QStags
   
-  if [[ ${globaldebug} == "true" ]]; then
-    local debug=true
-  else
-    # If you want to debug this function only, set this to true
-    local debug=false
-  fi
+  local debug=${globaldebug:-false}
   
   local content="${1}"
 
