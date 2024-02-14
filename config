@@ -19,3 +19,6 @@ export blog_in_index=false
 export generator=native
 # Do you want to generate a sitemap.xml file?
 export sitemap=true
+# Language for messages from qsgen2
+# en_US, es_ES, nb_NO
+export language=nb_NO
