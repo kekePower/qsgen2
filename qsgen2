@@ -442,7 +442,7 @@ function _pages() {
           local pages_tpl="$(<${pages})"
         fi
         
-        _msg std "${0:t}_msg_8" " ${pages_in_array%.*}.html"
+        _msg std "\t- ${pages_in_array%.*}.html"
         # Read the file once
         if (${debug}) _msg debug "${0:t}_msg_9" " ${pages_in_array}"
         local page_content="$(<${pages_in_array})"
@@ -666,7 +666,7 @@ function _blogs() {
                     
         if (${debug}) _msg debug "${0:t}_msg_12" " ${blog}"
                        
-          _msg std "${0:t}_msg_13" " ${blog_index}.html"
+          _msg std "\t- ${blog_index}.html"
 
           # Prepare the blog template
           if (${debug}) _msg debug "${0:t}_msg_14" " ${blog}"
