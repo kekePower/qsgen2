@@ -19,9 +19,10 @@ QSGEN="Quick Site Generator 2"
 globaldebug=false
 
 # Use Zsh fpath to set the path to some extra functions
-fpath=(${HOME}/bin/include/common ${HOME}/.config/qsgen2/plugins $fpath)
+fpath=(${HOME}/bin/include/common ${HOME}/.config/qsgen2/lang $fpath)
 # In this case, let's load the 'include' function
 autoload include
+autoload ${language}
 
 # Including some colors to the script
 include common/colors
@@ -126,34 +127,44 @@ blog_cache_file="${project_dir}/.blog_cache"
 pages_cache_file="${project_dir}/.pages_cache"
 
 function _msg() {
-  # Use this function to write out messages based on their type
-  # Types are: std=green - info=yellow - debug=red other=bold_yellow
-  # Usage: _msg <type> "<message>"
-    
-  case ${1} in
-    std)
-        echo "${yellow}${2}${end}"
-    ;;
-    info)
-        echo "${green}${2}${end}"
-    ;;
-    debug)
-        echo "${red}${2}${end}"
-    ;;
-    other)
-        echo "${bold_yellow}${2}${end}"
-    ;;
-    sub)
-        echo "${magenta}${2}${end}"
-    ;;
-    main)
-        echo "${white}${green_bg} ${2} ${end}"
-    ;;
-    *)
-        echo "${2}"
-    ;;
-  esac
-  
+    # Usage: _msg <type> "key"
+    local type=$1
+    local key=$2
+    local msg=${localization[$key]}
+
+    # Check if message exists for the key
+    if [[ -z "$msg" ]]; then
+        echo "Localization key '$key' not found."
+        return
+    fi
+
+    # Dynamic replacement for known placeholders
+    msg=${msg//"%SCRIPT_NAME%"/${0:t}}
+
+    # Apply color formatting based on type
+    case ${type} in
+        std)
+            echo -e "${green}${msg}${end}"
+            ;;
+        info)
+            echo -e "${yellow}${msg}${end}"
+            ;;
+        debug)
+            echo -e "${red}${msg}${end}"
+            ;;
+        other)
+            echo -e "${bold_yellow}${msg}${end}"
+            ;;
+        sub)
+            echo -e "${magenta}${msg}${end}"
+            ;;
+        main)
+            echo -e "${white}${green_bg} ${msg} ${end}"
+            ;;
+        *)
+            echo -e "${msg}"
+            ;;
+    esac
 }
 
 case ${1} in

@@ -1,68 +1,112 @@
-
-
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃                                                      Uso: _msg  ""                                                       ┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-
-                                                                                                                            
-         _msg info "Uso: qsgen2 add \"Nombre del Sitio\" \"/ruta/al/proyecto\""                                             
-     _msg sub "- Actualización Forzada: Generando Todo"                                                                     
- _msg debug "* ${0:t} no puede analizar este sitio. Saliendo. *"                                                            
- _msg other "Por favor, instale Pandoc."                                                                                    
- _msg other "https://github.com/jgm/pandoc/releases"                                                                        
-                                                                                                                            
-
-
-
-_msg debug "No se encontró ningún generador válido. ¿Estás seguro de haber seleccionado el generador correcto en 'config'?" 
-if (${globaldebug}); then _msg debug "Usando el motor ${generator} para archivos: ${file_ext}"; fi if ${debug}; then _msg   
-debug "_list_pages: No se encontraron páginas con extensión ${file_ext}."; fi if ${debug}; then _msg debug "_list_pages:    
-Agregando archivo al array: ${file}"; fi if ${debug}; then _msg debug "_list_blogs: No se encontraron archivos de blogs.";  
-fi if ${debug}; then _msg debug "_list_blogs: Agregando archivo al array: $file"; fi if (${debug}) _msg debug "_blog_cache: 
-VALOR HASH: ${blog_cache[${name}]}" if (${debug}) _msg debug "1. _blog_cache: ${blog_file}" if (${debug}) _msg debug "2.    
-_blog_cache: current_cache: ${current_hash}" if (${debug}) _msg debug "3. _blog_cache: new_cache_file: ${blog_file}$" if    
-(${debug}) _msg debug "4. _blog_cache: new_current_cache: ${current_hash}" if (${debug}) _msg debug "VALOR HASH DE PÁGINAS: 
-${pages_cache[${name}]}" if (${debug}) _msg debug "1. pages_cache: ${pages_cache[$file]}" if (${debug}) _msg debug "1.      
-_pages_cache: current_cache: ${current_hash}" if (${debug}) _msg debug "2. _pages_cache: pages_file: ${pages_cache[$file]}" 
-if (${debug}) _msg debug "2. _pages_cache: current_cache: ${current_hash}" if (${debug}); then _msg debug "_last_updated:   
-Estableciendo fecha y versión en el pie de página"; fi if (${debug}); then _msg debug "_last_updated: ${upd_msg}"; fi local 
-upd_msg="Última actualización ${today} por <a href="https://blog.kekepower.com/qsgen2.html">${QSGEN} ${VERSION}" -e         
-"s|#updated|${upd_msg}|") if (${debug}); then _msg debug "_f_last_updated: Estableciendo fecha y versión en el pie de página
-del archivo ${1}"; fi if (${debug}); then _msg debug "_f_last_updated: ${upd_msg}"; fi local upd_msg="Última actualización  
-${today} por <a href="https://blog.kekepower.com/qsgen2.html">${QSGEN} ${VERSION}" -e "s|#updated|${upd_msg}|"              
-if (${debug}) _msg debug "_pages: Ejecutando función _pages_cache" _msg sub "* No tienes ninguna página " _msg main         
-"Generando Páginas" if (${debug}) _msg debug "_pages: pages_array no está vacío" if (${debug}) _msg debug "_pages:          
-Estableciendo plantilla de Páginas" _msg info "No se pudo encontrar la plantilla de Páginas: ${pages}" if (${debug}) _msg   
-debug "_pages: Leyendo plantilla de Páginas en pages_tpl" _msg std "- Generando Página: ${pages_in_array%.}.html" if        
-(${debug}) _msg debug "_pages: Cargando page_content una vez - ${pages_in_array}" if (${debug}) _msg debug "_pages: Buscando
-page_title en page_content" if (${debug}) _msg debug "_pages: ${page_title}" if (${debug}) _msg debug "_pages: Eliminando   
-línea #title de page_content" if (${debug}) _msg debug "_pages: Ejecutando motor en ${pages_in_array}" if (${debug}) _msg   
-debug "_pages: Comprobando #link, #showimg y #ytvideo en page_content" if (${debug}) _msg debug "_pages: #link está         
-presente, ejecutar _link: page_content" if (${debug}) _msg debug "_pages: #showimg está presente, ejecutar _image:          
-page_content" if (${debug}) _msg debug "_pages: #ytvideo está presente, ejecutar _youtube: page_content" if (${debug}) _msg 
-debug "_pages: Reemplazando BODY con page_content en pages_tpl" if (${debug}) _msg debug "_pages: Reemplazando #pagetitle,  
-#tagline y #sitename en pages_tpl" if (${debug}) _msg debug "_pages: _last_updated en pages_tpl" if (${debug}) _msg debug   
-"_pages: Nombres de archivo en minúsculas, siempre" if (${debug}) _msg debug "_pages: Ejecutando _cleanup" # _msg std       
-"Escribiendo ${www_root}/${pages_title_lower%.}.html en el disco." if (${debug}) _msg sub "- Analizando ${pages_in_array}"  
-if (${debug}) _msg sub "- blog_in_index = ${blog_in_index}" if (${debug}) _msg sub "- Listando archivo temporal de blog:"   
-_msg std "Actualizando index.html con nuevas entradas de blog" if (${debug}) _msg sub "- Analizando ${pages_in_array}" if   
-(${debug}) _msg sub "- blog_in_index = ${blog_in_index}" if (${debug}) _msg sub "- Listando archivo temporal de blog:" _msg 
-sub "- No se encontraron Páginas nuevas o actualizadas" if (${debug}) _msg debug "_blogs: Ejecutando función _list_blogs"   
-_msg sub " No tienes ningún blog " _msg main "Generando Blogs" if (${debug}) _msg debug "_blogs: Ejecutando función         
-_blog_cache" _msg info "No se pudo encontrar la plantilla de tema para Blogs." if (${debug}) _msg debug "_blogs: Procesando 
-pre-datos para ${blog}" _msg debug "_blogs: Falta metadatos de FECHA en ${blog}." if (${debug}) _msg debug "_blogs:         
-Agregando datos para ${blog} al array para exportar" if (${debug}) _msg debug "_blogs: Procesando ${blog}" _msg std "-      
-Generando Blog: ${blog_index}.html" if (${debug}) _msg debug "_blogs: Procesando sustituciones en ${blog}" if (${debug})    
-_msg debug "_blogs: Ejecutando función $engine para ${blog}" if (${debug}) _msg debug "_blogs: Comprobando #link, #showimg y
-#ytvideo en blog_content" if (${debug}) _msg debug "_blogs: #link está presente, ejecutar _link: blog_content" if (${debug})
-_msg debug "_blogs: #showimg está presente, ejecutar _link: blog_content" if (${debug}) _msg debug "_blogs: #ytvideo está   
-presente, ejecutar _link: blog_content" if (${debug}) _msg debug "_blogs: Reemplazando tagline, sitename y pagetitle" if    
-(${debug}) _msg debug "_blogs: Creando directorio ${www_root}/${blog_dir}" if (${debug}) _msg debug "_blogs: Escribiendo    
-blog en disco: ${www_root}${blog_url}" _msg sub "- No se encontraron Blogs nuevos o actualizados" if (${debug}) _msg sub "  
-_blogs: Ejecutando _blog_idx_for_index" if (${debug}) _msg sub "* _blogs: Ejecutando _blog_index" _msg sub "- Poblando      
-${project_dir}/blog/index.tmp.html" if (${debug}) _msg debug "_blog_idx_for_index: Iniciando función" if (${debug}) _msg    
-debug "_blog_idx_for_index: BLOG_META_STR_ARRAY: ${BLOG_META_STR_ARRAY[@]}" if (${debug}) _msg debug "_blog_idx_for_index:  
-meta_str de BLOG_META_STR_ARRAY de _blogs" if (${debug}) _msg debug "_blog_idx_for_index: ${meta_str}" if (${debug}) _msg   
-debug "_blog_idx_for_index: Iterar sobre cada componente y extraer información" if (${debug}) _msg debug                    
-"_blog_idx_for_index: Ejecutando ${engine} en contenido para capturar QStags en Ingress" if (${debug}) _msg debug           
-"_blog_idx_for_index                                                                                                        
+typeset -A localization
+localization=(
+_msg_msg_1 "Uso: qsgen2 add \"Nombre del Sitio\" \"ruta/al/proyecto\""
+_msg_msg_2 "- Actualización forzada: Generando todo"
+_msg_msg_3 "* %SCRIPT_NAME% no puede analizar este sitio. Saliendo. *"
+_msg_msg_4 "Por favor instala Pandoc."
+_msg_msg_5 "No se encontró un generador válido. ¿Estás seguro de haber seleccionado el generador correcto en 'config'?"
+_msg_msg_6 "Usando el motor ${generator} para archivos: ${file_ext}"
+_list_pages_msg_1 "_list_pages: No se encontraron páginas con extensión ${file_ext}."
+_list_pages_msg_2 "_list_pages: Añadiendo archivo al array: ${file}"
+_list_blogs_msg_3 "_list_blogs: No se encontraron blogs."
+_list_blogs_msg_4 "_list_blogs: Añadiendo archivo al array: $file"
+_blog_cache_msg_1 "_blog_cache: VALOR HASH: ${blog_cache[${name}]}"
+_blog_cache_msg_2 "1. _blog_cache: ${blog_file}"
+_blog_cache_msg_3 "2. _blog_cache: caché actual: ${current_hash}"
+_blog_cache_msg_4 "3. _blog_cache: nuevo archivo en caché: ${blog_file}$"
+_blog_cache_msg_5 "4. _blog_cache: nuevo caché actual: ${current_hash}"
+_pages_cache_msg_1 "VALOR HASH DE PÁGINAS: ${pages_cache[${name}]}"
+_pages_cache_msg_2 "1. pages_cache: ${pages_cache[$file]}"
+_pages_cache_msg_3 "1. _pages_cache: caché actual: ${current_hash}"
+_pages_cache_msg_4 "2. _pages_cache: archivo de páginas: ${pages_cache[$file]}"
+_pages_cache_msg_5 "2. _pages_cache: caché actual: ${current_hash}"
+_last_updated_msg_1 "_last_updated: Estableciendo fecha y versión en el pie de página"
+_last_updated_msg_1 "_last_updated: ${upd_msg}"
+_f_last_updated_msg_1 "_f_last_updated: Estableciendo fecha y versión en el pie de página del archivo ${1}"
+_f_last_updated_msg_2 "_f_last_updated: ${upd_msg}"
+_f_last_updated_msg_3 "_f_last_updated: Archivo '${1}' no encontrado."
+_pages_msg_1 "_pages: Ejecutando función _pages_cache"
+_pages_msg_2 "* No tienes ninguna página *"
+_pages_msg_3 "Generando Páginas"
+_pages_msg_4 "_pages: el array de páginas no está vacío"
+_pages_msg_5 "_pages: Estableciendo plantilla de Páginas"
+_pages_msg_6 "No se pudo encontrar la plantilla de Páginas: ${pages}"
+_pages_msg_7 "_pages: Leyendo la plantilla de Páginas en pages_tpl"
+_pages_msg_8 "- Generando Página: ${pages_in_array%.*}.html"
+_pages_msg_9 "_pages: Cargando contenido de página una vez - ${pages_in_array}"
+_pages_msg_10 "_pages: Encontrando título de página"
+_pages_msg_11 "_pages: ${page_title}"
+_pages_msg_12 "_pages: Eliminando línea #title del contenido de página"
+_pages_msg_13 "_pages: Ejecutando motor en ${pages_in_array}"
+_pages_msg_14 "_pages: Comprobando #link, #showimg y #ytvideo en contenido de página"
+_pages_msg_15 "_pages: #link presente, ejecutar _link: contenido de página"
+_pages_msg_16 "_pages: #showimg presente, ejecutar _image: contenido de página"
+_pages_msg_17 "_pages: #ytvideo presente, ejecutar _youtube: contenido de página"
+_pages_msg_18 "_pages: Reemplazando #pagetitle, #tagline y #sitename en pages_tpl"
+_pages_msg_19 "_pages: Reemplazando BODY con contenido de página en pages_tpl"
+_pages_msg_20 "_pages: _last_updated en pages_tpl"
+_pages_msg_21 "_pages: Nombres de archivos en minúsculas, siempre"
+_pages_msg_22 "_pages: Ejecutando _cleanup"
+_pages_msg_23 "- Analizando ${pages_in_array}"
+_pages_msg_24 "- blog_in_index = ${blog_in_index}"
+_pages_msg_25 "- Listando archivo temporal de blog:"
+_pages_msg_26 "Actualizando index.html con nuevas publicaciones de blog"
+_pages_msg_27 "- Analizando ${pages_in_array}"
+_pages_msg_28 "- blog_in_index = ${blog_in_index}"
+_pages_msg_29 "- Listando archivo temporal de blog:"
+_pages_msg_30 "- No se encontraron Páginas nuevas o actualizadas"
+_blogs_msg_1 "_blogs: Ejecutando función _list_blogs"
+_blogs_msg_2 "* No tienes ningún blog *"
+_blogs_msg_3 "Generando Blogs"
+_blogs_msg_4 "_blogs: Ejecutando función _blog_cache"
+_blogs_msg_5 "No se pudo encontrar la plantilla temática para Blogs."
+_blogs_msg_6 "_blogs: Procesando datos previos para ${blog}"
+_blogs_msg_7 "_blogs: Buscando FECHA: Encontrada"
+_blogs_msg_8 "_blogs: Buscando TÍTULO DEL BLOG: Encontrado"
+_blogs_msg_9 "* _blogs: Falta metadatos de FECHA en ${blog}."
+_blogs_msg_10 "* _blogs: Falta metadatos de TÍTULO DEL BLOG en ${blog}."
+_blogs_msg_11 "_blogs: Añadiendo datos para ${blog} al array para exportar"
+_blogs_msg_12 "_blogs: Procesando ${blog}"
+_blogs_msg_13 "- Generando Blog: ${blog_index}.html"
+_blogs_msg_14 "_blogs: Procesando sustituciones en ${blog}"
+_blogs_msg_15 "_blogs: Ejecutando función $engine para ${blog}"
+_blogs_msg_16 "_blogs: Comprobando #link, #showimg y #ytvideo en contenido del blog"
+_blogs_msg_17 "_blogs: #link presente, ejecutar _link: contenido del blog"
+_blogs_msg_18 "_blogs: #showimg presente, ejecutar _link: contenido del blog"
+_blogs_msg_19 "_blogs: #ytvideo presente, ejecutar _link: contenido del blog"
+_blogs_msg_20 "_blogs: Reemplazando tagline, sitename y pagetitle"
+_blogs_msg_21 "_blogs: Creando directorio ${www_root}${blog_dir}"
+_blogs_msg_22 "_blogs: Escribiendo blog en disco: ${www_root}${blog_url}"
+_blogs_msg_23 "_blogs: new_updated_blogs=true"
+_blogs_msg_24 "- No se encontraron Blogs nuevos o actualizados"
+_blogs_msg_25 "* _blogs: Ejecutando _blog_idx_for_index"
+_blogs_msg_26 "* _blogs: Ejecutando _blog_index"
+_blog_idx_for_index_msg_1 "- Poblando ${project_dir}/blog/index.tmp.html"
+_blog_idx_for_index_msg_2 "_blog_idx_for_index: Iniciando función"
+BODY_blog_idx_for_index_msg_3 "_blog_idx_for_index: BLOG_META_STR_ARRAY: ${BLOG_META_STR_ARRAY[@]}"
+_blog_idx_for_index_msg_4 "_blog_idx_for_index: meta_str de BLOG_META_STR_ARRAY de _blogs"
+_blog_idx_for_index_msg_5 "_blog_idx_for_index: ${meta_str}"
+_blog_idx_for_index_msg_6 "_blog_idx_for_index: Iterando sobre cada componente y extrayendo información"
+_blog_idx_for_index_msg_7 "_blog_idx_for_index: Ejecutando ${engine} en contenido para capturar QStags en Ingress"
+_blog_idx_for_index_msg_8 "_blog_idx_for_index: Escribiendo _blog_idx_for_index en archivo: ${project_dir}/blog/index.tmp.html"
+_blog_idx_for_index_msg_9 "_blog_idx_for_index: blog_list_content = ${blog_list_content}"
+_blog_index_msg_1 "_blog_index: blog_in_index=${blog_in_index}"
+_blog_index_msg_2 "_blog_index: new_updated_blogs=${new_updated_blogs}"
+_blog_index_msg_3 "_blog_index: Ejecutando función _blog_index"
+_blog_index_msg_4 "_blog_index: blog_in_index = ${blog_in_index}"
+_blog_index_msg_5 "- Generando Página: ${www_root}/blog/index.html"
+_blog_index_msg_6 "_blog_index: Reemplazando sitename y tagline"
+_blog_index_msg_7 "_blog_index: Reemplazando BODY con contenido de ${project_dir}/blog/index.tmp.html"
+_blog_index_msg_8 "_blog_index: Escribiendo ${www_root}/blog/index.html"
+_add_blog_list_to_index_msg_1 "_add_blog_list_to_index: Insertando lista de blogs en index.html"
+_sitemap_msg_1 "Generando Sitemap"
+_sitemap_msg_2 "Sitemap generado en ${sitemap_file}"
+_link_msg_1 "_link: LÍNEA PRINCIPAL DE URL: ${line}"
+_link_msg_2 "_link_ URL: ${url_dest}"
+_link_msg_3 "_link: Texto: ${url_txt}"
+_image_msg_1 "_image: Procesando línea: ${line}"
+_youtube_msg_1 "_youtube: Procesando línea: ${line}"
+_cleanup_msg_1 "_cleanup: Limpiando etiquetas en contenido"
+_html_msg_1 "_html: Convirtiendo QStags en contenido"
+_zhtml_msg_1 "_zhtml: Convirtiendo QStags en contenido"
+)
