@@ -730,7 +730,7 @@ function _blogs() {
 function _blog_idx_for_index() {
   # This function generates the file blog/index.tmp.html
     
-  local debug=${globaldebug:-true}
+  local debug=${globaldebug:true}
     
   _msg sub "${0:t}_msg_1" " ${project_dir}/blog/index.tmp.html"
     
@@ -802,7 +802,7 @@ function _blog_idx_for_index() {
 
 function _blog_index() {
   
-  local debug=${globaldebug:-true}
+  local debug=${globaldebug:-false}
 
   # This function generates the www_root/blog/index.html file that gets its data from _blog_list_for_index()
   # ${new_updated_blogs} comes from the function _blogs if anything new or updated is detected
