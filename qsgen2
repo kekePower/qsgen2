@@ -738,6 +738,7 @@ function _blog_idx_for_index() {
   if (${debug}) _msg debug "${0:t}_msg_2"
     
   local blog_list_tpl=$(<${project_dir}/themes/${theme}/blog_list.tpl)
+  local blog_list_content=""
     
   # Truncate file before writing new one
   : >| "${project_dir}/blog/index.tmp.html"
@@ -773,7 +774,7 @@ function _blog_idx_for_index() {
           local calnday="${adate[4]}"
             
           local bdate="${adate[1]} - ${adate[4]}/${adate[3]}/${adate[2]}"
-          blog_list_content=$(
+          blog_list_content+=$(
             echo "${blog_list_tpl}" | \
             perl -pe "\
             s|BLOGURL|${site_url}${url}|g; \
@@ -790,14 +791,12 @@ function _blog_idx_for_index() {
         
       unset sdate btitle ingress url
 
-      if (${debug}) _msg debug "${0:t}_msg_7" " ${engine} " "${0:t}_msg_7.1"
-      blog_list_content=$( ${engine} ${blog_list_content} )
-    
-      if (${debug}) _msg debug "${0:t}_msg_8" " ${project_dir}/blog/index.tmp.html"
-      if (${debug}) _msg debug "${0:t}_msg_9" " ${blog_list_content}"
-      echo ${blog_list_content} >> ${project_dir}/blog/index.tmp.html
-
   done
+  if (${debug}) _msg debug "${0:t}_msg_7" " ${engine} " "${0:t}_msg_7.1"
+  blog_list_content=$( ${engine} ${blog_list_content} )
+  if (${debug}) _msg debug "${0:t}_msg_8" " ${project_dir}/blog/index.tmp.html"
+  if (${debug}) _msg debug "${0:t}_msg_9" " ${blog_list_content}"
+  echo ${blog_list_content} > ${project_dir}/blog/index.tmp.html
 
 }
 
