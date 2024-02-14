@@ -46,6 +46,7 @@ fi
 found=false
 for dir in $fpath; do
     if [[ -f "${dir}/${language}" ]]; then
+        echo "Language file: ${dir}/${language}"
         source "${dir}/${language}"
         found=true
         break
