@@ -1,4 +1,5 @@
 typeset -A localization
+
 localization=(
 _qsgen2_msg_2 "- Tvungen oppdatering: Genererer alt"
 _qsgen2_msg_3 "* %SCRIPT_NAME% kan ikke analysere dette nettstedet. Avslutter. *"
