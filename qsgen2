@@ -57,8 +57,8 @@ if ! $found; then
     echo "Language file '${language}' not found in fpath."
     # Fallback or error handling
 fi
-echo "Language loaded: ${language}"
-echo "Localization array contents: ${(@kv)qsgenlang}"
+#echo "Language loaded: ${language}"
+#echo "Localization array contents: ${(@kv)qsgenlang}"
 
 if (${globaldebug}); then
   qsconfig=$( cat $(pwd)/config | grep -v \# | awk '{print substr($0, index($0, " ") + 1)}' )
@@ -133,18 +133,6 @@ elif [[ "$1" == "help" || "$1" == "-h" || "$1" == "--help" ]]; then
 fi
 
 case ${1} in
-    add)
-        if [[ $# -eq 3 ]]; then
-            _add_site "$2" "$3"
-        else
-            _msg info "_qsgen2_msg_1"
-        fi
-        exit
-    ;;
-    list)
-        _list_sites
-        exit
-    ;;
     force)
         _msg sub "_qsgen2_msg_2"
         : >| "$blog_cache_file"  # Truncate the blog cache before doing update
