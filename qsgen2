@@ -211,12 +211,12 @@ function _list_pages() {
   local -a pages_files=(*.${file_ext})
 
   if (( ${#pages_files} == 0 )); then
-    if ${debug}; then _msg debug "_list_pages: No Pages found with ext ${file_ext}."; fi
+    if ${debug}; then _msg debug "${0:t}_msg_1" " ${file_ext}."; fi
     export no_pages_found=true
     return
   else
     for file in "${pages_files[@]}"; do
-      if ${debug}; then _msg debug "_list_pages: Adding file to array: ${file}"; fi
+      if ${debug}; then _msg debug "${0:t}_msg_2" " ${file}"; fi
       pages_file_array+=("$file")
     done
   fi
@@ -239,13 +239,13 @@ function _list_blogs() {
   local -a blog_files=(blog/*.blog(On))
 
   if (( ${#blog_files[@]} == 0 )); then
-    if ${debug}; then _msg debug "_list_blogs: No blog files found."; fi
+    if ${debug}; then _msg debug "${0:t}_msg_1"; fi
     export no_blogs_found=true
     return
   else
     for file in "${blog_files[@]}"
       do
-        if ${debug}; then _msg debug "_list_blogs: Adding file to array: $file"; fi
+        if ${debug}; then _msg debug "${0:t}_msg_2" " $file"; fi
           blogs_file_array+=("$file")
     done
   fi
@@ -267,7 +267,7 @@ function _blog_cache() {
   if [[ -f $blog_cache_file ]]; then
     while IFS=':' read -r name hash; do
       blog_cache[$name]=$hash
-    	if (${debug}) _msg debug "_blog_cache: HASH VALUE: ${blog_cache[${name}]}"
+    	if (${debug}) _msg debug "${0:t}_msg_1" " ${blog_cache[${name}]}"
     done < "$blog_cache_file"
   fi
 
@@ -279,13 +279,13 @@ function _blog_cache() {
     # Compute the current blog file hash
     current_hash=$(md5sum "$blog_file" | awk '{print $1}')
 	
-    if (${debug}) _msg debug "1. _blog_cache: ${blog_file}"
-    if (${debug}) _msg debug "2. _blog_cache: current_cache: ${current_hash}"
+    if (${debug}) _msg debug "${0:t}_msg_2" " ${blog_file}"
+    if (${debug}) _msg debug "${0:t}_msg_3" " ${current_hash}"
 
     # Check if the blog file is new or has changed
     if [[ ${blog_cache[$blog_file]} != "$current_hash" ]]; then
-    	if (${debug}) _msg debug "3. _blog_cache: new_cache_file: ${blog_file}"
-    	if (${debug}) _msg debug "4. _blog_cache: new_current_cache: ${current_hash}"
+    	if (${debug}) _msg debug "${0:t}_msg_4" " ${blog_file}"
+    	if (${debug}) _msg debug "${0:t}_msg_5" " ${current_hash}"
       # Blog file is new or has changed; add it to the processing array
       make_blog_array+=("$blog_file")
 
@@ -318,7 +318,7 @@ function _pages_cache() {
   if [[ -f $pages_cache_file ]]; then
     while IFS=':' read -r name hash; do
       pages_cache[$name]=$hash
-    	if (${debug}) _msg debug "PAGES HASH VALUE: ${pages_cache[${name}]}"
+    	if (${debug}) _msg debug "${0:t}_msg_1" " ${pages_cache[${name}]}"
     done < "$pages_cache_file"
   fi
     
@@ -330,13 +330,13 @@ function _pages_cache() {
     # Compute the current blog file hash
     current_hash=$(md5sum "$file" | awk '{print $1}')
         
-    if (${debug}) _msg debug "1. pages_cache: ${pages_cache[$file]}"
-    if (${debug}) _msg debug "1. _pages_cache: current_cache: ${current_hash}"
+    if (${debug}) _msg debug "${0:t}_msg_2" " ${pages_cache[$file]}"
+    if (${debug}) _msg debug "${0:t}_msg_3" " current_cache: ${current_hash}"
         
     # Check if the pages file is new or has changed
     if [[ ${pages_cache[$file]} != "$current_hash" ]]; then
-    	if (${debug}) _msg debug "2. _pages_cache: pages_file: ${pages_cache[$file]}"
-    	if (${debug}) _msg debug "2. _pages_cache: current_cache: ${current_hash}"
+    	if (${debug}) _msg debug "${0:t}_msg_4" " ${pages_cache[$file]}"
+    	if (${debug}) _msg debug "${0:t}_msg_5" " current_cache: ${current_hash}"
       
       # Pages file is new or has changed; add it to the processing array
       pages_array+=("$file")
