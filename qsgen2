@@ -70,8 +70,6 @@ if (${globaldebug}); then
     done
 fi
 
-echo "Sample QSGenLang entry: ${qsgenlang[_qsgen2_msg_2]}"
-
 function _msg() {
     local type=$1
     shift  # Remove the first argument so $@ now contains only keys or additional strings
