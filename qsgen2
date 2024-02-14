@@ -28,76 +28,6 @@ include common/colors
 
 echo "${magenta}${blue_bg} ${QSGEN} ${end}${bold_white}${blue_bg}${VERSION} ${end}"
 
-_add_site() {
-
-  local site_name="${1}"
-  local project_dir="${2}"
-  local sites_file="${HOME}/.config/qsgen2/sites.qsc"
-
-  # Ensure the configuration directory and sites file exist
-  mkdir -p "${HOME}/.config/qsgen2"
-  touch "${sites_file}"
-
-  # Check if the site already exists in the file
-  if grep -q "^${site_name}|" "${sites_file}"; then
-    echo "Site '$site_name' already exists."
-    return 1 # Exit the function with an error status.
-  fi
-
-  # Validate project directory
-  if [[ ! -d "${project_dir}" ]]; then
-    echo "The specified project directory does not exist."
-    return 1 # Exit the function with an error status.
-  fi
-  # Determine the new site number by counting existing lines
-  local site_number=$(( $(wc -l < "${sites_file}") + 1 ))
-    
-  # Add the site to the sites file
-  echo "${site_number}|${site_name}|${project_dir}" >> "${sites_file}"
-  echo "Site '${site_name}' added successfully."
-
-}
-
-_list_sites() {
-
-  local config_dir="${HOME}/.config/qsgen2"
-  local sites_file="${config_dir}/sites.qsc"
-
-  # Ensure the configuration directory exists; create it if it doesn't.
-  # This might be more relevant in other parts of your script.
-  mkdir -p "$config_dir"
-  touch "${sites_file}"
-
-  if [[ -f "$sites_file" ]]; then
-    echo "Registered Sites:"
-    while IFS='|' read -r site_name site_dir; do
-      printf "${magenta}%-30s${end} - Directory: ${blue}%-50s${end}\n" "Site: $site_name" "$site_dir"
-    done < "$sites_file"
-  else
-    echo "No sites registered."
-  fi
-
-}
-
-
-function _version() {
-  echo "${yellow}- Created by kekePower - 2018-$(strftime "%Y")${end}"
-  echo "${yellow}- https://github.com/kekePower/qsgen2/${end}"
-  echo "${yellow}- See '${1} help' for more information.${end}"
-  exit
-}
-
-function _help() {
-  echo "This is where I'll write the Help documentation."
-	exit
-}
-
-if [[ "$1" == "version" || "$1" == "-v" || "$1" == "--version" ]]; then
-  _version ${0:t}
-elif [[ "$1" == "help" || "$1" == "-h" || "$1" == "--help" ]]; then
-  _help ${0:t}
-fi
-
 # Loading Zsh modules
 zmodload zsh/files
 zmodload zsh/datetime
@@ -112,21 +42,17 @@ else
 	exit
 fi
 
+# Load language
+autoload ${language}
+
 if (${globaldebug}); then
   qsconfig=$( cat $(pwd)/config | grep -v \# | awk '{print substr($0, index($0, " ") + 1)}' )
-	echo "${red}Contents of Config file:${end}"
+	echo "_qsgen2_msg_9"
     for qslines in ${qsconfig}
       do
       echo "${yellow}${qslines}${end}"
     done
 fi
-
-# Load language
-autoload ${language}
-
-# Define cache files for blogs and pages
-blog_cache_file="${project_dir}/.blog_cache"
-pages_cache_file="${project_dir}/.pages_cache"
 
 function _msg() {
     # Usage: _msg <type> "key"
@@ -136,45 +62,63 @@ function _msg() {
 
     # Check if message exists for the key
     if [[ -z "$msg" ]]; then
-        echo "Localization key '$key' not found."
+        printf "Localization key '%s' not found.\n" "$key"
         return
     fi
 
     # Dynamic replacement for known placeholders
     msg=${msg//"%SCRIPT_NAME%"/${0:t}}
 
-    # Apply color formatting based on type
+    # Apply color formatting based on type and use printf for safe output
     case ${type} in
         std)
-            echo -e "${green}${msg}${end}"
+            printf "${green}%s${end}\n" "$msg"
             ;;
         info)
-            echo -e "${yellow}${msg}${end}"
+            printf "${yellow}%s${end}\n" "$msg"
             ;;
         debug)
-            echo -e "${red}${msg}${end}"
+            printf "${red}%s${end}\n" "$msg"
             ;;
         other)
-            echo -e "${bold_yellow}${msg}${end}"
+            printf "${bold_yellow}%s${end}\n" "$msg"
             ;;
         sub)
-            echo -e "${magenta}${msg}${end}"
+            printf "${magenta}%s${end}\n" "$msg"
             ;;
         main)
-            echo -e "${white}${green_bg} ${msg} ${end}"
+            printf "${white}${green_bg} %s ${end}\n" "$msg"
             ;;
         *)
-            echo -e "${msg}"
+            printf "%s\n" "$msg"
             ;;
     esac
 }
+
+function _version() {
+  _msg info "_qsgen2_msg_7"
+  echo "${yellow}- https://github.com/kekePower/qsgen2/${end}"
+  _msg info "_qsgen2_msg_7"
+  exit
+}
+
+function _help() {
+  echo "This is where I'll write the Help documentation."
+	exit
+}
+
+if [[ "$1" == "version" || "$1" == "-v" || "$1" == "--version" ]]; then
+  _version ${0:t}
+elif [[ "$1" == "help" || "$1" == "-h" || "$1" == "--help" ]]; then
+  _help ${0:t}
+fi
 
 case ${1} in
     add)
         if [[ $# -eq 3 ]]; then
             _add_site "$2" "$3"
         else
-            _msg info "Usage: qsgen2 add \"Site Name\" \"/path/to/project\""
+            _msg info "_qsgen2_msg_1"
         fi
         exit
     ;;
@@ -183,7 +127,7 @@ case ${1} in
         exit
     ;;
     force)
-        _msg sub "- Forced Update: Generating Everything"
+        _msg sub "_qsgen2_msg_2"
         : >| "$blog_cache_file"  # Truncate the blog cache before doing update
         : >| "$pages_cache_file"  # Truncate the page cache before doing update
     ;;
@@ -194,7 +138,7 @@ esac
 
 # Let's check if qsgen2 can generate this site by checking if 'generator' is available
 if [[ ! ${generator} ]] || [[ -d $(pwd)/.git ]]; then
-    _msg debug "* ${0:t} cannot parse this site. Exiting. *"
+    _msg debug "_qsgen2_msg_3"
     exit
 fi
 
@@ -205,7 +149,7 @@ if [[ ${generator} == "native" ]]; then
   export file_ext="qst"
 elif [[ ${generator} == "markdown" ]]; then
   if [[ ! -f /usr/local/bin/pandoc ]]; then
-    _msg other "Please install Pandoc."
+    _msg other "_qsgen2_msg_4"
     _msg other "https://github.com/jgm/pandoc/releases"
     exit
   else
@@ -215,17 +159,20 @@ elif [[ ${generator} == "markdown" ]]; then
     export file_ext="md"
   fi
 else
-  _msg debug "No valid generator found. Are you sure you've selected the correct generator in 'config'?"
+  _msg debug "_qsgen2_msg_5"
   exit
 fi
 
-if (${globaldebug}); then _msg debug "Using the ${generator} engine for files: ${file_ext}"; fi
+if (${globaldebug}); then _msg debug "_qsgen2_msg_6"; fi
 
 builtin cd ${project_dir}
 
 # Let's put these here for now.
 export today=$(strftime "%Y-%m-%d - %T")
 export blogdate=$(strftime "%a-%Y-%b-%d")
+# Define cache files for blogs and pages
+blog_cache_file="${project_dir}/.blog_cache"
+pages_cache_file="${project_dir}/.pages_cache"
 
 # Let's create arrays of all the files we'll be working on
 
