@@ -19,7 +19,7 @@ QSGEN="Quick Site Generator 2"
 globaldebug=false
 
 # Use Zsh fpath to set the path to some extra functions
-fpath=(${HOME}/bin/include/common ${HOME}/.config/qsgen2/lang $fpath)
+fpath=(${HOME}/bin/include/common ${HOME}/bin/include/qsgen2/lang $fpath)
 # In this case, let's load the 'include' function
 autoload include
 
