@@ -43,7 +43,8 @@ else
 fi
 
 # Load language
-autoload ${language}
+autoload -Uz ${language}
+${language}
 
 if (${globaldebug}); then
   qsconfig=$( cat $(pwd)/config | grep -v \# | awk '{print substr($0, index($0, " ") + 1)}' )
@@ -98,7 +99,7 @@ function _msg() {
 function _version() {
   _msg info "_qsgen2_msg_7"
   echo "${yellow}- https://github.com/kekePower/qsgen2/${end}"
-  _msg info "_qsgen2_msg_7"
+  _msg info "_qsgen2_msg_8"
   exit
 }
 
