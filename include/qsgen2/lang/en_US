@@ -1,5 +1,5 @@
-typeset -A localization
-localization=(
+typeset -A qsgenlang
+qsgenlang=(
 _qsgen2_msg_1 "Usage: qsgen2 add \\"Site Name\\" \\"/path/to/project\\""
 _qsgen2_msg_2 "- Forced Update: Generating Everything"
 _qsgen2_msg_3 "* %SCRIPT_NAME% cannot parse this site. Exiting. *"

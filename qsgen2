@@ -58,7 +58,7 @@ if ! $found; then
     # Fallback or error handling
 fi
 echo "Language loaded: ${language}"
-echo "Localization array contents: ${(@kv)localization}"
+echo "Localization array contents: ${(@kv)qsgenlang}"
 
 if (${globaldebug}); then
   qsconfig=$( cat $(pwd)/config | grep -v \# | awk '{print substr($0, index($0, " ") + 1)}' )
@@ -69,15 +69,17 @@ if (${globaldebug}); then
     done
 fi
 
+echo "Sample QSGenLang entry: ${qsgenlang[_qsgen2_msg_1]}"
+
 function _msg() {
     local type=$1
     shift  # Remove the first argument so $@ now contains only keys or additional strings
     
     local full_msg=""
     for arg in "$@"; do
-        if [[ -n "${localization[$arg]}" ]]; then
+        if [[ -n "${qsgenlang[$arg]}" ]]; then
             echo "Found key: $arg"  # Debug line to confirm key is found
-            full_msg+="${localization[$arg]}"
+            full_msg+="${qsgenlang[$arg]}"
         else
             echo "Key not found: $arg"  # Debug line for keys not found
             full_msg+="$arg"
