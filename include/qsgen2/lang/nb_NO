@@ -1,6 +1,5 @@
 typeset -A localization
 localization=(
-_qsgen2_msg_1 "Bruk: qsgen2 add \"Nettstedsnavn\" \"sti/til/prosjekt\""
 _qsgen2_msg_2 "- Tvungen oppdatering: Genererer alt"
 _qsgen2_msg_3 "* %SCRIPT_NAME% kan ikke analysere dette nettstedet. Avslutter. *"
 _qsgen2_msg_4 "Vennligst installer Pandoc."
@@ -18,7 +17,7 @@ _blog_cache_msg_2 "1. _blog_cache: ${blog_file}"
 _blog_cache_msg_3 "2. _blog_cache: nåværende cache: ${current_hash}"
 _blog_cache_msg_4 "3. _blog_cache: ny cache-fil: ${blog_file}$"
 _blog_cache_msg_5 "4. _blog_cache: ny nåværende cache: ${current_hash}"
-_pages_cache_msg_1 "SIDERS HASH VERDI: ${pages_cache[${name}]}"
+_pages_cache_msg_1 "_pages_cache: PAGES HASH VERDI: ${pages_cache[${name}]}"
 _pages_cache_msg_2 "1. pages_cache: ${pages_cache[$file]}"
 _pages_cache_msg_3 "1. _pages_cache: nåværende cache: ${current_hash}"
 _pages_cache_msg_4 "2. _pages_cache: sidefil: ${pages_cache[$file]}"

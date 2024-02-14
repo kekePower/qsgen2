@@ -56,48 +56,50 @@ if (${globaldebug}); then
 fi
 
 function _msg() {
-    # Usage: _msg <type> "key"
     local type=$1
-    local key=$2
-    local msg=${localization[$key]}
-
-    # Check if message exists for the key
-    if [[ -z "$msg" ]]; then
-        printf "Localization key '%s' not found.\n" "$key"
-        return
-    fi
-
-    # Dynamic replacement for known placeholders
-    msg=${msg//"%SCRIPT_NAME%"/${0:t}}
-
+    shift  # Remove the first argument so $@ now contains only message keys or parts
+    
+    local full_msg=""
+    for part in "$@"; do
+        if [[ -n "${localization[$part]}" ]]; then
+            # Part is a localization key
+            part="${localization[$part]}"
+        elif [[ "$part" == "%SCRIPT_NAME%" ]]; then
+            # Special handling for script name placeholder
+            part=${0:t}
+        fi
+        # Append part to the full message
+        full_msg+="$part"
+    done
+    
     # Apply color formatting based on type and use printf for safe output
-    case ${type} in
+    case $type in
         std)
-            printf "${green}%s${end}\n" "$msg"
+            printf "${green}%s${end}\n" "$full_msg"
             ;;
         info)
-            printf "${yellow}%s${end}\n" "$msg"
+            printf "${yellow}%s${end}\n" "$full_msg"
             ;;
         debug)
-            printf "${red}%s${end}\n" "$msg"
+            printf "${red}%s${end}\n" "$full_msg"
             ;;
         other)
-            printf "${bold_yellow}%s${end}\n" "$msg"
+            printf "${bold_yellow}%s${end}\n" "$full_msg"
             ;;
         sub)
-            printf "${magenta}%s${end}\n" "$msg"
+            printf "${magenta}%s${end}\n" "$full_msg"
             ;;
         main)
-            printf "${white}${green_bg} %s ${end}\n" "$msg"
+            printf "${white}${green_bg} %s ${end}\n" "$full_msg"
             ;;
         *)
-            printf "%s\n" "$msg"
+            printf "%s\n" "$full_msg"
             ;;
     esac
 }
 
 function _version() {
-  _msg info "_qsgen2_msg_7$(strftime "%Y")"
+  _msg info "_qsgen2_msg_7" "$(strftime "%Y")"
   echo "${yellow}- https://github.com/kekePower/qsgen2/${end}"
   _msg info "_qsgen2_msg_8"
   exit
