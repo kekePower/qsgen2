@@ -131,6 +131,10 @@ elif [[ "$1" == "help" || "$1" == "-h" || "$1" == "--help" ]]; then
   _help ${0:t}
 fi
 
+# Define cache files for blogs and pages
+blog_cache_file="${project_dir}/.blog_cache"
+pages_cache_file="${project_dir}/.pages_cache"
+
 case ${1} in
     force)
         _msg sub "_qsgen2_msg_2"
@@ -176,9 +180,6 @@ builtin cd ${project_dir}
 # Let's put these here for now.
 export today=$(strftime "%Y-%m-%d - %T")
 export blogdate=$(strftime "%a-%Y-%b-%d")
-# Define cache files for blogs and pages
-blog_cache_file="${project_dir}/.blog_cache"
-pages_cache_file="${project_dir}/.pages_cache"
 
 # Let's create arrays of all the files we'll be working on
 
