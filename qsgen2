@@ -69,16 +69,17 @@ fi
 
 function _msg() {
     local type=$1
-    shift  # Remove the first argument (type) so $@ now contains only keys or additional strings
-
+    shift  # Remove the first argument so $@ now contains only keys or additional strings
+    
     local full_msg=""
-    for key in "$@"; do
-        if [[ "${localization[$key]}" ]]; then
-            # If key exists in the localization array, append its value
-            full_msg+="${localization[$key]}"
+    for arg in "$@"; do
+        # Check if argument is a key in the localization array
+        if [[ -n "${localization[$arg]}" ]]; then
+            # Append the localized message to full_msg
+            full_msg+="${localization[$arg]}"
         else
-            # If key does not exist, treat it as a literal string (useful for dynamic content like ${0:t})
-            full_msg+="$key"
+            # Argument not a key, treat as a literal string and append
+            full_msg+="$arg"
         fi
     done
     
@@ -111,7 +112,7 @@ function _msg() {
 }
 
 function _version() {
-  _msg info "_qsgen2_msg_7" "$(strftime "%Y")"
+  _msg info "_qsgen2_msg_7" "-$(strftime "%Y")"
   echo "${yellow}- https://github.com/kekePower/qsgen2/${end}"
   _msg info "_qsgen2_msg_8" " '${1} help' " "_qsgen2_msg_8.1"
   exit

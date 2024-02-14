@@ -5,7 +5,7 @@ _qsgen2_msg_3 "* %SCRIPT_NAME% kan ikke analysere dette nettstedet. Avslutter. *
 _qsgen2_msg_4 "Vennligst installer Pandoc."
 _qsgen2_msg_5 "Ingen gyldig generator funnet. Er du sikker på at du har valgt riktig generator i 'config'?"
 _qsgen2_msg_6 "Bruker ${generator}-motoren for filer: ${file_ext}"
-_qsgen2_msg_7 "- Laget av kekePower - 2018-"
+_qsgen2_msg_7 "- Laget av kekePower - 2018"
 _qsgen2_msg_8 "- Se"
 _qsgen2_msg_8.1 "for mer informasjon."
 _qsgen2_msg_9 "Innhold i Config filen:"
