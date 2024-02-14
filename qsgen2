@@ -69,7 +69,7 @@ if (${globaldebug}); then
     done
 fi
 
-echo "Sample QSGenLang entry: ${qsgenlang[_qsgen2_msg_1]}"
+echo "Sample QSGenLang entry: ${qsgenlang[_qsgen2_msg_2]}"
 
 function _msg() {
     local type=$1
@@ -77,9 +77,9 @@ function _msg() {
     
     local full_msg=""
     for arg in "$@"; do
-        if [[ -n "${qsgenlang[$arg]}" ]]; then
+        if [[ -n "${(q)qsgenlang[$arg]}" ]]; then
             echo "Found key: $arg"  # Debug line to confirm key is found
-            full_msg+="${qsgenlang[$arg]}"
+            full_msg+="${(q)qsgenlang[$arg]}"
         else
             echo "Key not found: $arg"  # Debug line for keys not found
             full_msg+="$arg"

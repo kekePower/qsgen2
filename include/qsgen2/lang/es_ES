@@ -1,6 +1,5 @@
 typeset -A qsgenlang
 qsgenlang=(
-_qsgen2_msg_1 "Uso: qsgen2 add \"Nombre del Sitio\" \"ruta/al/proyecto\""
 _qsgen2_msg_2 "- Actualización forzada: Generando todo"
 _qsgen2_msg_3 "* %SCRIPT_NAME% no puede analizar este sitio. Saliendo. *"
 _qsgen2_msg_4 "Por favor instala Pandoc."
