@@ -111,8 +111,7 @@ function _msg() {
             printf "%s\n" "${full_msg}"
             ;;
     esac
-    
-    echo "Debugging full_msg: ${full_msg}"
+
 }
 
 function _version() {
