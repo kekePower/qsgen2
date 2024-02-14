@@ -47,7 +47,7 @@ found=false
 typeset -A qsgenlang
 for dir in $fpath; do
     if [[ -f "${dir}/${language}" ]]; then
-        echo "Language file: ${dir}/${language}"
+        # echo "Language file: ${dir}/${language}"
         source "${dir}/${language}"
         found=true
         break
@@ -79,10 +79,10 @@ function _msg() {
     local full_msg=""
     for arg in "$@"; do
         if [[ -n "${qsgenlang[$arg]}" ]]; then
-            echo "Found key: $arg"  # Debug line to confirm key is found
+            # echo "Found key: $arg"  # Debug line to confirm key is found
             full_msg+="${qsgenlang[$arg]}"
         else
-            echo "Key not found: $arg"  # Debug line for keys not found
+            # echo "Key not found: $arg"  # Debug line for keys not found
             full_msg+="$arg"
         fi
     done
