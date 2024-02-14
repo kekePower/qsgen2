@@ -22,7 +22,6 @@ globaldebug=false
 fpath=(${HOME}/bin/include/common ${HOME}/.config/qsgen2/lang $fpath)
 # In this case, let's load the 'include' function
 autoload include
-autoload ${language}
 
 # Including some colors to the script
 include common/colors
@@ -121,6 +120,9 @@ if (${globaldebug}); then
       echo "${yellow}${qslines}${end}"
     done
 fi
+
+# Load language
+autoload ${language}
 
 # Define cache files for blogs and pages
 blog_cache_file="${project_dir}/.blog_cache"
