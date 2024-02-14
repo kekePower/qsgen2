@@ -101,7 +101,7 @@ function _msg() {
 function _version() {
   _msg info "_qsgen2_msg_7" "$(strftime "%Y")"
   echo "${yellow}- https://github.com/kekePower/qsgen2/${end}"
-  _msg info "_qsgen2_msg_8"
+  _msg info "_qsgen2_msg_8" " '${1} help' " "_qsgen2_msg_8.1"
   exit
 }
 
