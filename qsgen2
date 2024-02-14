@@ -10,13 +10,13 @@
 # https://github.com/kekePower/qsgen2/
 # 
 
-VERSION="0.3.6" # Mon-2024-02-12
+VERSION="0.4.0 beta" # Wed-2024-02-14
 QSGEN="Quick Site Generator 2"
 
 # Set to true or false
 # This will show debug information from every function in this script
 # You can also set debug=true in a single function if you want to debug only that specific one.
-globaldebug=false
+globaldebug=true
 
 # Use Zsh fpath to set the path to some extra functions
 fpath=(${HOME}/bin/include/common ${HOME}/bin/include/qsgen2/lang $fpath)
@@ -54,6 +54,8 @@ if (${globaldebug}); then
       echo "${yellow}${qslines}${end}"
     done
 fi
+
+exit
 
 function _msg() {
     local type=$1

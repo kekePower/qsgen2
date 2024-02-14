@@ -1,6 +1,5 @@
 typeset -A localization
-localization=(
-_qsgen2_msg_2 "- Tvungen oppdatering: Genererer alt"
+localization=(_qsgen2_msg_2 "- Tvungen oppdatering: Genererer alt"
 _qsgen2_msg_3 "* %SCRIPT_NAME% kan ikke analysere dette nettstedet. Avslutter. *"
 _qsgen2_msg_4 "Vennligst installer Pandoc."
 _qsgen2_msg_5 "Ingen gyldig generator funnet. Er du sikker på at du har valgt riktig generator i 'config'?"
