@@ -10,7 +10,7 @@
 # https://github.com/kekePower/qsgen2/
 # 
 
-VERSION="0.4.0 beta" # Wed-2024-02-14
+VERSION="0.4.0 beta 1" # Wed-2024-02-14
 QSGEN="Quick Site Generator 2"
 
 # Set to true or false
@@ -120,6 +120,7 @@ function _version() {
 }
 
 function _help() {
+  # This will also be translated some time in the future
   echo "This is where I'll write the Help documentation."
 	exit
 }
@@ -345,10 +346,10 @@ function _last_updated() {
 
   local debug=${globaldebug:-false}
 
-  if (${debug}); then _msg debug "_last_updated: Setting date and version in footer"; fi
-  if (${debug}); then _msg debug "_last_updated: ${upd_msg}"; fi
-      
   local upd_msg="Last updated ${today} by <a href=\"https://blog.kekepower.com/qsgen2.html\">${QSGEN} ${VERSION}</a>"
+  
+  if (${debug}); then _msg debug "${0:t}_msg_1"; fi
+  if (${debug}); then _msg debug "${0:t}_msg_2" " ${upd_msg}"; fi
     
   local content="${1}"
 
@@ -370,8 +371,8 @@ function _f_last_updated() {
   local upd_msg="Last updated ${today} by <a href=\"https://blog.kekepower.com/qsgen2.html\">${QSGEN} ${VERSION}</a>"
 
   if ${debug}; then
-    _msg debug "_f_last_updated: Setting date and version in footer of file ${1}"
-    _msg debug "_f_last_updated: ${upd_msg}"
+    _msg debug "${0:t}_msg_1" " ${1}"
+    _msg debug "${0:t}_msg_2" " ${upd_msg}"
   fi
 
   # Read the file content into a variable
@@ -383,7 +384,7 @@ function _f_last_updated() {
   if [[ -f "${1}" ]]; then
     sed -i -e "s|#updated|${upd_msg}|" "${1}"
   else
-    _msg debug "_f_last_updated: File '${1}' not found."
+    _msg debug "${0:t}_msg_3" " '${1}' " "${0:t}_msg_3.1"
   fi
 
 }
@@ -409,44 +410,44 @@ function _pages() {
   local debug=${globaldebug:-false}
     
   # Load the cache for Pages
-  if (${debug}) _msg debug "_pages: Running function _pages_cache"
+  if (${debug}) _msg debug "${0:t}_msg_1"
   _pages_cache
     
   if [[ ${no_pages_found} == "true" ]]; then
-    _msg sub "* You do not have any pages *"
+    _msg sub "${0:t}_msg_1"
     return
   fi
     
-  _msg main "Generating Pages"
+  _msg main "${0:t}_msg_3"
     
   if (( ${#pages_array[@]} > 0 )); then
     
     # If pages_array is not empty, we do work
-    if (${debug}) _msg debug "_pages: pages_array is not empty"
+    if (${debug}) _msg debug "${0:t}_msg_4"
     
     for pages_in_array in ${pages_array[@]}
       do
-        if (${debug}) _msg debug "_pages: Setting Pages template"
+        if (${debug}) _msg debug "${0:t}_msg_5"
         local pages=${project_dir}/themes/${theme}/pages.tpl
         
         # Let's check if we can access the pages.tpl file.
         # It not, exit script.
         if [[ ! -f ${pages} ]]; then
-          _msg info "Unable to find the Pages template: ${pages}"
+          _msg info "${0:t}_msg_6" " ${pages}"
           exit
         else
           # Read template once
-          if (${debug}) _msg debug "_pages: Reading Pages template into pages_tpl"
+          if (${debug}) _msg debug "${0:t}_msg_7"
           local pages_tpl="$(<${pages})"
         fi
         
-        _msg std "- Generating Page: ${pages_in_array%.*}.html"
+        _msg std "${0:t}_msg_8" " ${pages_in_array%.*}.html"
         # Read the file once
-        if (${debug}) _msg debug "_pages: Loading page_content once - ${pages_in_array}"
+        if (${debug}) _msg debug "${0:t}_msg_9" " ${pages_in_array}"
         local page_content="$(<${pages_in_array})"
               
         # Grab the title from the Page
-        if (${debug}) _msg debug "_pages: Finding page_title"
+        if (${debug}) _msg debug "${0:t}_msg_10"
         if [[ ${generator} == "native" ]]; then
           while read -r line
             do
@@ -469,28 +470,28 @@ function _pages() {
             fi
           done <<< ${page_content}
         fi
-        if (${debug}) _msg debug "_pages: ${page_title}"
+        if (${debug}) _msg debug "${0:t}_msg_11" " ${page_title}"
         
         # Remove the #title line from the buffer. No longer needed.
-        if (${debug}) _msg debug "_pages: Removing #title line from page_content"
+        if (${debug}) _msg debug "${0:t}_msg_12"
         page_content=$( echo ${page_content} | grep -v \#title )
         
         # HTML'ify the page content
-        if (${debug}) _msg debug "_pages: Running engine on ${pages_in_array}"
+        if (${debug}) _msg debug "${0:t}_msg_13" " ${pages_in_array}"
         if [[ ${generator} == "native" ]]; then
           page_content=$( ${engine} "$page_content" )
           # Look for links, images and videos and convert them if present.
-          if (${debug}) _msg debug "_pages: Checking for #link, #showimg and #ytvideo in page_content"
+          if (${debug}) _msg debug "${0:t}_msg_14"
           if [[ $( echo ${page_content} | grep \#link ) ]]; then
-            if (${debug}) _msg debug "_pages: #link is present, run _link: page_content"
+            if (${debug}) _msg debug "${0:t}_msg_15"
             page_content=$( _link "${page_content}" )
             fi
           if [[ $( echo ${page_content} | grep \#showimg ) ]]; then
-            if (${debug}) _msg debug "_pages: #showimg is present, run _image: page_content"
+            if (${debug}) _msg debug "${0:t}_msg_16"
             page_content=$( _image "${page_content}" )
           fi
           if [[ $( echo ${page_content} | grep \#ytvideo ) ]]; then
-            if (${debug}) _msg debug "_pages: #ytvideo is present, run _youtube: page_content"
+            if (${debug}) _msg debug "${0:t}_msg_17"
             page_content=$( _youtube "${page_content}" )
           fi
         elif [[ ${generator} == "markdown" ]]; then
@@ -498,23 +499,23 @@ function _pages() {
         fi
         
         # Replace every #pagetitle in pages_tpl
-        if (${debug}) _msg debug "_pages: Replacing #pagetitle, #tagline and #sitename in pages_tpl"
+        if (${debug}) _msg debug "${0:t}_msg_18"
         pages_tpl=$(echo "${pages_tpl}" | perl -pe "s|#pagetitle|${page_title}|gs; s|#tagline|${site_tagline}|gs; s|#sitename|${site_name}|gs")
         
-        if (${debug}) _msg debug "_pages: Replacing BODY with page_content in pages_tpl"
+        if (${debug}) _msg debug "${0:t}_msg_19"
         # Use awk for multi-line and special character handling
         pages_tpl=$( awk -v new_body="$page_content" '{sub(/BODY/, new_body)} 1' <(echo "${pages_tpl}") )
         
         # Replace #updated with today's date and #version with Name and Version to footer
-        if (${debug}) _msg debug "_pages: _last_updated in pages_tpl"
+        if (${debug}) _msg debug "${0:t}_msg_20"
         pages_tpl=$( _last_updated ${pages_tpl} )
         
         # Always use lowercase for file names
-        if (${debug}) _msg debug "_pages: Lowercase filnames, always"
+        if (${debug}) _msg debug "${0:t}_msg_21"
         pages_title_lower=$( _file_to_lower "${pages_in_array}" )
         
         # Clean up unused tags, if any
-        if (${debug}) _msg debug "_pages: Running _cleanup"
+        if (${debug}) _msg debug "${0:t}_msg_22"
         pages_tpl=$( _cleanup "${pages_tpl}" )
         
         # Write pages_tpl to disk
@@ -524,9 +525,9 @@ function _pages() {
         # Insert the blog to the front page is blog_in_index is true and the file in the array is index.file_ext
         # and if index.tmp.html exist and is not empty
         if [[ ${pages_in_array} == "index.${file_ext}" &&  ${blog_in_index} == "true" && -s "${project_dir}/blog/index.tmp.html" ]]; then
-          if (${debug}) _msg sub "- Parsing ${pages_in_array}"
-          if (${debug}) _msg sub "- blog_in_index = ${blog_in_index}"
-          if (${debug}) _msg sub "- Listing blog temp file:"
+          if (${debug}) _msg sub "${0:t}_msg_23" " ${pages_in_array}"
+          if (${debug}) _msg sub "${0:t}_msg_24" " ${blog_in_index}"
+          if (${debug}) _msg sub "${0:t}_msg_25"
           if (${debug}) ls -l ${project_dir}/blog/index.tmp.html
           _add_blog_list_to_index
         fi
@@ -539,15 +540,15 @@ function _pages() {
       # Insert the blog to the front page is blog_in_index is true and the file in the array is index.file_ext
       # and if index.tmp.html exist and is not empty
       if [[ ${blog_in_index} == "true" && -s "${project_dir}/blog/index.tmp.html" ]]; then
-        _msg std "Updating index.html with new blog posts"
-        if (${debug}) _msg sub "- Parsing ${pages_in_array}"
-        if (${debug}) _msg sub "- blog_in_index = ${blog_in_index}"
-        if (${debug}) _msg sub "- Listing blog temp file:"
+        _msg std "${0:t}_msg_26"
+        if (${debug}) _msg sub "${0:t}_msg_27" " ${pages_in_array}"
+        if (${debug}) _msg sub "${0:t}_msg_28" " ${blog_in_index}"
+        if (${debug}) _msg sub "${0:t}_msg_25"
         if (${debug}) ls -l ${project_dir}/blog/index.tmp.html
         _add_blog_list_to_index
       fi
         
-      _msg sub "- No new or updated Pages found"
+      _msg sub "${0:t}_msg_29"
       export new_updated_pages=false
 
   fi
@@ -560,18 +561,18 @@ function _blogs() {
   local debug=${globaldebug:-false}
 
   # Running function _list_blogs
-  if (${debug}) _msg debug "_blogs: Running function _list_blogs"
+  if (${debug}) _msg debug "${0:t}_msg_1"
   _list_blogs
     
   if [[ ${no_blogs_found} == "true" ]]; then
-    _msg sub "* You do not have any blogs *"
+    _msg sub "${0:t}_msg_2"
     return
   fi
     
-  _msg main "Generating Blogs"
+  _msg main "${0:t}_msg_3"
     
   # Running function _blog_cache
-  if (${debug}) _msg debug "_blogs: Running function _blog_cache"
+  if (${debug}) _msg debug "${0:t}_msg_4"
   _blog_cache
 
   if (( ${#make_blog_array[@]} > 0 )); then
@@ -584,13 +585,13 @@ function _blogs() {
     if [[ -f ${project_dir}/themes/${theme}/blogs.tpl ]]; then
       local blog_tpl=$(<"${project_dir}/themes/${theme}/blogs.tpl")
     else
-      _msg info "Unable to find theme template for Blogs."
+      _msg info "${0:t}_msg_5"
       exit
     fi
 
     for blog in "${make_blog_array[@]}"; do
                     
-      if (${debug}) _msg debug "_blogs: Processing pre-data for ${blog}"
+      if (${debug}) _msg debug "${0:t}_msg_6" " ${blog}"
                 
       local content="$(<"${blog}")"
       local sdate btitle ingress body blog_index blog_dir blog_url
@@ -604,12 +605,12 @@ function _blogs() {
         do
         # Check for the DATE line
         if [[ "${line}" == "DATE "* ]]; then
-          if (${debug}) _msg debug "_blogs: Looking for DATE: Found"
+          if (${debug}) _msg debug "${0:t}_msg_7"
           date_found=true
         fi
         # Check for the BLOG_TITLE line
         if [[ "${line}" == "BLOG_TITLE "* ]]; then
-          if (${debug}) _msg debug "_blogs: Looking for BLOG_TITLE: Found"
+          if (${debug}) _msg debug "${0:t}_msg_8"
           title_found=true
         fi
         # If both DATE and BLOG_TITLE are found, no need to continue checking
@@ -620,17 +621,15 @@ function _blogs() {
 
       # Check if DATE or BLOG_TITLE metadata is missing and log message
       if [[ "${date_found}" == false ]]; then
-        _msg debug "* _blogs: DATE metadata missing in ${blog}."
+        _msg debug "${0:t}_msg_9" " ${blog}."
         continue  # Skip this file and move to the next
       fi
       if [[ "${title_found}" == false ]]; then
-        _msg debug "* _blogs: BLOG_TITLE metadata missing in ${blog}."
+        _msg debug "${0:t}_msg_10" " ${blog}."
         continue  # Skip this file and move to the next
       fi
 
       # Extract blog information
-      # sed -i "s/GETDATE/${blogdate}/" ${blog}
-      # Array sdate = Name day=1, Year=2, Month=3, Number day=4
       sdate=( $( echo ${content} | grep DATE | sed "s|DATE\ ||" | sed "s|\-|\ |g" ) )
       if [[ ${generator} == "native" ]]; then
         while IFS= read -r line; do
@@ -657,19 +656,19 @@ function _blogs() {
       blog_dir="/blog/${sdate[2]}/${sdate[3]:l}/${sdate[4]}"
       blog_url="${blog_dir}/${blog_index}.html"
                     
-      if (${debug}) _msg debug "_blogs: Adding data for ${blog} to array to export"
+      if (${debug}) _msg debug "${0:t}_msg_11" " ${blog} " "${0:t}_msg_11.1"
 
         # Concatenate all metadata into a single string for the current blog
         local metadata_str="SDATE: ${sdate[@]}||BTITLE: ${btitle}||INGRESS: ${ingress}||URL: ${blog_url}"
         # Append this metadata string to the array
         BLOG_META_STR_ARRAY+=("${metadata_str}")
                     
-        if (${debug}) _msg debug "_blogs: Processing ${blog}"
+        if (${debug}) _msg debug "${0:t}_msg_12" " ${blog}"
                        
-          _msg std "- Generating Blog: ${blog_index}.html"
+          _msg std "${0:t}_msg_13" " ${blog_index}.html"
 
           # Prepare the blog template
-          if (${debug}) _msg debug "_blogs: Processing substitutes in ${blog}"
+          if (${debug}) _msg debug "${0:t}_msg_14" " ${blog}"
           local blog_content=$(
             echo "${blog_tpl}" | \
             perl -pe "\
@@ -683,21 +682,21 @@ function _blogs() {
             blog_content="${blog_content//CALMONTH/${sdate[3]}}"
             blog_content="${blog_content//CALADAY/${sdate[1]}}"
 
-            if (${debug}) _msg debug "_blogs: Running function $engine for ${blog}"
+            if (${debug}) _msg debug "${0:t}_msg_15" " ${blog}"
             if [[ ${generator} == "native" ]]; then
               blog_content=$( ${engine} "${blog_content}" )
               # Look for links, images and videos and convert them if present.
-              if (${debug}) _msg debug "_blogs: Checking for #link, #showimg and #ytvideo in blog_content"
+              if (${debug}) _msg debug "${0:t}_msg_16"
               if [[ $( echo ${blog_content} | grep \#link ) ]]; then
-                if (${debug}) _msg debug "_blogs: #link is present, run _link: blog_content"
+                if (${debug}) _msg debug "${0:t}_msg_17"
                 blog_content=$(_link "${blog_content}")
               fi
               if [[ $( echo ${blog_content} | grep \#showimg ) ]]; then
-                if (${debug}) _msg debug "_blogs: #showimg is present, run _link: blog_content"
+                if (${debug}) _msg debug "${0:t}_msg_18"
                 blog_content=$(_image "${blog_content}")
               fi
               if [[ $( echo ${blog_content} | grep \#ytvideo ) ]]; then
-                if (${debug}) _msg debug "_blogs: #ytvideo is present, run _link: blog_content"
+                if (${debug}) _msg debug "${0:t}_msg_19"
                 blog_content=$(_youtube "${blog_content}")
               fi
             elif [[ ${generator} == "markdown" ]]; then
@@ -705,18 +704,18 @@ function _blogs() {
             fi
                   
             # Replace every #tagline in blog_content
-            if (${debug}) _msg debug "_blogs: Replacing tagline, sitename and pagetitle"
+            if (${debug}) _msg debug "${0:t}_msg_20"
             blog_content=$( echo ${blog_content} | perl -pe "s|#tagline|${site_tagline}|gs; s|#sitename|${site_name}|gs; s|#pagetitle|${page_title}|gs" )
                   
             blog_content=$(_last_updated "${blog_content}")
             blog_content=$(_cleanup "${blog_content}")
                    
             # Create directory if it doesn't exist
-            if (${debug}) _msg debug "_blogs: Creating directory ${www_root}${blog_dir}"
+            if (${debug}) _msg debug "${0:t}_msg_21" " ${www_root}${blog_dir}"
             [[ ! -d "${www_root}/${blog_dir}" ]] && mkdir -p "${www_root}/${blog_dir}"
 
             # Write to file
-            if (${debug}) _msg debug "_blogs: Writing blog to disk: ${www_root}${blog_url}"
+            if (${debug}) _msg debug "${0:t}_msg_22" " ${www_root}${blog_url}"
             echo "${blog_content}" > "${www_root}${blog_url}"
                    
             unset sdate btitle ingress body blog_index blog_dir blog_url
@@ -724,18 +723,18 @@ function _blogs() {
     done
     # Now BLOG_META_STR_ARRAY contains the metadata string for each blog post
     export BLOG_META_STR_ARRAY
-    if (${debug}) _msg debug "_blogs: new_updated_blogs=true"
+    if (${debug}) _msg debug "${0:t}_msg_23"
     export new_updated_blogs=true
 
   else
-    _msg sub "- No new or updated Blogs found"
+    _msg sub "${0:t}_msg_24"
     export new_updated_blogs=false
   fi
 
   if [[ ${new_updated_blogs} == "true" ]]; then
-    if (${debug}) _msg sub "* _blogs: Running _blog_idx_for_index"
+    if (${debug}) _msg sub "${0:t}_msg_25"
     _blog_idx_for_index
-    if (${debug}) _msg sub "* _blogs: Running _blog_index"
+    if (${debug}) _msg sub "${0:t}_msg_26"
     _blog_index
   fi
 
@@ -746,21 +745,21 @@ function _blog_idx_for_index() {
     
   local debug=${globaldebug:-false}
     
-  _msg sub "- Populating ${project_dir}/blog/index.tmp.html"
+  _msg sub "${0:t}_msg_1" " ${project_dir}/blog/index.tmp.html"
     
-  if (${debug}) _msg debug "_blog_idx_for_index: Initiating function"
+  if (${debug}) _msg debug "${0:t}_msg_2"
     
   local blog_list_tpl=$(<${project_dir}/themes/${theme}/blog_list.tpl)
     
   # Truncate file before writing new one
   : >| "${project_dir}/blog/index.tmp.html"
     
-  if (${debug}) _msg debug "_blog_idx_for_index: BLOG_META_STR_ARRAY: ${BLOG_META_STR_ARRAY[@]}"
+  if (${debug}) _msg debug "${0:t}_msg_3" " ${BLOG_META_STR_ARRAY[@]}"
     
   for meta_str in ${BLOG_META_STR_ARRAY[@]}
     do
-      if (${debug}) _msg debug "_blog_idx_for_index: meta_str from BLOG_META_STR_ARRAY from _blogs"
-      if (${debug}) _msg debug "_blog_idx_for_index: ${meta_str}"
+      if (${debug}) _msg debug "${0:t}_msg_4"
+      if (${debug}) _msg debug "${0:t}_msg_5" " ${meta_str}"
 
       # Split meta_str into individual metadata components
       local -a meta_array=("${(@s/||/)meta_str}")
@@ -769,7 +768,7 @@ function _blog_idx_for_index() {
       local sdate btitle ingress url
 
       # Iterate over each component and extract information
-      if (${debug}) _msg debug "_blog_idx_for_index: Iterate over each component and extract information"
+      if (${debug}) _msg debug "${0:t}_msg_6"
       for component in "${meta_array[@]}"
         do
           case "${component}" in
@@ -803,11 +802,11 @@ function _blog_idx_for_index() {
         
       unset sdate btitle ingress url
 
-      if (${debug}) _msg debug "_blog_idx_for_index: Running ${engine} on content to catch QStags in Ingress"
+      if (${debug}) _msg debug "${0:t}_msg_7" " ${engine} " "${0:t}_msg_7.1"
       blog_list_content=$( ${engine} ${blog_list_content} )
     
-      if (${debug}) _msg debug "_blog_idx_for_index: Writing _blog_idx_for_index to file: ${project_dir}/blog/index.tmp.html"
-      if (${debug}) _msg debug "_blog_idx_for_index: blog_list_content = ${blog_list_content}"
+      if (${debug}) _msg debug "${0:t}_msg_8" " ${project_dir}/blog/index.tmp.html"
+      if (${debug}) _msg debug "${0:t}_msg_9" " ${blog_list_content}"
       echo ${blog_list_content} >> ${project_dir}/blog/index.tmp.html
 
   done
@@ -822,26 +821,24 @@ function _blog_index() {
   # ${new_updated_blogs} comes from the function _blogs if anything new or updated is detected
   if [[ ${blog_in_index} == "false" ]] && [[ ${new_updated_blogs} = "true" ]]; then
 
-    if (${debug}) _msg debug "_blog_index: blog_in_index=${blog_in_index}"
-    if (${debug}) _msg debug "_blog_index: new_updated_blogs=${new_updated_blogs}"
-    if (${debug}) _msg debug "_blog_index: Running function _blog_index"
-    if (${debug}) _msg debug "_blog_index: blog_in_index = ${blog_in_index}"
+    if (${debug}) _msg debug "${0:t}_msg_1" "${blog_in_index}"
+    if (${debug}) _msg debug "${0:t}_msg_2" "${new_updated_blogs}"
+    if (${debug}) _msg debug "${0:t}_msg_3"
+    if (${debug}) _msg debug "${0:t}_msg_4" " ${blog_in_index}"
 
-    _msg std "- Generating Page: ${www_root}/blog/index.html"
+    _msg std "${0:t}_msg_5" " ${www_root}/blog/index.html"
 
     local blog_index_tpl=$(<${project_dir}/themes/${theme}/blog_index.tpl)
     local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
 
-    if (${debug}) _msg debug "_blog_index: Replacing sitename and tagline"
+    if (${debug}) _msg debug "${0:t}_msg_6"
     local blog_index_content=$(echo "${blog_index_tpl}" | perl -pe "s|#sitename|${site_name}|gs; s|#tagline|${site_tagline}|gs")
-    if (${debug}) _msg debug "_blog_index: Replacing BODY with content of ${project_dir}/blog/index.tmp.html"
+    if (${debug}) _msg debug "${0:t}_msg_7" " ${project_dir}/blog/index.tmp.html"
     blog_index_content=$( awk -v new_body="$blog_index_list" '{sub(/BODY/, new_body)} 1' <(echo "${blog_index_content}") )
 
     if (${debug}); then
-      _msg debug "_blog_index: Writing ${www_root}/blog/index.html"
-      _msg debug "_blog_index: Content length of blog_index_content: ${#blog_index_content}"
-      #_msg debug "_blog_index: Content of blog_index_content"
-      #_msg sub "${blog_index_content}"
+      _msg debug "${0:t}_msg_8" " ${www_root}/blog/index.html"
+      _msg debug "${0:t}_msg_9" " ${#blog_index_content}"
     fi
     echo "$blog_index_content" > ${www_root}/blog/index.html
     _f_last_updated ${www_root}/blog/index.html
@@ -855,7 +852,7 @@ function _add_blog_list_to_index() {
   local debug=${globaldebug:-false}
   
   # Let's find the file 'index.qst' and add the blog if blog_in_index is true
-  if (${debug}) _msg debug "_add_blog_list_to_index: Inserting blog list to index.html"
+  if (${debug}) _msg debug "${0:t}_msg_1"
   local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
   local site_index_file=$(<${www_root}/index.html)
   echo "${site_index_file}" | awk -v new_body="${blog_index_list}" '{sub(/BLOGINDEX/, new_body)} 1' > "${www_root}/index.html"
@@ -869,7 +866,7 @@ function _sitemap() {
   # Check if sitemap is set to true and if there are updated Blogs or Pages before updating the sitemap.xml file.
   if [[ ${sitemap} == "true" ]] && ( [[ ${new_updated_blogs} == "true" ]] || [[ ${new_updated_pages} == "true" ]] ); then
 
-    _msg main "Generating Sitemap"
+    _msg main "${0:t}_msg_1"
 
     local sitemap_file="${www_root}/sitemap.xml"
 
@@ -904,7 +901,7 @@ function _sitemap() {
     # End of the XML file
     echo '</urlset>' >> "${sitemap_file}"
 
-    if (${debug}); then _msg debug "Sitemap generated at ${sitemap_file}"; fi
+    if (${debug}); then _msg debug "${0:t}_msg_2" " ${sitemap_file}"; fi
 
   fi
 
@@ -921,15 +918,15 @@ function _link() {
   # Process the content line by line
   echo "${content}" | while IFS= read -r line; do
     if [[ ${line} == *"#link"* ]]; then
-      if (${debug}) _msg debug "_link: URL_MAIN(line): ${line}"
+      if (${debug}) _msg debug "${0:t}_msg_1" " ${line}"
 
       # Extract the URL and the link text
       local url_full=$(echo "${line}" | awk -F'#link ' '{print $2}' | awk -F'¤' '{print $1 "¤" $2}')
       local url_dest=$(echo "${url_full}" | awk -F'¤' '{print $1}')
       local url_txt=$(echo "${url_full}" | awk -F'¤' '{print $2}')
 
-      if (${debug}) _msg debug "_link_ URL: ${url_dest}"
-      if (${debug}) _msg debug "_link: Text: ${url_txt}"
+      if (${debug}) _msg debug "${0:t}_msg_2" " ${url_dest}"
+      if (${debug}) _msg debug "${0:t}_msg_3" " ${url_txt}"
 
       # Form the replacement HTML link
       local modified_link="<a href=\"${url_dest}\">${url_txt}"
@@ -959,7 +956,7 @@ function _image() {
   # Process the content line by line
   echo "${content}" | while IFS= read -r line; do
     if [[ ${line} == *"#showimg"* ]]; then
-      if (${debug}) _msg debug "_image: Processing line: ${line}"
+      if (${debug}) _msg debug "${0:t}_msg_1" " ${line}"
 
       # Extract image link and alt text
       local img_link=$(echo "${line}" | awk -F'#showimg ' '{print $2}')
@@ -999,7 +996,7 @@ function _youtube() {
   # Process the content line by line
   echo "${content}" | while IFS= read -r line; do
     if [[ ${line} == *"#ytvideo"* ]]; then
-      if (${debug}) _msg debug "_youtube: Processing line: ${line}"
+      if (${debug}) _msg debug "${0:t}_msg_1" " ${line}"
 
       # Extract YouTube video ID
       local yt_id=$(echo "${line}" | awk -F'#ytvideo ' '{print $2}')
@@ -1023,7 +1020,7 @@ function _cleanup() {
   
   local content="${1}"
 
-  if (${debug}) _msg debug "_cleanup: Cleaning up tags in content"
+  if (${debug}) _msg debug "${0:t}_msg_1"
 
   # Perform the cleanup
   # -e "s|BLOGINDEX\ ||g"
@@ -1046,7 +1043,7 @@ function _html() {
   local content="${1}"
 
   if ${debug}; then
-    _msg debug "_html: Converting QStags in content"
+    _msg debug "${0:t}_msg_1"
   fi
 
   # Use perl to convert QStags to HTML
@@ -1106,7 +1103,7 @@ function _zhtml() {
   local content="${1}"
 
   if ${debug}; then
-    _msg debug "_html: Converting QStags in content"
+    _msg debug "${0:t}_msg_1"
   fi
 
   # Load regex module
