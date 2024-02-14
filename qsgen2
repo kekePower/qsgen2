@@ -16,7 +16,7 @@ QSGEN="Quick Site Generator 2"
 # Set to true or false
 # This will show debug information from every function in this script
 # You can also set debug=true in a single function if you want to debug only that specific one.
-globaldebug=true
+globaldebug=false
 
 # Use Zsh fpath to set the path to some extra functions
 fpath=(${HOME}/bin/include/common ${HOME}/bin/include/qsgen2/lang $fpath)
@@ -69,19 +69,17 @@ fi
 
 function _msg() {
     local type=$1
-    shift  # Remove the first argument so $@ now contains only message keys or parts
-    
+    shift  # Remove the first argument (type) so $@ now contains only keys or additional strings
+
     local full_msg=""
-    for part in "$@"; do
-        if [[ -n "${localization[$part]}" ]]; then
-            # Part is a localization key
-            part="${localization[$part]}"
-        elif [[ "$part" == "%SCRIPT_NAME%" ]]; then
-            # Special handling for script name placeholder
-            part=${0:t}
+    for key in "$@"; do
+        if [[ "${localization[$key]}" ]]; then
+            # If key exists in the localization array, append its value
+            full_msg+="${localization[$key]}"
+        else
+            # If key does not exist, treat it as a literal string (useful for dynamic content like ${0:t})
+            full_msg+="$key"
         fi
-        # Append part to the full message
-        full_msg+="$part"
     done
     
     # Apply color formatting based on type and use printf for safe output
