@@ -730,7 +730,7 @@ function _blogs() {
 function _blog_idx_for_index() {
   # This function generates the file blog/index.tmp.html
     
-  local debug=${globaldebug:-false}
+  local debug=${globaldebug:-true}
     
   _msg sub "${0:t}_msg_1" " ${project_dir}/blog/index.tmp.html"
     
