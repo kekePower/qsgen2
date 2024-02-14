@@ -749,7 +749,7 @@ function _blog_idx_for_index() {
   # Truncate file before writing new one
   : >| "${project_dir}/blog/index.tmp.html"
     
-  if (${debug}) _msg debug "${0:t}_msg_3" " ${BLOG_META_STR_ARRAY[@]}"
+  # if (${debug}) _msg debug "${0:t}_msg_3" " ${BLOG_META_STR_ARRAY[@]}"
     
   for meta_str in ${BLOG_META_STR_ARRAY[@]}
     do
@@ -795,13 +795,11 @@ function _blog_idx_for_index() {
 
       done
         
-      unset sdate btitle ingress url
+      unset sdate btitle ingress url adate caladay calyear calmonth calnday
 
   done
   if (${debug}) _msg debug "${0:t}_msg_7" " ${engine} " "${0:t}_msg_7.1"
-    # Catch any QStags or Markdown in the Ingress
-    # Got to rework how the engine works. Create a new function to take the blunt of the work.
-    # function _run_engine() <input>
+  # Catch any QStags or Markdown in the Ingress
   blog_list_content=$( _run_engine ${blog_list_content} )
   if (${debug}) _msg debug "${0:t}_msg_8" " ${project_dir}/blog/index.tmp.html"
   #if (${debug}) _msg debug "${0:t}_msg_9" " ${blog_list_content}"
