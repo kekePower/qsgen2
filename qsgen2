@@ -48,14 +48,12 @@ ${language}
 
 if (${globaldebug}); then
   qsconfig=$( cat $(pwd)/config | grep -v \# | awk '{print substr($0, index($0, " ") + 1)}' )
-	echo "_qsgen2_msg_9"
+	echo "Content of Config file"
     for qslines in ${qsconfig}
       do
       echo "${yellow}${qslines}${end}"
     done
 fi
-
-exit
 
 function _msg() {
     local type=$1
@@ -98,6 +96,8 @@ function _msg() {
             printf "%s\n" "$full_msg"
             ;;
     esac
+    
+    echo "Debugging full_msg: $full_msg"
 }
 
 function _version() {
