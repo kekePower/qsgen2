@@ -78,9 +78,9 @@ function _msg() {
     
     local full_msg=""
     for arg in "$@"; do
-        if [[ -n "${(qk)qsgenlang[$arg]}" ]]; then
+        if [[ -n "${qsgenlang[$arg]}" ]]; then
             echo "Found key: $arg"  # Debug line to confirm key is found
-            full_msg+="${(qk)qsgenlang[$arg]}"
+            full_msg+="${qsgenlang[$arg]}"
         else
             echo "Key not found: $arg"  # Debug line for keys not found
             full_msg+="$arg"
