@@ -773,6 +773,8 @@ function _blog_idx_for_index() {
             URL:*) url=${component#URL: } ;;
           esac
 
+      done
+      
           local adate=( $( echo ${sdate} ) )
           local caladay="${adate[1]}"
           local calyear="${adate[2]}"
@@ -792,8 +794,6 @@ function _blog_idx_for_index() {
             s|CALMONTH|${calmonth}|g; \
             s|CALYEAR|${calyear}|g \
             ")
-
-      done
         
       unset sdate btitle ingress url adate caladay calyear calmonth calnday
 
