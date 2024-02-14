@@ -159,6 +159,20 @@ else
   exit
 fi
 
+function _run_engine() {
+  # Usage: _run_engine <input>
+  local debug=false
+  
+  if [[ ${generator} == "native" ]]; then
+    ${engine} ${1}
+  elif [[ ${generator} == "markdown" ]]; then
+    echo ${1} | ${engine} ${engine_opts}
+  else
+    echo "Usage: _run_engine <input>"
+    exit
+  fi
+}
+
 if (${globaldebug}); then _msg debug "_qsgen2_msg_6"; fi
 
 builtin cd ${project_dir}
@@ -465,8 +479,7 @@ function _pages() {
         
         # HTML'ify the page content
         if (${debug}) _msg debug "${0:t}_msg_13" " ${pages_in_array}"
-        if [[ ${generator} == "native" ]]; then
-          page_content=$( ${engine} "$page_content" )
+          page_content=$( _run_engine "$page_content" )
           # Look for links, images and videos and convert them if present.
           if (${debug}) _msg debug "${0:t}_msg_14"
           if [[ $( echo ${page_content} | grep \#link ) ]]; then
@@ -481,9 +494,6 @@ function _pages() {
             if (${debug}) _msg debug "${0:t}_msg_17"
             page_content=$( _youtube "${page_content}" )
           fi
-        elif [[ ${generator} == "markdown" ]]; then
-            page_content=$(echo "$page_content" | ${engine} ${engine_opts})
-        fi
         
         # Replace every #pagetitle in pages_tpl
         if (${debug}) _msg debug "${0:t}_msg_18"
@@ -670,8 +680,7 @@ function _blogs() {
             blog_content="${blog_content//CALADAY/${sdate[1]}}"
 
             if (${debug}) _msg debug "${0:t}_msg_15" " ${blog}"
-            if [[ ${generator} == "native" ]]; then
-              blog_content=$( ${engine} "${blog_content}" )
+              blog_content=$( _run_engine "${blog_content}" )
               # Look for links, images and videos and convert them if present.
               if (${debug}) _msg debug "${0:t}_msg_16"
               if [[ $( echo ${blog_content} | grep \#link ) ]]; then
@@ -686,9 +695,6 @@ function _blogs() {
                 if (${debug}) _msg debug "${0:t}_msg_19"
                 blog_content=$(_youtube "${blog_content}")
               fi
-            elif [[ ${generator} == "markdown" ]]; then
-              blog_content=$(echo "$blog_content" | ${engine} ${engine_opts})
-            fi
                   
             # Replace every #tagline in blog_content
             if (${debug}) _msg debug "${0:t}_msg_20"
@@ -793,9 +799,12 @@ function _blog_idx_for_index() {
 
   done
   if (${debug}) _msg debug "${0:t}_msg_7" " ${engine} " "${0:t}_msg_7.1"
-  blog_list_content=$( ${engine} ${blog_list_content} )
+    # Catch any QStags or Markdown in the Ingress
+    # Got to rework how the engine works. Create a new function to take the blunt of the work.
+    # function _run_engine() <input>
+  blog_list_content=$( _run_engine ${blog_list_content} )
   if (${debug}) _msg debug "${0:t}_msg_8" " ${project_dir}/blog/index.tmp.html"
-  if (${debug}) _msg debug "${0:t}_msg_9" " ${blog_list_content}"
+  #if (${debug}) _msg debug "${0:t}_msg_9" " ${blog_list_content}"
   echo ${blog_list_content} > ${project_dir}/blog/index.tmp.html
 
 }
