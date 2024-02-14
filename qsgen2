@@ -34,7 +34,7 @@ zmodload zsh/datetime
 
 # Check for, an source, the config file for this specific website
 if [[ -f $(pwd)/config ]]; then
-  if (${globaldebug}); then echo "${red}Config file found and sourced${end}\n- ${yellow} - $(pwd)/config${end}"; fi
+  if (${globaldebug}); then echo "${red}Config file found and sourced${end}\n${yellow} - $(pwd)/config${end}"; fi
 	builtin source $(pwd)/config
 else
 	echo "${red}Cannot find configuration file.${end}"
@@ -43,8 +43,20 @@ else
 fi
 
 # Load language
-autoload -Uz ${language}
-${language}
+found=false
+for dir in $fpath; do
+    if [[ -f "${dir}/${language}" ]]; then
+        source "${dir}/${language}"
+        found=true
+        break
+    fi
+done
+
+if ! $found; then
+    echo "Language file '${language}' not found in fpath."
+    # Fallback or error handling
+fi
+echo "Language loaded: ${language}"
 
 if (${globaldebug}); then
   qsconfig=$( cat $(pwd)/config | grep -v \# | awk '{print substr($0, index($0, " ") + 1)}' )
