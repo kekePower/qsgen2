@@ -75,40 +75,40 @@ function _msg() {
     for arg in "$@"; do
         # Check if argument is a key in the localization array
         if [[ -n "${localization[$arg]}" ]]; then
-            # Append the localized message to full_msg
-            full_msg+="${localization[$arg]}"
+            # Append the localized message to full_msg, ensuring safe expansion
+            full_msg+="${(q)localization[$arg]}"
         else
-            # Argument not a key, treat as a literal string and append
-            full_msg+="$arg"
+            # Argument not a key, treat as a literal string and append, ensuring safe expansion
+            full_msg+="${(q)arg}"
         fi
     done
     
     # Apply color formatting based on type and use printf for safe output
     case $type in
         std)
-            printf "${green}%s${end}\n" "$full_msg"
+            printf "${green}%s${end}\n" "${full_msg}"
             ;;
         info)
-            printf "${yellow}%s${end}\n" "$full_msg"
+            printf "${yellow}%s${end}\n" "${full_msg}"
             ;;
         debug)
-            printf "${red}%s${end}\n" "$full_msg"
+            printf "${red}%s${end}\n" "${full_msg}"
             ;;
         other)
-            printf "${bold_yellow}%s${end}\n" "$full_msg"
+            printf "${bold_yellow}%s${end}\n" "${full_msg}"
             ;;
         sub)
-            printf "${magenta}%s${end}\n" "$full_msg"
+            printf "${magenta}%s${end}\n" "${full_msg}"
             ;;
         main)
-            printf "${white}${green_bg} %s ${end}\n" "$full_msg"
+            printf "${white}${green_bg} %s ${end}\n" "${full_msg}"
             ;;
         *)
-            printf "%s\n" "$full_msg"
+            printf "%s\n" "${full_msg}"
             ;;
     esac
     
-    echo "Debugging full_msg: $full_msg"
+    echo "Debugging full_msg: ${full_msg}"
 }
 
 function _version() {
