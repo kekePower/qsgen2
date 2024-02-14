@@ -57,6 +57,7 @@ if ! $found; then
     # Fallback or error handling
 fi
 echo "Language loaded: ${language}"
+echo "Localization array contents: ${(@kv)localization}"
 
 if (${globaldebug}); then
   qsconfig=$( cat $(pwd)/config | grep -v \# | awk '{print substr($0, index($0, " ") + 1)}' )
@@ -73,13 +74,12 @@ function _msg() {
     
     local full_msg=""
     for arg in "$@"; do
-        # Check if argument is a key in the localization array
         if [[ -n "${localization[$arg]}" ]]; then
-            # Append the localized message to full_msg, ensuring safe expansion
-            full_msg+="${(q)localization[$arg]}"
+            echo "Found key: $arg"  # Debug line to confirm key is found
+            full_msg+="${localization[$arg]}"
         else
-            # Argument not a key, treat as a literal string and append, ensuring safe expansion
-            full_msg+="${(q)arg}"
+            echo "Key not found: $arg"  # Debug line for keys not found
+            full_msg+="$arg"
         fi
     done
     
