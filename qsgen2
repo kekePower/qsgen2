@@ -58,8 +58,6 @@ if ! $found; then
     echo "Language file '${language}' not found in fpath."
     # Fallback or error handling
 fi
-#echo "Language loaded: ${language}"
-#echo "Localization array contents: ${(@kv)qsgenlang}"
 
 if (${globaldebug}); then
   qsconfig=$( cat $(pwd)/config | grep -v \# | awk '{print substr($0, index($0, " ") + 1)}' )
@@ -166,9 +164,10 @@ function _run_engine() {
   if [[ ${generator} == "native" ]]; then
     ${engine} ${1}
   elif [[ ${generator} == "markdown" ]]; then
-    echo ${1} | ${engine} ${engine_opts}
+    echo "${1} | ${engine} ${engine_opts}"
   else
-    echo "Usage: _run_engine <input>"
+    _msg debug "ERROR running engine: ${engine}!"
+    _msg info "Usage: _run_engine <input>"
     exit
   fi
 }
@@ -185,7 +184,11 @@ export blogdate=$(strftime "%a-%Y-%b-%d")
 
 function _list_pages() {
 
-  local debug=${globaldebug:-false}
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    local debug=false
+  fi
 
   # Initialize or clear the array to ensure it's empty before adding files
   pages_file_array=()
@@ -213,7 +216,11 @@ function _list_pages() {
 
 function _list_blogs() {
 
-  local debug=${globaldebug:-false}
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    local debug=false
+  fi
     
   # Initialize or clear the blogs array to ensure it's empty before adding files
   blogs_file_array=()
@@ -244,7 +251,11 @@ function _list_blogs() {
 # BLOG CACHE
 function _blog_cache() {
 
-  local debug=${globaldebug:-false}
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    local debug=false
+  fi
 
   _list_blogs
 
@@ -295,7 +306,11 @@ function _blog_cache() {
 # Returns the array pages_array()
 function _pages_cache() {
 
-  local debug=${globaldebug:-false}
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    local debug=false
+  fi
   
   # Create an associative array for the pages cache
   typeset -A pages_cache
@@ -345,7 +360,11 @@ function _pages_cache() {
 function _last_updated() {
   # This function updates #updated and #version tags in the provided string for buffers
 
-  local debug=${globaldebug:-false}
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    local debug=false
+  fi
 
   local upd_msg="Last updated ${today} by <a href=\"https://blog.kekepower.com/qsgen2.html\">${QSGEN} ${VERSION}</a>"
   
@@ -366,7 +385,11 @@ function _last_updated() {
 function _f_last_updated() {
   # Updates #updated and #version tags in the provided file using Zsh
 
-  local debug=${globaldebug:-false}
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    local debug=false
+  fi
 
   # local file_path="${1}"
   local upd_msg="Last updated ${today} by <a href=\"https://blog.kekepower.com/qsgen2.html\">${QSGEN} ${VERSION}</a>"
@@ -408,7 +431,11 @@ function _file_to_lower() {
 function _pages() {
     # This function generates all the new and updated Pages
     
-  local debug=${globaldebug:-false}
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    local debug=false
+  fi
     
   # Load the cache for Pages
   if (${debug}) _msg debug "${0:t}_msg_1"
@@ -555,7 +582,11 @@ function _pages() {
 function _blogs() {
   # This function either generates blog files or exports metadata based on the argument
 
-  local debug=${globaldebug:-false}
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    local debug=false
+  fi
 
   # Running function _list_blogs
   if (${debug}) _msg debug "${0:t}_msg_1"
@@ -736,8 +767,11 @@ function _blogs() {
 function _blog_idx_for_index() {
   # This function generates the file blog/index.tmp.html
     
-  local debug=${globaldebug:-false}
-  # local debug=true
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    local debug=false
+  fi
     
   _msg sub "${0:t}_msg_1" " ${project_dir}/blog/index.tmp.html"
     
@@ -809,7 +843,11 @@ function _blog_idx_for_index() {
 
 function _blog_index() {
   
-  local debug=${globaldebug:-false}
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    local debug=false
+  fi
 
   # This function generates the www_root/blog/index.html file that gets its data from _blog_list_for_index()
   # ${new_updated_blogs} comes from the function _blogs if anything new or updated is detected
@@ -843,7 +881,11 @@ function _blog_index() {
 
 function _add_blog_list_to_index() {
   
-  local debug=${globaldebug:-false}
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    local debug=false
+  fi
   
   # Let's find the file 'index.qst' and add the blog if blog_in_index is true
   if (${debug}) _msg debug "${0:t}_msg_1"
@@ -855,7 +897,11 @@ function _add_blog_list_to_index() {
 
 function _sitemap() {
   
-  local debug=${globaldebug:-false}
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    local debug=false
+  fi
     
   # Check if sitemap is set to true and if there are updated Blogs or Pages before updating the sitemap.xml file.
   if [[ ${sitemap} == "true" ]] && ( [[ ${new_updated_blogs} == "true" ]] || [[ ${new_updated_pages} == "true" ]] ); then
@@ -863,9 +909,18 @@ function _sitemap() {
     _msg main "${0:t}_msg_1"
 
     local sitemap_file="${www_root}/sitemap.xml"
+    #local sitemap_blog="${www_root}/sitemap-blogs.xml"
+    #local sitemap_page="${www_root}/sitemap-pages.xml"
 
     # Find all HTML files and store them in an array
     local -a html_files=("${(@f)$(find "${www_root}" -type f -name "*.html")}")
+    # Working on provinding 2 sitemaps, 1 for pages and 1 for blogs.
+    # sitemap-pages.xml
+    # sitemap-blogs.xml
+    # And in the main sitemap.xml file we link to these two
+    #local -a html_files=("${(@f)$(find "${www_root}" -type f -name "*.xml")}")
+    #local -a blog_files=("${(@f)$(find "${www_root}" -type f -name "*.html" | grep blog)}")
+    #local -a page_files=("${(@f)$(find "${www_root}" -type f -name "*.html" | grep -v blog)}")
 
     # Start of the XML file
     echo '<?xml version="1.0" encoding="UTF-8"?>' > ${sitemap_file}
@@ -904,7 +959,11 @@ function _sitemap() {
 function _link() {
   # This converts #link tags to actual clickable links in a provided string
   
-  local debug=${globaldebug:-false}
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    local debug=false
+  fi
   
   local content="${1}"
   local modified_content=""
@@ -942,7 +1001,11 @@ function _link() {
 function _image() {
     # This replaces #showimg tags with actual HTML img tags in a provided string
 
-  local debug=${globaldebug:-false}
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    local debug=false
+  fi
   
   local content="${1}"
   local modified_content=""
@@ -982,7 +1045,11 @@ function _image() {
 function _youtube() {
   # This embeds a YouTube video in a provided string
 
-  local debug=${globaldebug:-false}
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    local debug=false
+  fi
   
   local content="${1}"
   local modified_content=""
@@ -1010,7 +1077,11 @@ function _youtube() {
 function _cleanup() {
   # This removes tags used in the templates that may be left over for some reason
 
-  local debug=${globaldebug:-false}
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    local debug=false
+  fi
   
   local content="${1}"
 
@@ -1032,7 +1103,11 @@ function _cleanup() {
 
 function _html() {
 
-  local debug=${globaldebug:-false}
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    local debug=false
+  fi
   
   local content="${1}"
 
@@ -1043,7 +1118,7 @@ function _html() {
   # Use perl to convert QStags to HTML
   perl -0777 -pe '
     BEGIN {
-      @tags = (
+      @qstags = (
         "#BR", "<br/>\n",
         "#BD", "<b>", "#EBD", "</b>",
         "#I", "<i>", "#EI", "</i>\n",
@@ -1079,10 +1154,10 @@ function _html() {
       );
     }
 
-    for (my $i = 0; $i < $#tags; $i += 2) {
-        my $tag = $tags[$i];
-        my $html = $tags[$i + 1];
-        s/\Q$tag\E/$html/g;
+    for (my $i = 0; $i < $#qstags; $i += 2) {
+        my $qstag = $qstags[$i];
+        my $html = $qstags[$i + 1];
+        s/\Q$qstag\E/$html/g;
     }
     ' <<< "$content"
     
@@ -1092,7 +1167,11 @@ function _zhtml() {
   
   # This function uses the regex module from Zsh to parse the QStags
   
-  local debug=${globaldebug:-false}
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    local debug=false
+  fi
   
   local content="${1}"
 
@@ -1104,7 +1183,7 @@ function _zhtml() {
   zmodload zsh/regex
 
   # Define tag replacements as an associative array
-  typeset -A tags=(
+  typeset -A qstags=(
     "#BR" "<br/>\n"
     "#BD" "<b>" "#EBD" "</b>"
     "#I" "<i>" "#EI" "</i>\n"
@@ -1139,12 +1218,12 @@ function _zhtml() {
     "#LT" "&lt;" "#GT" "&gt;" "#NUM" "&num;"
     )
 
-    for tag html (${(kv)tags})
+    for qstag html (${(kv)qstags})
       do
         # Escape tag for regex use
-        local escapedTag=$(printf '%s' "$tag" | sed 's/[].\[^$*]/\\&/g')
+        local escapedTag=$(printf '%s' "$qstag" | sed 's/[].\[^$*]/\\&/g')
         if [[ "$content" =~ "$escapedTag" ]]; then
-            content=${content//($tag)/$html}
+            content=${content//($qstag)/$html}
         fi
     done
 
