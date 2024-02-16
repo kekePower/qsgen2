@@ -906,7 +906,8 @@ function _sitemap() {
 
     _msg main "${0:t}_msg_1"
 
-    local sitemap_file="${www_root}/sitemap.xml"
+    local sm_file="sitemap.xml"
+    local sitemap_file="${www_root}/${sm_file}"
     #local sitemap_blog="${www_root}/sitemap-blogs.xml"
     #local sitemap_page="${www_root}/sitemap-pages.xml"
 
@@ -947,6 +948,7 @@ function _sitemap() {
 
     # End of the XML file
     echo '</urlset>' >> "${sitemap_file}"
+    _msg sub "  - ${sm_file}"
 
     if (${debug}); then _msg debug "${0:t}_msg_2" " ${sitemap_file}"; fi
 
