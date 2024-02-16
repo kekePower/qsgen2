@@ -951,7 +951,7 @@ function _sitemap() {
 
     # End of the XML file
     echo '</urlset>' >> "${sitemap_file}"
-    _msg sub "  - ${sm_file}"
+    _msg std "  - ${sm_file}"
 
     if (${debug}); then _msg debug "${0:t}_msg_2" " ${sitemap_file}"; fi
 
