@@ -28,11 +28,7 @@ include common/colors
 
 echo "${magenta}${blue_bg} ${QSGEN} ${end}${bold_white}${blue_bg}${VERSION} ${end}"
 
-# Loading Zsh modules
-zmodload zsh/files
-zmodload zsh/datetime
-
-# Check for, an source, the config file for this specific website
+# Check for, and source, the config file for this specific website
 if [[ -f $(pwd)/config ]]; then
   if (${globaldebug}); then echo "${red}Config file found and sourced${end}\n${yellow} - $(pwd)/config${end}"; fi
 	builtin source $(pwd)/config
@@ -42,22 +38,19 @@ else
 	exit
 fi
 
-# Load language
-found=false
+# Load language as defined in config
 typeset -A qsgenlang
 for dir in $fpath; do
     if [[ -f "${dir}/${language}" ]]; then
-        # echo "Language file: ${dir}/${language}"
-        source "${dir}/${language}"
-        found=true
-        break
+      # echo "Language file: ${dir}/${language}"
+      source "${dir}/${language}"
+      break
+    else
+      # Fall back to en_US if defined language isn't found
+      echo "Defined language, ${language}, not found. Using en_US."
+      source "${dir}/en_US"
     fi
 done
-
-if ! $found; then
-    echo "Language file '${language}' not found in fpath."
-    # Fallback or error handling
-fi
 
 if (${globaldebug}); then
   qsconfig=$( cat $(pwd)/config | grep -v \# | awk '{print substr($0, index($0, " ") + 1)}' )
@@ -175,6 +168,10 @@ function _run_engine() {
 if (${globaldebug}); then _msg debug "_qsgen2_msg_6"; fi
 
 builtin cd ${project_dir}
+
+# Loading Zsh modules
+zmodload zsh/files
+zmodload zsh/datetime
 
 # Let's put these here for now.
 export today=$(strftime "%Y-%m-%d - %T")
