@@ -41,15 +41,19 @@ fi
 
 # Load language as defined in config
 typeset -A qsgenlang
+lang_found=false
 for dir in $fpath; do
-    if [[ -f "${dir}/${language}" ]]; then
-      # echo "Language file: ${dir}/${language}"
-      source "${dir}/${language}"
-      break
-    elif [[ ! -f "${dir}/${language}" ]]; then
+  if [[ -f "${dir}/${language}" ]]; then
+    # echo "Language file: ${dir}/${language}"
+    source "${dir}/${language}"
+    lang_found=true
+    break
+  fi
+done
+if [[ ${lang_found} == "false" ]]; then
       # Fall back to en_US if defined language isn't found
       echo "Defined language, ${language}, not found. Using en_US."
-      source "${dir}/en_US"
+      source "${HOME}/bin/include/qsgen2/lang/en_US"
     fi
 done
 
