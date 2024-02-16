@@ -35,6 +35,7 @@ if [[ -f $(pwd)/config ]]; then
 else
 	echo "${red}Cannot find configuration file.${end}"
 	echo "${yellow} - Please create the file 'config' in your project directory.${end}"
+  echo "${yellow} - See 'config.example' in the git source tree.${end}"
 	exit
 fi
 
