@@ -46,7 +46,7 @@ for dir in $fpath; do
       # echo "Language file: ${dir}/${language}"
       source "${dir}/${language}"
       break
-    else
+    elif [[ ! -f "${dir}/${language}" ]]; then
       # Fall back to en_US if defined language isn't found
       echo "Defined language, ${language}, not found. Using en_US."
       source "${dir}/en_US"
