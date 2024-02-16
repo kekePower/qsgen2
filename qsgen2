@@ -55,7 +55,6 @@ if [[ ${lang_found} == "false" ]]; then
       echo "Defined language, ${language}, not found. Using en_US."
       source "${HOME}/bin/include/qsgen2/lang/en_US"
     fi
-done
 
 if (${globaldebug}); then
   qsconfig=$( cat $(pwd)/config | grep -v \# | awk '{print substr($0, index($0, " ") + 1)}' )
