@@ -1135,13 +1135,13 @@ function _html() {
         "#H5", "<h5>", "#EH5", "</h5>\n",
         "#H6", "<h6>", "#EH6", "</h6>\n",
         "#STRONG", "<strong>", "#ESTRONG", "</strong>\n",
-        "#EM", "<em>", "#EEM", "</em>\n",
+        "#EM", "<em>", "#SEM", "</em>\n",
         "#DV", "<div>", "#EDV", "</div>\n",
         "#SPN", "<span>", "#ESPN", "</span>\n",
         "#UL", "<ul>", "#EUL", "</ul>\n",
         "#OL", "<ol>", "#EOL", "</ol>\n",
         "#LI", "<li>", "#ELI", "</li>\n",
-        "#IU", "<u>", "#EIU", "</u>\n",
+        "#UD", "<u>", "#EUD", "</u>\n",
         "#TBL", "<table>", "#ETBL", "</table>\n",
         "#TR", "<tr>", "#ETR", "</tr>\n",
         "#TD", "<td>", "#ETD", "</td>\n",
@@ -1200,13 +1200,13 @@ function _zhtml() {
     "#H5" "<h5>" "#EH5" "</h5>\n"
     "#H6" "<h6>" "#EH6" "</h6>\n"
     "#STRONG" "<strong>" "#ESTRONG" "</strong>\n"
-    "#EM" "<em>" "#EEM" "</em>\n"
+    "#EM" "<em>" "#SEM" "</em>\n"
     "#DV" "<div>" "#EDV" "</div>\n"
     "#SPN" "<span>" "#ESPN" "</span>\n"
     "#UL" "<ul>" "#EUL" "</ul>\n"
     "#OL" "<ol>" "#EOL" "</ol>\n"
     "#LI" "<li class=\"libody\">" "#ELI" "</li>\n"
-    "#IU" "<u>" "#EIU" "</u>\n"
+    "#UD" "<u>" "#EUD" "</u>\n"
     "#TBL" "<table>" "#ETBL" "</table>\n"
     "#TR" "<tr>" "#ETR" "</tr>\n"
     "#TD" "<td>" "#ETD" "</td>\n"
