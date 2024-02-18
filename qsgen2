@@ -922,7 +922,7 @@ function _sitemap() {
 
     # Find all HTML files and store them in an array
     # local -a html_files=("${(@f)$(find "${www_root}" -type f -name "*.html")}")
-    local -a html_files=("${www_root}/**/[a-z]*.html(.)")
+    local -a html_files=(${www_root}/**/[a-z]*.html(.))
     # Working on provinding 2 sitemaps, 1 for pages and 1 for blogs.
     # sitemap-pages.xml
     # sitemap-blogs.xml
