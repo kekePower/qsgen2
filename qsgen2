@@ -925,14 +925,10 @@ function _sitemap() {
     # Find all HTML files and store them in an array
     # local -a html_files=("${(@f)$(find "${www_root}" -type f -name "*.html")}")
     local -a html_files=(${www_root}/**/[a-z]*.html(.))
-    local -a blog_files=$(echo ${html_files[@]} | grep blog)
-    local -a page_files=$(echo ${html_files[@]} | grep -v blog)
+    local -a blog_files=("${(@)html_files[@]}" | grep blog)
+    local -a page_files=$("${(@)html_files[@]}" | grep -v blog)
     local -a xml_files=(${www_root}/[a-z]*.xml(.))
-    xml_files=$( echo ${xml_files[@]} | grep -v "sitemap.xml" )
-    # Working on provinding 2 sitemaps, 1 for pages and 1 for blogs.
-    # sitemap-pages.xml
-    # sitemap-blogs.xml
-    # And in the main sitemap.xml file we link to these two
+    xml_files=$( "${(@)xml_files[@]}" | grep -v "sitemap.xml" )
     
     # Start of the XML file for BLOGS
     echo '<?xml version="1.0" encoding="UTF-8"?>' > ${b_file}
