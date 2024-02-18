@@ -930,11 +930,13 @@ function _sitemap() {
     local -a blog_files=(${html_files[@]:#*blog/2*})
     local -a page_files=()
     for file in "${html_files[@]}"; do
-      [[ $file != *blog* ]] && blog_files+=("$file")
+      [[ $file != *blog/2* ]] && blog_files+=("$file")
     done
 
     local -a xml_files=(${www_root}/[a-z]*.xml(.))
-    xml_files=( "${(@)xml_files[@]}" | grep -v "sitemap.xml" )
+    for file in "${xml_files[@]}"; do
+      [[ $file != *sitemap.xml* ]] && xml_files+=("$file")
+    done
     
     # Start of the XML file for BLOGS
     echo '<?xml version="1.0" encoding="UTF-8"?>' > ${sitemap_blog}
