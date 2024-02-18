@@ -928,7 +928,7 @@ function _sitemap() {
     local -a blog_files=$(echo ${html_files[@]} | grep blog)
     local -a page_files=$(echo ${html_files[@]} | grep -v blog)
     local -a xml_files=(${www_root}/[a-z]*.xml(.))
-    local -a xml_files=$( echo ${xml_files[@]} | grep -v "sitemap.xml" )
+    xml_files=$( echo ${xml_files[@]} | grep -v "sitemap.xml" )
     # Working on provinding 2 sitemaps, 1 for pages and 1 for blogs.
     # sitemap-pages.xml
     # sitemap-blogs.xml
