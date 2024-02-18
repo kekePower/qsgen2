@@ -909,10 +909,12 @@ function _sitemap() {
   else
     local debug=false
   fi
-    
+  
   # Check if sitemap is set to true and if there are updated Blogs or Pages before updating the sitemap.xml file.
   if [[ ${sitemap} == "true" ]] && ( [[ ${new_updated_blogs} == "true" ]] || [[ ${new_updated_pages} == "true" ]] ); then
 
+    setopt extendedglob
+    
     _msg main "${0:t}_msg_1"
 
     local sm_file="sitemap.xml"
@@ -925,7 +927,7 @@ function _sitemap() {
     # Find all HTML files and store them in an array
     # local -a html_files=("${(@f)$(find "${www_root}" -type f -name "*.html")}")
     local -a html_files=(${www_root}/**/[a-z]*.html(.))
-    local -a blog_files=("${(@)html_files[@]}" | grep blog)
+    local -a blog_files=(${html_files[@]:#*blog*})
     local -a page_files=("${(@)html_files[@]}" | grep -v blog)
     local -a xml_files=(${www_root}/[a-z]*.xml(.))
     xml_files=( "${(@)xml_files[@]}" | grep -v "sitemap.xml" )
