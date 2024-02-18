@@ -926,9 +926,9 @@ function _sitemap() {
     # local -a html_files=("${(@f)$(find "${www_root}" -type f -name "*.html")}")
     local -a html_files=(${www_root}/**/[a-z]*.html(.))
     local -a blog_files=("${(@)html_files[@]}" | grep blog)
-    local -a page_files=$("${(@)html_files[@]}" | grep -v blog)
+    local -a page_files=("${(@)html_files[@]}" | grep -v blog)
     local -a xml_files=(${www_root}/[a-z]*.xml(.))
-    xml_files=$( "${(@)xml_files[@]}" | grep -v "sitemap.xml" )
+    xml_files=( "${(@)xml_files[@]}" | grep -v "sitemap.xml" )
     
     # Start of the XML file for BLOGS
     echo '<?xml version="1.0" encoding="UTF-8"?>' > ${b_file}
