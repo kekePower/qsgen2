@@ -1,14 +1,20 @@
 #!/usr/bin/zsh
 
-# 
-# Quick Site Generator 2 is a static website generator inspired by Nikola.
-# It is written for the Z shell (zsh) because that's what I use and also because I like it better than Bash.
+###############################################################################
+###############################################################################
 #
-# This script is an almost complete rewrite of my old script because it became overly complicated and
-# had way too many bugs, even though it worked on simple sites.
+# Quick Site Generator 2 is a static website generator inspired by Nikola.
+# It is written for the Z shell (zsh) because that's what I use and also because
+# I like it better than Bash.
+#
+# This script is an almost complete rewrite of my old script because it became
+# overly complicated and had way too many bugs, even though it worked on simple
+# sites.
 # 
 # https://github.com/kekePower/qsgen2/
 # 
+###############################################################################
+###############################################################################
 
 VERSION="0.4.0" # Thu-2024-02-15
 QSGEN="Quick Site Generator 2"
@@ -915,7 +921,8 @@ function _sitemap() {
     #local sitemap_page="${www_root}/sitemap-pages.xml"
 
     # Find all HTML files and store them in an array
-    local -a html_files=("${(@f)$(find "${www_root}" -type f -name "*.html")}")
+    # local -a html_files=("${(@f)$(find "${www_root}" -type f -name "*.html")}")
+    local -a html_files=("${www_root}/**/[a-z]*.html(.)")
     # Working on provinding 2 sitemaps, 1 for pages and 1 for blogs.
     # sitemap-pages.xml
     # sitemap-blogs.xml
