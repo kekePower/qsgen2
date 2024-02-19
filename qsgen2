@@ -941,14 +941,15 @@ function _sitemap() {
 
     # Find all HTML files and store them in an array
     # local -a html_files=("${(@f)$(find "${www_root}" -type f -name "*.html")}")
-    local -a html_files=(${www_root}/**/[a-z]*.html(.))
-    local -a blog_files=(${html_files[@]:#*blog/2*})
+    builtin cd ${config[site_root]}
+    local -a html_files=(**/[a-z]*.html(.))
+    local -a blog_files=(${html_files[@]:#*blog*})
     local -a page_files=()
     for file in "${html_files[@]}"; do
-      [[ $file != *blog/2* ]] && blog_files+=("$file")
+      [[ $file != *blog* ]] && page_files+=("$file")
     done
 
-    local -a xml_files=(${www_root}/[a-z]*.xml(.))
+    local -a xml_files=([a-z]*.xml(.))
     for file in "${xml_files[@]}"; do
       [[ $file != *sitemap.xml* ]] && xml_files+=("$file")
     done
@@ -1043,6 +1044,7 @@ function _sitemap() {
     if (${debug}); then _msg debug "${0:t}_msg_2" " ${sitemap_file}"; fi
 
   fi
+  builtin cd ${config[project_root]}
 
 }
 
