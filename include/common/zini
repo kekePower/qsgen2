@@ -1,0 +1,39 @@
+# zini function to parse INI files and store their content in an associative array
+zini() {
+    local ini_path="$1"
+    typeset -gA config
+
+    # Check if the file exists
+    if [[ ! -f "$ini_path" ]]; then
+        echo "Configuration file not found: $ini_path"
+        return 1
+    fi
+
+    local current_section=""
+    local line key value composite_key
+
+    # Read the INI file line by line
+    while IFS= read -r line || [[ -n $line ]]; do
+        line=$(echo $line | xargs)  # Trim whitespace
+
+        # Skip empty lines and comments
+        [[ -z "$line" || "$line" == \;* ]] && continue
+
+        # Detect section headers
+        if [[ "$line" == \[*\]* ]]; then
+            current_section="${line:1:-1}"
+        else
+            # Parse key-value pairs
+            key=${line%%=*}
+            value=${line#*=}
+            key=$(echo $key | xargs)  # Trim key
+            value=$(echo $value | xargs)  # Trim value
+
+            # Store in associative array with 'section_key' format
+            composite_key="${current_section}_${key}"
+            config[$composite_key]="$value"
+        fi
+    done < "$ini_path"
+
+    # echo "Configuration loaded."
+}
