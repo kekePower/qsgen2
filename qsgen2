@@ -915,7 +915,7 @@ function _sitemap() {
   fi
   
   # Check if sitemap is set to true and if there are updated Blogs or Pages before updating the sitemap.xml file.
-  if [[ ${sitemap} == "true" ]] && ( [[ ${new_updated_blogs} == "true" ]] || [[ ${new_updated_pages} == "true" ]] ); then
+  if [[ ${sitemap} == "true" ]] && ( [[ ${new_updated_blogs} == "true" ]] || [[ ${new_updated_pages} == "true" ]] ) || [[ ${sitemap_force} == "true" ]]; then
 
     setopt extendedglob
     
@@ -1314,6 +1314,7 @@ case ${1} in
     ;;
     sitemap)
         _msg sub "Updating sitemaps"
+        export sitemap_force=true
         _sitemap
         exit
     ;;
