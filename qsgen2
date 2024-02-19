@@ -143,6 +143,11 @@ case ${1} in
         : >| "$blog_cache_file"  # Truncate the blog cache before doing update
         : >| "$pages_cache_file"  # Truncate the page cache before doing update
     ;;
+    sitemap)
+        _msg sub "Updating sitemaps"
+        _sitemap
+        exit
+    ;;
     *)
         # Nothing
     ;;
