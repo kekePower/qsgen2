@@ -137,22 +137,6 @@ fi
 blog_cache_file="${project_dir}/.blog_cache"
 pages_cache_file="${project_dir}/.pages_cache"
 
-case ${1} in
-    force)
-        _msg sub "_qsgen2_msg_2"
-        : >| "$blog_cache_file"  # Truncate the blog cache before doing update
-        : >| "$pages_cache_file"  # Truncate the page cache before doing update
-    ;;
-    sitemap)
-        _msg sub "Updating sitemaps"
-        _sitemap
-        exit
-    ;;
-    *)
-        # Nothing
-    ;;
-esac
-
 # Let's check if qsgen2 can generate this site by checking if 'generator' is available
 if [[ ! ${generator} ]] || [[ -d $(pwd)/.git ]]; then
     _msg debug "_qsgen2_msg_3"
@@ -1320,6 +1304,23 @@ function _zhtml() {
     echo "${content}"
 
 }
+
+
+case ${1} in
+    force)
+        _msg sub "_qsgen2_msg_2"
+        : >| "$blog_cache_file"  # Truncate the blog cache before doing update
+        : >| "$pages_cache_file"  # Truncate the page cache before doing update
+    ;;
+    sitemap)
+        _msg sub "Updating sitemaps"
+        _sitemap
+        exit
+    ;;
+    *)
+        # Nothing
+    ;;
+esac
 
 _blogs
 _pages
