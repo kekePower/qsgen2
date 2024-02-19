@@ -942,6 +942,7 @@ function _sitemap() {
     # Find all HTML files and store them in an array
     # local -a html_files=("${(@f)$(find "${www_root}" -type f -name "*.html")}")
     builtin cd ${config[site_root]}
+    local -a html_files=(**/[a-z]*.html(.))
     local -a blog_files=()
     local -a page_files=()
     for file in "${html_files[@]}"; do
@@ -966,7 +967,7 @@ function _sitemap() {
     for file in "${blog_files[@]}"
       do
         # Remove www_root from the path and prepend site_url
-        local url="${site_url}/${file#$www_root}"
+        local url="${site_url}/${file}"
         local lastmod=$(stat -c %y "${file}" 2>/dev/null | cut -d' ' -f1,2 | sed 's/ /T/' | sed 's/\..*$//')
 
         echo "  <url>" >> ${sitemap_blog}
@@ -995,7 +996,7 @@ function _sitemap() {
     for file in "${page_files[@]}"
       do
         # Remove www_root from the path and prepend site_url
-        local url="${site_url}/${file#$www_root}"
+        local url="${site_url}/${file}"
         local lastmod=$(stat -c %y "${file}" 2>/dev/null | cut -d' ' -f1,2 | sed 's/ /T/' | sed 's/\..*$//')
 
         echo "  <url>" >> ${sitemap_page}
