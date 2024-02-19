@@ -951,7 +951,7 @@ function _sitemap() {
 
     local -a xml_files=([a-z]*.xml(.))
     for file in "${xml_files[@]}"; do
-      [[ $file != *sitemap.xml* ]] && xml_files+=("$file")
+      [[ $file != *sitemap.* ]] && xml_files+=("$file")
     done
     
     # Start of the XML file for BLOGS
@@ -968,7 +968,7 @@ function _sitemap() {
     for file in "${blog_files[@]}"
       do
         # Remove www_root from the path and prepend site_url
-        local url="${site_url}${file#$www_root}"
+        local url="${site_url}/${file#$www_root}"
         local lastmod=$(stat -c %y "${file}" 2>/dev/null | cut -d' ' -f1,2 | sed 's/ /T/' | sed 's/\..*$//')
 
         echo "  <url>" >> ${sitemap_blog}
@@ -997,7 +997,7 @@ function _sitemap() {
     for file in "${page_files[@]}"
       do
         # Remove www_root from the path and prepend site_url
-        local url="${site_url}${file#$www_root}"
+        local url="${site_url}/${file#$www_root}"
         local lastmod=$(stat -c %y "${file}" 2>/dev/null | cut -d' ' -f1,2 | sed 's/ /T/' | sed 's/\..*$//')
 
         echo "  <url>" >> ${sitemap_page}
@@ -1026,7 +1026,7 @@ function _sitemap() {
     for file in "${xml_files[@]}"
       do
         # Remove www_root from the path and prepend site_url
-        local url="${site_url}${file#$www_root}"
+        local url="${site_url}/${file#$www_root}"
         local lastmod=$(stat -c %y "${file}" 2>/dev/null | cut -d' ' -f1,2 | sed 's/ /T/' | sed 's/\..*$//')
 
         echo "  <url>" >> ${sitemap_file}
