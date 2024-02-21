@@ -18,7 +18,7 @@ sitemap = true
 blog = true
 
 [project]
-; This is where you work before you generate the outpu
+; This is where you work before you generate the output
 root = /path/to/working/project
 ; Languages: en_US, en_UK, es_ES, nb_NO, fr_FR
 lang = en_US
