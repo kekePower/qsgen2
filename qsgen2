@@ -16,7 +16,7 @@
 ###############################################################################
 ###############################################################################
 
-VERSION="0.4.1" # Mon-2024-02-19
+VERSION="0.4.2" # Thu-2024-02-22
 QSGEN="Quick Site Generator 2"
 
 # Set to true or false
@@ -915,7 +915,7 @@ function _sitemap() {
   fi
   
   # Check if sitemap is set to true and if there are updated Blogs or Pages before updating the sitemap.xml file.
-  if [[ ${sitemap} == "true" ]] && ( [[ ${new_updated_blogs} == "true" ]] || [[ ${new_updated_pages} == "true" ]] ) || [[ ${sitemap_force} == "true" ]]; then
+  if ([[ ${sitemap} == "true" ]] && ( [[ ${new_updated_blogs} == "true" ]] || [[ ${new_updated_pages} == "true" ]] )) || [[ ${sitemap_force} == "true" ]]; then
 
     setopt extendedglob
     
@@ -929,7 +929,6 @@ function _sitemap() {
     local sitemap_page="${www_root}/${p_file}"
 
     # Find all HTML files and store them in an array
-    # local -a html_files=("${(@f)$(find "${www_root}" -type f -name "*.html")}")
     builtin cd ${config[site_root]}
     local -a html_files=(**/[a-z]*.html(.))
     local -a blog_files=()
@@ -1002,31 +1001,31 @@ function _sitemap() {
 
     if (${debug}); then _msg debug "${0:t}_msg_2" " ${sitemap_file}"; fi
 
-  fi
+    # Start of the XML file for the main sitemap
+    echo '<?xml version="1.0" encoding="UTF-8"?>' > "${sitemap_file}"
+    echo "<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">" >> "${sitemap_file}"
   
-  # Start of the XML file for the main sitemap
-  echo '<?xml version="1.0" encoding="UTF-8"?>' > "${sitemap_file}"
-  echo "<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">" >> "${sitemap_file}"
+    # Add sitemap-blogs.xml to the sitemap
+    echo "  <sitemap>" >> "${sitemap_file}"
+    echo "    <loc>${site_url}/${b_file}</loc>" >> "${sitemap_file}"
+    local lastmod_b=$(stat -c %y "${b_file}" 2>/dev/null | cut -d' ' -f1,2 | sed 's/ /T/' | sed 's/\..*$//')
+    echo "    <lastmod>${lastmod_b}</lastmod>" >> "${sitemap_file}"
+    echo "  </sitemap>" >> "${sitemap_file}"
+  
+    # Add sitemap-pages.xml to the sitemap
+    echo "  <sitemap>" >> "${sitemap_file}"
+    echo "    <loc>${site_url}/${p_file}</loc>" >> "${sitemap_file}"
+    local lastmod_p=$(stat -c %y "${p_file}" 2>/dev/null | cut -d' ' -f1,2 | sed 's/ /T/' | sed 's/\..*$//')
+    echo "    <lastmod>${lastmod_p}</lastmod>" >> "${sitemap_file}"
+    echo "  </sitemap>" >> "${sitemap_file}"
+  
+    # End of the XML file
+    echo "</sitemapindex>" >> "${sitemap_file}"
+    _msg std "  - ${sm_file}"
 
-  # Add sitemap-blogs.xml to the sitemap
-  echo "  <sitemap>" >> "${sitemap_file}"
-  echo "    <loc>${site_url}/${b_file}</loc>" >> "${sitemap_file}"
-  local lastmod_b=$(stat -c %y "${b_file}" 2>/dev/null | cut -d' ' -f1,2 | sed 's/ /T/' | sed 's/\..*$//')
-  echo "    <lastmod>${lastmod_b}</lastmod>" >> "${sitemap_file}"
-  echo "  </sitemap>" >> "${sitemap_file}"
-
-  # Add sitemap-pages.xml to the sitemap
-  echo "  <sitemap>" >> "${sitemap_file}"
-  echo "    <loc>${site_url}/${p_file}</loc>" >> "${sitemap_file}"
-  local lastmod_p=$(stat -c %y "${p_file}" 2>/dev/null | cut -d' ' -f1,2 | sed 's/ /T/' | sed 's/\..*$//')
-  echo "    <lastmod>${lastmod_p}</lastmod>" >> "${sitemap_file}"
-  echo "  </sitemap>" >> "${sitemap_file}"
-
-  # End of the XML file
-  echo "</sitemapindex>" >> "${sitemap_file}"
-  _msg std "  - ${sm_file}"
-
-  builtin cd ${config[project_root]}
+    builtin cd ${config[project_root]}
+  
+  fi
 
 }
 
