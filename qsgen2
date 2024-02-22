@@ -38,7 +38,6 @@ echo "${magenta}${blue_bg} ${QSGEN} ${end}${bold_white}${blue_bg}${VERSION} ${en
 # Check for, and source, the config file for this specific website
 if [[ -f $(pwd)/config ]]; then
   if (${globaldebug}); then echo "${red}Config file found and sourced${end}\n${yellow} - $(pwd)/config${end}"; fi
-	# builtin source $(pwd)/config
   zini $(pwd)/config
 else
 	echo "${red}Cannot find configuration file.${end}"
@@ -49,31 +48,31 @@ fi
 
 # Let's define the new config values to the old names until
 # I've had time to change everything in the script.
-site_name="${config[site_name]}"
-site_tagline="${config[site_tagline]}"
-site_url="${config[site_url]}"
-theme="${config[site_theme]}"
-sitemap="${config[site_sitemap]}"
-www_root="${config[site_root]}"
-blog_in_index="${config[site_blog]}"
-project_dir="${config[project_root]}"
-language="${config[project_lang]}"
-generator="${config[project_generator]}"
+# site_name="${config[site_name]}"
+# site_tagline="${config[site_tagline]}"
+# site_url="${config[site_url]}"
+# theme="${config[site_theme]}"
+# sitemap="${config[site_sitemap]}"
+# www_root="${config[site_root]}"
+# blog_in_index="${config[site_blog]}"
+# project_dir="${config[project_root]}"
+# language="${config[project_lang]}"
+# generator="${config[project_generator]}"
 
 # Load language as defined in config
 typeset -A qsgenlang
 lang_found=false
 for dir in $fpath; do
-  if [[ -f "${dir}/${language}" ]]; then
-    # echo "Language file: ${dir}/${language}"
-    source "${dir}/${language}"
+  if [[ -f "${dir}/${config[project_lang]}" ]]; then
+    # echo "Language file: ${dir}/${config[project_lang]}"
+    source "${dir}/${config[project_lang]}"
     lang_found=true
     break
   fi
 done
 if [[ ${lang_found} == "false" ]]; then
       # Fall back to en_US if defined language isn't found
-      echo "Defined language, ${language}, not found. Using en_US."
+      echo "Defined language, ${config[project_lang]}, not found. Using en_US."
       source "${HOME}/bin/include/qsgen2/lang/en_US"
     fi
 
@@ -134,21 +133,21 @@ elif [[ "$1" == "help" || "$1" == "-h" || "$1" == "--help" ]]; then
 fi
 
 # Define cache files for blogs and pages
-blog_cache_file="${project_dir}/.blog_cache"
-pages_cache_file="${project_dir}/.pages_cache"
+blog_cache_file="${config[project_root]}/.blog_cache"
+pages_cache_file="${config[project_root]}/.pages_cache"
 
 # Let's check if qsgen2 can generate this site by checking if 'generator' is available
-if [[ ! ${generator} ]] || [[ -d $(pwd)/.git ]]; then
+if [[ ! ${config[project_generator]} ]] || [[ -d $(pwd)/.git ]]; then
     _msg debug "_qsgen2_msg_3"
     exit
 fi
 
 # We define the variable 'engine' based on what's in the 'config' file.
-if [[ ${generator} == "native" ]]; then
+if [[ ${config[project_generator]} == "native" ]]; then
   # Usage: ${engine} ${1} - Where 1 is the file you want to convert
   engine=_zhtml
   export file_ext="qst"
-elif [[ ${generator} == "markdown" ]]; then
+elif [[ ${config[project_generator]} == "markdown" ]]; then
   if [[ ! -f /usr/local/bin/pandoc ]]; then
     _msg other "_qsgen2_msg_4"
     _msg other "https://github.com/jgm/pandoc/releases"
@@ -168,9 +167,9 @@ function _run_engine() {
   # Usage: _run_engine <input>
   local debug=false
   
-  if [[ ${generator} == "native" ]]; then
+  if [[ ${config[project_generator]} == "native" ]]; then
     ${engine} ${1}
-  elif [[ ${generator} == "markdown" ]]; then
+  elif [[ ${config[project_generator]} == "markdown" ]]; then
     echo "${1} | ${engine} ${engine_opts}"
   else
     _msg debug "ERROR running engine: ${engine}!"
@@ -181,7 +180,7 @@ function _run_engine() {
 
 if (${globaldebug}); then _msg debug "_qsgen2_msg_6"; fi
 
-builtin cd ${project_dir}
+builtin cd ${config[project_root]}
 
 # Loading Zsh modules
 zmodload zsh/files
@@ -467,7 +466,7 @@ function _pages() {
     for pages_in_array in ${pages_array[@]}
       do
         if (${debug}) _msg debug "${0:t}_msg_5"
-        local pages=${project_dir}/themes/${theme}/pages.tpl
+        local pages=${config[project_root]}/themes/${theme}/pages.tpl
         
         # Let's check if we can access the pages.tpl file.
         # It not, exit script.
@@ -487,7 +486,7 @@ function _pages() {
               
         # Grab the title from the Page
         if (${debug}) _msg debug "${0:t}_msg_10"
-        if [[ ${generator} == "native" ]]; then
+        if [[ ${config[project_generator]} == "native" ]]; then
           while read -r line
             do
             if [[ "$line" =~ ^#title=(.*) ]]; then
@@ -496,7 +495,7 @@ function _pages() {
               #local page_title=$( echo ${page_content} | head -2 | grep \#title | cut -d= -f2 )
             fi
           done <<< "$page_content"
-        elif [[ ${generator} == "markdown" ]]; then
+        elif [[ ${config[project_generator]} == "markdown" ]]; then
           while IFS= read -r line
             do
             # Check if the line starts with '#' and capture the line
@@ -535,7 +534,7 @@ function _pages() {
         
         # Replace every #pagetitle in pages_tpl
         if (${debug}) _msg debug "${0:t}_msg_18"
-        pages_tpl=$(echo "${pages_tpl}" | perl -pe "s|#pagetitle|${page_title}|gs; s|#tagline|${site_tagline}|gs; s|#sitename|${site_name}|gs")
+        pages_tpl=$(echo "${pages_tpl}" | perl -pe "s|#pagetitle|${page_title}|gs; s|#tagline|${config[site_tagline]}|gs; s|#sitename|${config[site_name]}|gs")
         
         if (${debug}) _msg debug "${0:t}_msg_19"
         # Use awk for multi-line and special character handling
@@ -554,16 +553,16 @@ function _pages() {
         pages_tpl=$( _cleanup "${pages_tpl}" )
         
         # Write pages_tpl to disk
-        # _msg std "Writing ${www_root}/${pages_title_lower%.*}.html to disk."
-        echo "${pages_tpl}" > ${www_root}/${pages_title_lower%.*}.html
+        # _msg std "Writing ${config[site_root]}/${pages_title_lower%.*}.html to disk."
+        echo "${pages_tpl}" > ${config[site_root]}/${pages_title_lower%.*}.html
         
         # Insert the blog to the front page is blog_in_index is true and the file in the array is index.file_ext
         # and if index.tmp.html exist and is not empty
-        if [[ ${pages_in_array} == "index.${file_ext}" &&  ${blog_in_index} == "true" && -s "${project_dir}/blog/index.tmp.html" ]]; then
+        if [[ ${pages_in_array} == "index.${file_ext}" &&  ${config[site_blog]} == "true" && -s "${config[project_root]}/blog/index.tmp.html" ]]; then
           if (${debug}) _msg sub "${0:t}_msg_23" " ${pages_in_array}"
-          if (${debug}) _msg sub "${0:t}_msg_24" " ${blog_in_index}"
+          if (${debug}) _msg sub "${0:t}_msg_24" " ${config[site_blog]}"
           if (${debug}) _msg sub "${0:t}_msg_25"
-          if (${debug}) ls -l ${project_dir}/blog/index.tmp.html
+          if (${debug}) ls -l ${config[project_root]}/blog/index.tmp.html
           _add_blog_list_to_index
         fi
         
@@ -574,12 +573,12 @@ function _pages() {
     else
       # Insert the blog to the front page is blog_in_index is true and the file in the array is index.file_ext
       # and if index.tmp.html exist and is not empty
-      if [[ ${blog_in_index} == "true" && -s "${project_dir}/blog/index.tmp.html" ]]; then
+      if [[ ${config[site_blog]} == "true" && -s "${config[project_root]}/blog/index.tmp.html" ]]; then
         _msg std "${0:t}_msg_26"
         if (${debug}) _msg sub "${0:t}_msg_27" " ${pages_in_array}"
-        if (${debug}) _msg sub "${0:t}_msg_28" " ${blog_in_index}"
+        if (${debug}) _msg sub "${0:t}_msg_28" " ${config[site_blog]}"
         if (${debug}) _msg sub "${0:t}_msg_25"
-        if (${debug}) ls -l ${project_dir}/blog/index.tmp.html
+        if (${debug}) ls -l ${config[project_root]}/blog/index.tmp.html
         _add_blog_list_to_index
       fi
         
@@ -621,8 +620,8 @@ function _blogs() {
 
     # Regular blog creation process
                 
-    if [[ -f ${project_dir}/themes/${theme}/blogs.tpl ]]; then
-      local blog_tpl=$(<"${project_dir}/themes/${theme}/blogs.tpl")
+    if [[ -f ${config[project_root]}/themes/${theme}/blogs.tpl ]]; then
+      local blog_tpl=$(<"${config[project_root]}/themes/${theme}/blogs.tpl")
     else
       _msg info "${0:t}_msg_5"
       exit
@@ -670,14 +669,14 @@ function _blogs() {
 
       # Extract blog information
       sdate=( $( echo ${content} | grep DATE | sed "s|DATE\ ||" | sed "s|\-|\ |g" ) )
-      if [[ ${generator} == "native" ]]; then
+      if [[ ${config[project_generator]} == "native" ]]; then
         while IFS= read -r line; do
           if [[ "$line" == "BLOG_TITLE "* ]]; then
             btitle="${line#BLOG_TITLE }"
             break
           fi
         done <<< "$content"
-      elif [[ ${generator} == "markdown" ]]; then
+      elif [[ ${config[project_generator]} == "markdown" ]]; then
         while IFS= read -r line; do
           if [[ "$line" == \#* ]]; then
             btitle="${line#\#}" # Remove the first '#' character
@@ -740,18 +739,18 @@ function _blogs() {
                   
             # Replace every #tagline in blog_content
             if (${debug}) _msg debug "${0:t}_msg_20"
-            blog_content=$( echo ${blog_content} | perl -pe "s|#tagline|${site_tagline}|gs; s|#sitename|${site_name}|gs; s|#pagetitle|${page_title}|gs" )
+            blog_content=$( echo ${blog_content} | perl -pe "s|#tagline|${config[site_tagline]}|gs; s|#sitename|${config[site_name]}|gs; s|#pagetitle|${page_title}|gs" )
                   
             blog_content=$(_last_updated "${blog_content}")
             blog_content=$(_cleanup "${blog_content}")
                    
             # Create directory if it doesn't exist
-            if (${debug}) _msg debug "${0:t}_msg_21" " ${www_root}${blog_dir}"
-            [[ ! -d "${www_root}/${blog_dir}" ]] && mkdir -p "${www_root}/${blog_dir}"
+            if (${debug}) _msg debug "${0:t}_msg_21" " ${config[site_root]}${blog_dir}"
+            [[ ! -d "${config[site_root]}/${blog_dir}" ]] && mkdir -p "${config[site_root]}/${blog_dir}"
 
             # Write to file
-            if (${debug}) _msg debug "${0:t}_msg_22" " ${www_root}${blog_url}"
-            echo "${blog_content}" > "${www_root}${blog_url}"
+            if (${debug}) _msg debug "${0:t}_msg_22" " ${config[site_root]}${blog_url}"
+            echo "${blog_content}" > "${config[site_root]}${blog_url}"
                    
             unset sdate btitle ingress body blog_index blog_dir blog_url
 
@@ -784,15 +783,15 @@ function _blog_idx_for_index() {
     local debug=false
   fi
     
-  _msg sub "${0:t}_msg_1" " ${project_dir}/blog/index.tmp.html"
+  _msg sub "${0:t}_msg_1" " ${config[project_root]}/blog/index.tmp.html"
     
   if (${debug}) _msg debug "${0:t}_msg_2"
     
-  local blog_list_tpl=$(<${project_dir}/themes/${theme}/blog_list.tpl)
+  local blog_list_tpl=$(<${config[project_root]}/themes/${theme}/blog_list.tpl)
   local blog_list_content=""
     
   # Truncate file before writing new one
-  : >| "${project_dir}/blog/index.tmp.html"
+  : >| "${config[project_root]}/blog/index.tmp.html"
     
   # if (${debug}) _msg debug "${0:t}_msg_3" " ${BLOG_META_STR_ARRAY[@]}"
     
@@ -830,7 +829,7 @@ function _blog_idx_for_index() {
           blog_list_content+=$(
             echo "${blog_list_tpl}" | \
             perl -pe "\
-            s|BLOGURL|${site_url}${url}|g; \
+            s|BLOGURL|${config[site_url]}${url}|g; \
             s|BLOGTITLE|${btitle}|g; \
             s|INGRESS|${ingress}|g; \
             s|BLOGDATE|${bdate}|g; \
@@ -846,9 +845,9 @@ function _blog_idx_for_index() {
   if (${debug}) _msg debug "${0:t}_msg_7" " ${engine} " "${0:t}_msg_7.1"
   # Catch any QStags or Markdown in the Ingress
   blog_list_content=$( _run_engine ${blog_list_content} )
-  if (${debug}) _msg debug "${0:t}_msg_8" " ${project_dir}/blog/index.tmp.html"
+  if (${debug}) _msg debug "${0:t}_msg_8" " ${config[project_root]}/blog/index.tmp.html"
   #if (${debug}) _msg debug "${0:t}_msg_9" " ${blog_list_content}"
-  echo ${blog_list_content} > ${project_dir}/blog/index.tmp.html
+  echo ${blog_list_content} > ${config[project_root]}/blog/index.tmp.html
 
 }
 
@@ -862,29 +861,29 @@ function _blog_index() {
 
   # This function generates the www_root/blog/index.html file that gets its data from _blog_list_for_index()
   # ${new_updated_blogs} comes from the function _blogs if anything new or updated is detected
-  if [[ ${blog_in_index} == "false" ]] && [[ ${new_updated_blogs} = "true" ]]; then
+  if [[ ${config[site_blog]} == "false" ]] && [[ ${new_updated_blogs} = "true" ]]; then
 
-    if (${debug}) _msg debug "${0:t}_msg_1" "${blog_in_index}"
+    if (${debug}) _msg debug "${0:t}_msg_1" "${config[site_blog]}"
     if (${debug}) _msg debug "${0:t}_msg_2" "${new_updated_blogs}"
     if (${debug}) _msg debug "${0:t}_msg_3"
-    if (${debug}) _msg debug "${0:t}_msg_4" " ${blog_in_index}"
+    if (${debug}) _msg debug "${0:t}_msg_4" " ${config[site_blog]}"
 
-    _msg std "${0:t}_msg_5" " ${www_root}/blog/index.html"
+    _msg std "${0:t}_msg_5" " ${config[site_root]}/blog/index.html"
 
-    local blog_index_tpl=$(<${project_dir}/themes/${theme}/blog_index.tpl)
-    local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
+    local blog_index_tpl=$(<${config[project_root]}/themes/${theme}/blog_index.tpl)
+    local blog_index_list=$(<${config[project_root]}/blog/index.tmp.html)
 
     if (${debug}) _msg debug "${0:t}_msg_6"
-    local blog_index_content=$(echo "${blog_index_tpl}" | perl -pe "s|#sitename|${site_name}|gs; s|#tagline|${site_tagline}|gs")
-    if (${debug}) _msg debug "${0:t}_msg_7" " ${project_dir}/blog/index.tmp.html"
+    local blog_index_content=$(echo "${blog_index_tpl}" | perl -pe "s|#sitename|${config[site_name]}|gs; s|#tagline|${config[site_tagline]}|gs")
+    if (${debug}) _msg debug "${0:t}_msg_7" " ${config[project_root]}/blog/index.tmp.html"
     blog_index_content=$( awk -v new_body="$blog_index_list" '{sub(/BODY/, new_body)} 1' <(echo "${blog_index_content}") )
 
     if (${debug}); then
-      _msg debug "${0:t}_msg_8" " ${www_root}/blog/index.html"
+      _msg debug "${0:t}_msg_8" " ${config[site_root]}/blog/index.html"
       _msg debug "${0:t}_msg_9" " ${#blog_index_content}"
     fi
-    echo "$blog_index_content" > ${www_root}/blog/index.html
-    _f_last_updated ${www_root}/blog/index.html
+    echo "$blog_index_content" > ${config[site_root]}/blog/index.html
+    _f_last_updated ${config[site_root]}/blog/index.html
 
   fi
 
@@ -900,9 +899,9 @@ function _add_blog_list_to_index() {
   
   # Let's find the file 'index.qst' and add the blog if blog_in_index is true
   if (${debug}) _msg debug "${0:t}_msg_1"
-  local blog_index_list=$(<${project_dir}/blog/index.tmp.html)
-  local site_index_file=$(<${www_root}/index.html)
-  echo "${site_index_file}" | awk -v new_body="${blog_index_list}" '{sub(/BLOGINDEX/, new_body)} 1' > "${www_root}/index.html"
+  local blog_index_list=$(<${config[project_root]}/blog/index.tmp.html)
+  local site_index_file=$(<${config[site_root]}/index.html)
+  echo "${site_index_file}" | awk -v new_body="${blog_index_list}" '{sub(/BLOGINDEX/, new_body)} 1' > "${config[site_root]}/index.html"
 
 }
 
@@ -915,7 +914,7 @@ function _sitemap() {
   fi
   
   # Check if sitemap is set to true and if there are updated Blogs or Pages before updating the sitemap.xml file.
-  if ([[ ${sitemap} == "true" ]] && ( [[ ${new_updated_blogs} == "true" ]] || [[ ${new_updated_pages} == "true" ]] )) || [[ ${sitemap_force} == "true" ]]; then
+  if ([[ ${config[site_sitemap]} == "true" ]] && ( [[ ${new_updated_blogs} == "true" ]] || [[ ${new_updated_pages} == "true" ]] )) || [[ ${sitemap_force} == "true" ]]; then
 
     setopt extendedglob
     
@@ -924,9 +923,9 @@ function _sitemap() {
     local sm_file="sitemap.xml"
     local b_file="sitemap-blogs.xml"
     local p_file="sitemap-pages.xml"
-    local sitemap_file="${www_root}/${sm_file}"
-    local sitemap_blog="${www_root}/${b_file}"
-    local sitemap_page="${www_root}/${p_file}"
+    local sitemap_file="${config[site_root]}/${sm_file}"
+    local sitemap_blog="${config[site_root]}/${b_file}"
+    local sitemap_page="${config[site_root]}/${p_file}"
 
     # Find all HTML files and store them in an array
     builtin cd ${config[site_root]}
@@ -944,7 +943,7 @@ function _sitemap() {
     # Start of the XML file for BLOGS
     echo '<?xml version="1.0" encoding="UTF-8"?>' > ${sitemap_blog}
     echo "<!-- Sitemap generated by ${QSGEN} ${VERSION} - https://github.com/kekePower/qsgen2 -->" >> ${sitemap_blog}
-    echo "<?xml-stylesheet type=\"text/xsl\" href=\"${site_url}/css/default-sitemap.xsl?sitemap=page\"?>" >> ${sitemap_blog}
+    echo "<?xml-stylesheet type=\"text/xsl\" href=\"${config[site_url]}/css/default-sitemap.xsl?sitemap=page\"?>" >> ${sitemap_blog}
     echo '<urlset' >> ${sitemap_blog}
     echo '  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"' >> ${sitemap_blog}
     echo '  xmlns:xhtml="http://www.w3.org/1999/xhtml"' >> ${sitemap_blog}
@@ -955,7 +954,7 @@ function _sitemap() {
     for file in "${blog_files[@]}"
       do
         # Remove www_root from the path and prepend site_url
-        local url="${site_url}/${file}"
+        local url="${config[site_url]}/${file}"
         local lastmod=$(stat -c %y "${file}" 2>/dev/null | cut -d' ' -f1,2 | sed 's/ /T/' | sed 's/\..*$//')
 
         echo "  <url>" >> ${sitemap_blog}
@@ -973,7 +972,7 @@ function _sitemap() {
     # Start of the XML file for PAGES
     echo '<?xml version="1.0" encoding="UTF-8"?>' > ${sitemap_page}
     echo "<!-- Sitemap generated by ${QSGEN} ${VERSION} - https://github.com/kekePower/qsgen2 -->" >> ${sitemap_page}
-    echo "<?xml-stylesheet type=\"text/xsl\" href=\"${site_url}/css/default-sitemap.xsl?sitemap=page\"?>" >> ${sitemap_page}
+    echo "<?xml-stylesheet type=\"text/xsl\" href=\"${config[site_url]}/css/default-sitemap.xsl?sitemap=page\"?>" >> ${sitemap_page}
     echo '<urlset' >> ${sitemap_page}
     echo '  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"' >> ${sitemap_page}
     echo '  xmlns:xhtml="http://www.w3.org/1999/xhtml"' >> ${sitemap_page}
@@ -984,7 +983,7 @@ function _sitemap() {
     for file in "${page_files[@]}"
       do
         # Remove www_root from the path and prepend site_url
-        local url="${site_url}/${file}"
+        local url="${config[site_url]}/${file}"
         local lastmod=$(stat -c %y "${file}" 2>/dev/null | cut -d' ' -f1,2 | sed 's/ /T/' | sed 's/\..*$//')
 
         echo "  <url>" >> ${sitemap_page}
@@ -1007,14 +1006,14 @@ function _sitemap() {
   
     # Add sitemap-blogs.xml to the sitemap
     echo "  <sitemap>" >> "${sitemap_file}"
-    echo "    <loc>${site_url}/${b_file}</loc>" >> "${sitemap_file}"
+    echo "    <loc>${config[site_url]}/${b_file}</loc>" >> "${sitemap_file}"
     local lastmod_b=$(stat -c %y "${b_file}" 2>/dev/null | cut -d' ' -f1,2 | sed 's/ /T/' | sed 's/\..*$//')
     echo "    <lastmod>${lastmod_b}</lastmod>" >> "${sitemap_file}"
     echo "  </sitemap>" >> "${sitemap_file}"
   
     # Add sitemap-pages.xml to the sitemap
     echo "  <sitemap>" >> "${sitemap_file}"
-    echo "    <loc>${site_url}/${p_file}</loc>" >> "${sitemap_file}"
+    echo "    <loc>${config[site_url]}/${p_file}</loc>" >> "${sitemap_file}"
     local lastmod_p=$(stat -c %y "${p_file}" 2>/dev/null | cut -d' ' -f1,2 | sed 's/ /T/' | sed 's/\..*$//')
     echo "    <lastmod>${lastmod_p}</lastmod>" >> "${sitemap_file}"
     echo "  </sitemap>" >> "${sitemap_file}"
