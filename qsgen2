@@ -466,7 +466,7 @@ function _pages() {
     for pages_in_array in ${pages_array[@]}
       do
         if (${debug}) _msg debug "${0:t}_msg_5"
-        local pages=${config[project_root]}/themes/${theme}/pages.tpl
+        local pages=${config[project_root]}/themes/${config[site_theme]}/pages.tpl
         
         # Let's check if we can access the pages.tpl file.
         # It not, exit script.
@@ -620,8 +620,8 @@ function _blogs() {
 
     # Regular blog creation process
                 
-    if [[ -f ${config[project_root]}/themes/${theme}/blogs.tpl ]]; then
-      local blog_tpl=$(<"${config[project_root]}/themes/${theme}/blogs.tpl")
+    if [[ -f ${config[project_root]}/themes/${config[site_theme]}/blogs.tpl ]]; then
+      local blog_tpl=$(<"${config[project_root]}/themes/${config[site_theme]}/blogs.tpl")
     else
       _msg info "${0:t}_msg_5"
       exit
@@ -787,7 +787,7 @@ function _blog_idx_for_index() {
     
   if (${debug}) _msg debug "${0:t}_msg_2"
     
-  local blog_list_tpl=$(<${config[project_root]}/themes/${theme}/blog_list.tpl)
+  local blog_list_tpl=$(<${config[project_root]}/themes/${config[site_theme]}/blog_list.tpl)
   local blog_list_content=""
     
   # Truncate file before writing new one
@@ -870,7 +870,7 @@ function _blog_index() {
 
     _msg std "${0:t}_msg_5" " ${config[site_root]}/blog/index.html"
 
-    local blog_index_tpl=$(<${config[project_root]}/themes/${theme}/blog_index.tpl)
+    local blog_index_tpl=$(<${config[project_root]}/themes/${config[site_theme]}/blog_index.tpl)
     local blog_index_list=$(<${config[project_root]}/blog/index.tmp.html)
 
     if (${debug}) _msg debug "${0:t}_msg_6"
