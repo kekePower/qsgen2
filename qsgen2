@@ -434,7 +434,9 @@ function _pages() {
   else
     local debug=false
   fi
-    
+  
+  _msg main "${0:t}_msg_3"
+  
   # Load the cache for Pages
   if (${debug}) _msg debug "${0:t}_msg_1"
   _pages_cache
@@ -443,8 +445,6 @@ function _pages() {
     _msg sub "${0:t}_msg_1"
     return
   fi
-    
-  _msg main "${0:t}_msg_3"
     
   if (( ${#pages_array[@]} > 0 )); then
     
@@ -467,7 +467,7 @@ function _pages() {
           local pages_tpl="$(<${pages})"
         fi
         
-        _msg std "  - ${pages_in_array%.*}.html"
+        # _msg std "  - ${pages_in_array%.*}.html"
         # Read the file once
         if (${debug}) _msg debug "${0:t}_msg_9" " ${pages_in_array}"
         local page_content="$(<${pages_in_array})"
@@ -496,6 +496,7 @@ function _pages() {
             fi
           done <<< ${page_content}
         fi
+        _msg std "  - ${page_title}"
         if (${debug}) _msg debug "${0:t}_msg_11" " ${page_title}"
         
         # Remove the #title line from the buffer. No longer needed.
