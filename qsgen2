@@ -711,7 +711,7 @@ function _blogs() {
             blog_content="${blog_content//CALMONTH/${sdate[3]}}"
             blog_content="${blog_content//CALADAY/${sdate[1]}}"
 
-            if (${debug}) _msg debug "${0:t}_msg_15" " ${blog}"
+            if (${debug}) _msg debug "${0:t}_msg_15" "${engine}" " ${0:t}_msg_15.1 ${blog}"
               blog_content=$( _run_engine "${blog_content}" )
               # Look for links, images and videos and convert them if present.
               if (${debug}) _msg debug "${0:t}_msg_16"
