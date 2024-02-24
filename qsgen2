@@ -586,8 +586,6 @@ function _blogs() {
     local debug=true
   fi
   
-  if (${debug}) _msg info "*************************************************************************"
-  
   # Running function _list_blogs
   if (${debug}) _msg debug "${0:t}_msg_1"
   _list_blogs
@@ -618,7 +616,9 @@ function _blogs() {
     fi
 
     for blog in "${make_blog_array[@]}"; do
-                    
+      if (${debug}) _msg info "*************************************************************************"
+      if (${debug}) _msg info "**************************FOR LOOP START*********************************"
+      if (${debug}) _msg info "*************************************************************************"
       if (${debug}) _msg debug "${0:t}_msg_6" " ${blog}"
                 
       local content="$(<"${blog}")"
