@@ -579,13 +579,15 @@ function _pages() {
 
 function _blogs() {
   # This function either generates blog files or exports metadata based on the argument
-
+  
   if [[ ${globaldebug} == "true" ]]; then
     local debug=true
   else
     local debug=true
   fi
-
+  
+  if (${debug}) _msg info "*************************************************************************"
+  
   # Running function _list_blogs
   if (${debug}) _msg debug "${0:t}_msg_1"
   _list_blogs
