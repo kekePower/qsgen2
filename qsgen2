@@ -172,6 +172,7 @@ builtin cd ${config[project_root]}
 # Loading Zsh modules
 zmodload zsh/files
 zmodload zsh/datetime
+zmodload zsh/regex
 
 # Let's put these here for now.
 export today=$(strftime "%Y-%m-%d - %T")
@@ -1245,7 +1246,7 @@ function _qstags() {
   fi
 
   # Load regex module
-  zmodload zsh/regex
+  # zmodload zsh/regex
 
   # Define tag replacements as an associative array
   typeset -A qstags=(
