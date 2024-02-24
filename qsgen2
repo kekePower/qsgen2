@@ -586,6 +586,8 @@ function _blogs() {
     local debug=true
   fi
   
+  _msg main "${0:t}_msg_3"
+  
   # Running function _list_blogs
   if (${debug}) _msg debug "${0:t}_msg_1"
   _list_blogs
@@ -594,8 +596,6 @@ function _blogs() {
     _msg sub "${0:t}_msg_2"
     return
   fi
-    
-  _msg main "${0:t}_msg_3"
     
   # Running function _blog_cache
   if (${debug}) _msg debug "${0:t}_msg_4"
@@ -697,7 +697,7 @@ function _blogs() {
                     
         if (${debug}) _msg debug "${0:t}_msg_12" " ${blog}"
                        
-          _msg std "  - ${blog_index}.html"
+          _msg std "  - ${btitle}"
 
           # Prepare the blog template
           if (${debug}) _msg debug "${0:t}_msg_14" " ${blog}"
