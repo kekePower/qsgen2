@@ -46,19 +46,6 @@ else
 	exit
 fi
 
-# Let's define the new config values to the old names until
-# I've had time to change everything in the script.
-# site_name="${config[site_name]}"
-# site_tagline="${config[site_tagline]}"
-# site_url="${config[site_url]}"
-# theme="${config[site_theme]}"
-# sitemap="${config[site_sitemap]}"
-# www_root="${config[site_root]}"
-# blog_in_index="${config[site_blog]}"
-# project_dir="${config[project_root]}"
-# language="${config[project_lang]}"
-# generator="${config[project_generator]}"
-
 # Load language as defined in config
 typeset -A qsgenlang
 lang_found=false
@@ -145,7 +132,7 @@ fi
 # We define the variable 'engine' based on what's in the 'config' file.
 if [[ ${config[project_generator]} == "native" ]]; then
   # Usage: ${engine} ${1} - Where 1 is the file you want to convert
-  engine=_zhtml
+  engine=_qstags
   export file_ext="qst"
 elif [[ ${config[project_generator]} == "markdown" ]]; then
   if [[ ! -f /usr/local/bin/pandoc ]]; then
@@ -595,7 +582,7 @@ function _blogs() {
   if [[ ${globaldebug} == "true" ]]; then
     local debug=true
   else
-    local debug=false
+    local debug=true
   fi
 
   # Running function _list_blogs
@@ -670,6 +657,7 @@ function _blogs() {
       # Extract blog information
       sdate=( $( echo ${content} | grep DATE | sed "s|DATE\ ||" | sed "s|\-|\ |g" ) )
       if [[ ${config[project_generator]} == "native" ]]; then
+	_msg debug "* qstags: Fetching BLOG_TITLE"
         while IFS= read -r line; do
           if [[ "$line" == "BLOG_TITLE "* ]]; then
             btitle="${line#BLOG_TITLE }"
@@ -677,6 +665,7 @@ function _blogs() {
           fi
         done <<< "$content"
       elif [[ ${config[project_generator]} == "markdown" ]]; then
+	_msg debug "* markdown: Fetching BLOG_TITLE"
         while IFS= read -r line; do
           if [[ "$line" == \#* ]]; then
             btitle="${line#\#}" # Remove the first '#' character
@@ -686,7 +675,9 @@ function _blogs() {
           fi
         done <<< "$content"
       fi
+      _msg debug "* Fetching INGRESS"
       ingress=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#INGRESS_START\K(.*?)#INGRESS_STOP" | sed "s|\ \#INGRESS_STOP||" | sed "s|^\ ||" )
+      _msg debug "* Fetching BODY"
       body=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#BODY_START\K(.*?)#BODY_STOP" | sed "s|\ \#BODY_STOP||" | sed "s|^\ ||" )
 
       blog_index=$(echo "${btitle:l}" | sed 's/ /_/g; s/,//g; s/\.//g; s/://g; s/[()]//g')
@@ -740,8 +731,10 @@ function _blogs() {
             # Replace every #tagline in blog_content
             if (${debug}) _msg debug "${0:t}_msg_20"
             blog_content=$( echo ${blog_content} | perl -pe "s|#tagline|${config[site_tagline]}|gs; s|#sitename|${config[site_name]}|gs; s|#pagetitle|${page_title}|gs" )
-                  
+        
+	    _msg debug "* Running _last_updated"
             blog_content=$(_last_updated "${blog_content}")
+	    _msg debug "* Running _cleanup"
             blog_content=$(_cleanup "${blog_content}")
                    
             # Create directory if it doesn't exist
@@ -1173,7 +1166,7 @@ function _cleanup() {
 
 }
 
-function _html() {
+function _p_qstags() {
 
   if [[ ${globaldebug} == "true" ]]; then
     local debug=true
@@ -1235,7 +1228,7 @@ function _html() {
     
 }
 
-function _zhtml() {
+function _qstags() {
   
   # This function uses the regex module from Zsh to parse the QStags
   
