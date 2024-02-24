@@ -1284,13 +1284,17 @@ function _qstags() {
     "#LT" "&lt;" "#GT" "&gt;" "#NUM" "&num;"
     )
 
-    for qstag html (${(kv)qstags})
-      do
-        # Escape tag for regex use
-        local escapedTag=$(printf '%s' "$qstag" | sed 's/[].\[^$*]/\\&/g')
-        if [[ "$content" =~ "$escapedTag" ]]; then
-            content=${content//($qstag)/$html}
-        fi
+    #for qstag html (${(kv)qstags})
+    #  do
+    #    # Escape tag for regex use
+    #    local escapedTag=$(printf '%s' "$qstag" | sed 's/[].\[^$*]/\\&/g')
+    #    if [[ "$content" =~ "$escapedTag" ]]; then
+    #        content=${content//($qstag)/$html}
+    #    fi
+    #done
+    for qstag html (${(kv)qstags}); do
+      # Direct replacement without regex check
+      content=${content//${qstag}/${html}}
     done
 
     echo "${content}"
