@@ -583,7 +583,7 @@ function _blogs() {
   if [[ ${globaldebug} == "true" ]]; then
     local debug=true
   else
-    local debug=true
+    local debug=false
   fi
   
   _msg main "${0:t}_msg_3"
@@ -649,18 +649,18 @@ function _blogs() {
 
       # Check if DATE or BLOG_TITLE metadata is missing and log message
       if [[ "${date_found}" == false ]]; then
-        _msg debug "${0:t}_msg_9" " ${blog}."
+        if (${debug}) _msg debug "${0:t}_msg_9" " ${blog}."
         continue  # Skip this file and move to the next
       fi
       if [[ "${title_found}" == false ]]; then
-        _msg debug "${0:t}_msg_10" " ${blog}."
+        if (${debug}) _msg debug "${0:t}_msg_10" " ${blog}."
         continue  # Skip this file and move to the next
       fi
 
       # Extract blog information
       sdate=( $( echo ${content} | grep DATE | sed "s|DATE\ ||" | sed "s|\-|\ |g" ) )
       if [[ ${config[project_generator]} == "native" ]]; then
-	_msg debug "* qstags: Fetching BLOG_TITLE"
+      if (${debug}) _msg debug "* qstags: Fetching BLOG_TITLE"
         while IFS= read -r line; do
           if [[ "$line" == "BLOG_TITLE "* ]]; then
             btitle="${line#BLOG_TITLE }"
@@ -668,7 +668,7 @@ function _blogs() {
           fi
         done <<< "$content"
       elif [[ ${config[project_generator]} == "markdown" ]]; then
-	_msg debug "* markdown: Fetching BLOG_TITLE"
+      if (${debug}) _msg debug "* markdown: Fetching BLOG_TITLE"
         while IFS= read -r line; do
           if [[ "$line" == \#* ]]; then
             btitle="${line#\#}" # Remove the first '#' character
@@ -678,9 +678,9 @@ function _blogs() {
           fi
         done <<< "$content"
       fi
-      _msg debug "* Fetching INGRESS"
+      if (${debug}) _msg debug "* Fetching INGRESS"
       ingress=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#INGRESS_START\K(.*?)#INGRESS_STOP" | sed "s|\ \#INGRESS_STOP||" | sed "s|^\ ||" )
-      _msg debug "* Fetching BODY"
+      if (${debug}) _msg debug "* Fetching BODY"
       body=$( echo ${content} | sed "s/'/\\\'/g" | xargs | grep -Po "#BODY_START\K(.*?)#BODY_STOP" | sed "s|\ \#BODY_STOP||" | sed "s|^\ ||" )
 
       blog_index=$(echo "${btitle:l}" | sed 's/ /_/g; s/,//g; s/\.//g; s/://g; s/[()]//g')
@@ -735,9 +735,9 @@ function _blogs() {
             if (${debug}) _msg debug "${0:t}_msg_20"
             blog_content=$( echo ${blog_content} | perl -pe "s|#tagline|${config[site_tagline]}|gs; s|#sitename|${config[site_name]}|gs; s|#pagetitle|${page_title}|gs" )
         
-	    _msg debug "* Running _last_updated"
+            if (${debug}) _msg debug "* Running _last_updated"
             blog_content=$(_last_updated "${blog_content}")
-	    _msg debug "* Running _cleanup"
+            if (${debug}) _msg debug "* Running _cleanup"
             blog_content=$(_cleanup "${blog_content}")
                    
             # Create directory if it doesn't exist
