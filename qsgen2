@@ -16,7 +16,7 @@
 ###############################################################################
 ###############################################################################
 
-VERSION="0.4.3" # Sat-2024-02-24
+VERSION="0.4.4" # Sat-2024-07-10
 QSGEN="Quick Site Generator 2"
 
 # Set to true or false
@@ -516,29 +516,33 @@ function _pages() {
             if (${debug}) _msg debug "${0:t}_msg_16"
             page_content=$( _image "${page_content}" )
           fi
-          if [[ $( echo ${page_content} | grep \#ytvideo ) ]]; then
+          if [[ $( echo ${page_content} | grep \#linkimg ) ]]; then
             if (${debug}) _msg debug "${0:t}_msg_17"
+            page_content=$( _linkimg "${page_content}" )
+          fi
+          if [[ $( echo ${page_content} | grep \#ytvideo ) ]]; then
+            if (${debug}) _msg debug "${0:t}_msg_18"
             page_content=$( _youtube "${page_content}" )
           fi
         
         # Replace every #pagetitle in pages_tpl
-        if (${debug}) _msg debug "${0:t}_msg_18"
+        if (${debug}) _msg debug "${0:t}_msg_19"
         pages_tpl=$(echo "${pages_tpl}" | perl -pe "s|#pagetitle|${page_title}|gs; s|#tagline|${config[site_tagline]}|gs; s|#sitename|${config[site_name]}|gs")
         
-        if (${debug}) _msg debug "${0:t}_msg_19"
+        if (${debug}) _msg debug "${0:t}_msg_20"
         # Use awk for multi-line and special character handling
         pages_tpl=$( awk -v new_body="$page_content" '{sub(/BODY/, new_body)} 1' <(echo "${pages_tpl}") )
         
         # Replace #updated with today's date and #version with Name and Version to footer
-        if (${debug}) _msg debug "${0:t}_msg_20"
+        if (${debug}) _msg debug "${0:t}_msg_21"
         pages_tpl=$( _last_updated ${pages_tpl} )
         
         # Always use lowercase for file names
-        if (${debug}) _msg debug "${0:t}_msg_21"
+        if (${debug}) _msg debug "${0:t}_msg_22"
         pages_title_lower=$( _file_to_lower "${pages_in_array}" )
         
         # Clean up unused tags, if any
-        if (${debug}) _msg debug "${0:t}_msg_22"
+        if (${debug}) _msg debug "${0:t}_msg_23"
         pages_tpl=$( _cleanup "${pages_tpl}" )
         
         # Write pages_tpl to disk
@@ -548,9 +552,9 @@ function _pages() {
         # Insert the blog to the front page is blog_in_index is true and the file in the array is index.file_ext
         # and if index.tmp.html exist and is not empty
         if [[ ${pages_in_array} == "index.${file_ext}" &&  ${config[site_blog]} == "true" && -s "${config[project_root]}/blog/index.tmp.html" ]]; then
-          if (${debug}) _msg sub "${0:t}_msg_23" " ${pages_in_array}"
-          if (${debug}) _msg sub "${0:t}_msg_24" " ${config[site_blog]}"
-          if (${debug}) _msg sub "${0:t}_msg_25"
+          if (${debug}) _msg sub "${0:t}_msg_24" " ${pages_in_array}"
+          if (${debug}) _msg sub "${0:t}_msg_25" " ${config[site_blog]}"
+          if (${debug}) _msg sub "${0:t}_msg_26"
           if (${debug}) ls -l ${config[project_root]}/blog/index.tmp.html
           _add_blog_list_to_index
         fi
@@ -563,15 +567,15 @@ function _pages() {
       # Insert the blog to the front page is blog_in_index is true and the file in the array is index.file_ext
       # and if index.tmp.html exist and is not empty
       if [[ ${config[site_blog]} == "true" && -s "${config[project_root]}/blog/index.tmp.html" ]]; then
-        _msg std "${0:t}_msg_26"
-        if (${debug}) _msg sub "${0:t}_msg_27" " ${pages_in_array}"
-        if (${debug}) _msg sub "${0:t}_msg_28" " ${config[site_blog]}"
-        if (${debug}) _msg sub "${0:t}_msg_25"
+        _msg std "${0:t}_msg_27"
+        if (${debug}) _msg sub "${0:t}_msg_28" " ${pages_in_array}"
+        if (${debug}) _msg sub "${0:t}_msg_29" " ${config[site_blog]}"
+        if (${debug}) _msg sub "${0:t}_msg_30"
         if (${debug}) ls -l ${config[project_root]}/blog/index.tmp.html
         _add_blog_list_to_index
       fi
         
-      _msg sub "${0:t}_msg_29"
+      _msg sub "${0:t}_msg_31"
       export new_updated_pages=false
 
   fi
@@ -727,13 +731,17 @@ function _blogs() {
                 if (${debug}) _msg debug "${0:t}_msg_18"
                 blog_content=$(_image "${blog_content}")
               fi
-              if [[ $( echo ${blog_content} | grep \#ytvideo ) ]]; then
+              if [[ $( echo ${blog_content} | grep \#linkimg ) ]]; then
                 if (${debug}) _msg debug "${0:t}_msg_19"
+                blog_content=$(_linkimg "${blog_content}")
+              fi
+              if [[ $( echo ${blog_content} | grep \#ytvideo ) ]]; then
+                if (${debug}) _msg debug "${0:t}_msg_20"
                 blog_content=$(_youtube "${blog_content}")
               fi
                   
             # Replace every #tagline in blog_content
-            if (${debug}) _msg debug "${0:t}_msg_20"
+            if (${debug}) _msg debug "${0:t}_msg_21"
             blog_content=$( echo ${blog_content} | perl -pe "s|#tagline|${config[site_tagline]}|gs; s|#sitename|${config[site_name]}|gs; s|#pagetitle|${page_title}|gs" )
         
             if (${debug}) _msg debug "* Running _last_updated"
@@ -742,11 +750,11 @@ function _blogs() {
             blog_content=$(_cleanup "${blog_content}")
                    
             # Create directory if it doesn't exist
-            if (${debug}) _msg debug "${0:t}_msg_21" " ${config[site_root]}${blog_dir}"
+            if (${debug}) _msg debug "${0:t}_msg_22" " ${config[site_root]}${blog_dir}"
             [[ ! -d "${config[site_root]}/${blog_dir}" ]] && mkdir -p "${config[site_root]}/${blog_dir}"
 
             # Write to file
-            if (${debug}) _msg debug "${0:t}_msg_22" " ${config[site_root]}${blog_url}"
+            if (${debug}) _msg debug "${0:t}_msg_23" " ${config[site_root]}${blog_url}"
             echo "${blog_content}" > "${config[site_root]}${blog_url}"
                    
             unset sdate btitle ingress body blog_index blog_dir blog_url
@@ -754,18 +762,18 @@ function _blogs() {
     done
     # Now BLOG_META_STR_ARRAY contains the metadata string for each blog post
     export BLOG_META_STR_ARRAY
-    if (${debug}) _msg debug "${0:t}_msg_23"
+    if (${debug}) _msg debug "${0:t}_msg_24"
     export new_updated_blogs=true
 
   else
-    _msg sub "${0:t}_msg_24"
+    _msg sub "${0:t}_msg_25"
     export new_updated_blogs=false
   fi
 
   if [[ ${new_updated_blogs} == "true" ]]; then
-    if (${debug}) _msg sub "${0:t}_msg_25"
-    _blog_idx_for_index
     if (${debug}) _msg sub "${0:t}_msg_26"
+    _blog_idx_for_index
+    if (${debug}) _msg sub "${0:t}_msg_27"
     _blog_index
   fi
 
@@ -1111,6 +1119,49 @@ function _image() {
 
 }
 
+function _linkimg() {
+  # This function replaces #linkimg tags with <a> tags around <img> tags
+
+  if [[ ${globaldebug} == "true" ]]; then
+    local debug=true
+  else
+    local debug=false
+  fi
+  
+  local content="${1}"
+  local modified_content=""
+
+  # Process the content line by line
+  echo "${content}" | while IFS= read -r line; do
+    if [[ ${line} == *"#linkimg"* ]]; then
+      if (${debug}) _msg debug "${0:t}_msg_1" " ${line}"
+
+      # Extract link, image, and alt text
+      local img_link=$(echo "${line}" | awk -F'#linkimg ' '{print $2}')
+      local img_url=$(echo "${img_link}" | awk -F'¤' '{print $1}')
+      local img_alt=$(echo "${img_link}" | awk -F'¤' '{print $2}')
+
+      # Determine the source of the image
+      local real_image=""
+      if [[ ${img_url} =~ ^https?:// ]]; then
+        real_image=${img_url}
+      elif [[ ${img_url} =~ ^\/ ]]; then
+        real_image=${img_url}
+      else
+        real_image="/images/${img_url}"
+      fi
+
+      # Form the replacement HTML link and image tag
+      local img_tag="<a href=\"${real_image}\"><img src=\"${real_image}\" alt=\"${img_alt}\" /></a>"
+      line=${line//"#linkimg ${img_link}"/${img_tag}}
+    fi
+    modified_content+="${line}\n"
+  done
+
+  # Return the modified content
+  echo -e "${modified_content}"
+}
+
 function _youtube() {
   # This embeds a YouTube video in a provided string
 
@@ -1163,6 +1214,7 @@ function _cleanup() {
     -e "s|#showimg\ ||g" \
     -e "s|#ytvideo\ ||g" \
     -e "s|#link\ ||g" \
+    -e "s|#linkimg\ ||g" \7
     )
 
   # Return the cleaned content
