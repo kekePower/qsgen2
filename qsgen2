@@ -1152,7 +1152,7 @@ function _linkimg() {
       fi
 
       # Form the replacement HTML link and image tag
-      local img_tag="<a href=\"${real_image}\"><img src=\"${real_image}\" alt=\"${img_alt}\" /></a>"
+      local img_tag="<a href=\"${real_image}\"><img src=\"${real_image}\" alt=\"${img_alt}\" width=\"500\" /></a>"
       line=${line//"#linkimg ${img_link}"/${img_tag}}
     fi
     modified_content+="${line}\n"
