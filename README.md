@@ -11,7 +11,7 @@ Quick Site Generator 2 is a powerful static website generator written in Zsh, in
 - 🚀 Blazing fast static site generation
 - 📝 Supports both QSTags and Markdown content
 - 🌍 Multi-language support (en_US, en_UK, es_ES, fr_FR, nb_NO)
-- 🎨 Themeable with custom templates
+- 🎨 Themeable with custom templates (see [THEME-HOWTO.md](THEME-HOWTO.md))
 - 📱 Responsive design ready
 - 🔍 SEO friendly
 - 🔄 Automatic rebuild on file changes
