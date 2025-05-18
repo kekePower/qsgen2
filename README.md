@@ -30,9 +30,10 @@ You cannot mix native and Markdown when creating your projects.
 Copy ```qsgen2``` and the directory ```include``` to ${HOME}/bin/.
 
 Then create you project directory, for example ```${HOME}/sites/new-site```.
-Copy the file ```config``` and the directory ```themes``` to your project directory.
+Copy the file ```site.conf``` (or ```config``` for backward compatibility) and the directory ```themes``` to your project directory.
 
-You first have to configure your site and this is done in the file [config](config).
+You first have to configure your site and this is done in the file [site.conf](site.conf).
+You can use the provided ```config.example``` as a template.
 Do the necessary changes.
 
 Create a directory named ```blog``` if you want to have blogs on your site.
@@ -72,7 +73,7 @@ The themes engine is not 100% complete because there still are some static text 
 
 #### Blog Index
 
-There is an option in the file ```config``` if you want to show the blog on the front page or not. If set to false, it will write a file in ```$www_root/blog/index.html``` that contains, in reverse order, the blogs written.
+There is an option in the file ```site.conf``` if you want to show the blog on the front page or not. If set to false, it will write a file in ```$www_root/blog/index.html``` that contains, in reverse order, the blogs written.
 
 To do this it uses the file ```blog_list.tpl``` as a template for how to format this list and then it inserts this into the file ```blog_index.tpl``` which then is written to disk.
 
