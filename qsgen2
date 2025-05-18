@@ -16,7 +16,7 @@
 ###############################################################################
 ###############################################################################
 
-VERSION="0.5.0" # Sun-2025-05-18
+VERSION="0.5.1" # Sun-2025-05-18
 QSGEN="Quick Site Generator 2"
 
 # Set to true or false
@@ -312,15 +312,32 @@ function _list_blogs() {
 blog_cache_file="${config[project_root]}/.blogindex.cache"
 
 function _update_blog_cache() {
-  # This function updates the blog cache with the current timestamp
+  # This function updates the blog cache with the current blog index content
   if [[ ${globaldebug} == "true" ]]; then
     local debug=true
   else
     local debug=false
   fi
   
-  if (${debug}) _msg debug "${0:t}_msg_1" " ${blog_cache_file}"
-  date +%s > "${blog_cache_file}"
+  if (${debug}) _msg debug "Updating blog cache at ${blog_cache_file}"
+  
+  # Get the current blog index content
+  local blog_index_content="$(<${config[project_root]}/blog/index.tmp.html)"
+  
+  # Store the content in the cache file
+  echo "${blog_index_content}" > "${blog_cache_file}"
+  
+  if (${debug}) _msg debug "Blog cache updated with ${#blog_index_content} bytes"
+}
+
+function _load_blog_cache() {
+  # Loads the blog index from cache if it exists
+  if [[ -f "${blog_cache_file}" ]]; then
+    if (${debug}) _msg debug "Loading blog index from cache"
+    cat "${blog_cache_file}"
+    return 0
+  fi
+  return 1
 }
 
 function _is_blog_cache_stale() {
@@ -331,19 +348,28 @@ function _is_blog_cache_stale() {
     local debug=false
   fi
 
+  # If we have new or updated blogs, cache is considered stale
+  if [[ ${new_updated_blogs} == "true" ]]; then
+    if (${debug}) _msg debug "Blog cache stale: New or updated blogs detected"
+    return 0
+  }
+
+  # If cache file doesn't exist, it's stale
   if [[ ! -f "${blog_cache_file}" ]]; then
-    if (${debug}) _msg debug "${0:t}_msg_2" " ${blog_cache_file}"
+    if (${debug}) _msg debug "Blog cache stale: Cache file does not exist"
     return 0
-  fi
+  }
 
-  local cache_time=$(<"${blog_cache_file}")
+  # Check if cache is older than 1 hour (3600 seconds)
+  local cache_mtime=$(stat -c %Y "${blog_cache_file}" 2>/dev/null || echo 0)
   local current_time=$(date +%s)
-  # Consider cache stale if it's older than 1 hour (3600 seconds)
-  if (( current_time - cache_time > 3600 )); then
-    if (${debug}) _msg debug "${0:t}_msg_3" " ${blog_cache_file}"
+  
+  if (( current_time - cache_mtime > 3600 )); then
+    if (${debug}) _msg debug "Blog cache stale: Cache is older than 1 hour"
     return 0
   fi
 
+  if (${debug}) _msg debug "Blog cache is fresh"
   return 1
 }
 
@@ -958,45 +984,63 @@ function _blog_idx_for_index() {
 }
 
 function _blog_index() {
-  
   if [[ ${globaldebug} == "true" ]]; then
     local debug=true
   else
     local debug=false
   fi
 
-  # Always update if we have new/updated blogs or cache is stale
+  # Check if we need to update the blog index
   if [[ ${new_updated_blogs} == "true" ]] || _is_blog_cache_stale; then
-    if (${debug}) _msg debug "${0:t}_msg_1" "${config[site_blog]}"
-    if (${debug}) _msg debug "${0:t}_msg_2" "${new_updated_blogs}"
-
-    _msg std "${0:t}_msg_5" " ${config[site_root]}/blog/index.html"
-
-    local blog_index_tpl=$(<${config[project_root]}/themes/${config[site_theme]}/blog_index.tpl)
-    local blog_index_list=$(<${config[project_root]}/blog/index.tmp.html)
+    if (${debug}) _msg debug "Generating new blog index"
     
-    if (${debug}) _msg debug "${0:t}_msg_6"
-    local blog_index_content=$(echo "${blog_index_tpl}" | perl -pe "s|#sitename|${config[site_name]}|gs; s|#tagline|${config[site_tagline]}|gs")
-    if (${debug}) _msg debug "${0:t}_msg_7" " ${config[project_root]}/blog/index.tmp.html"
-    blog_index_content=$( awk -v new_body="$blog_index_list" '{sub(/BODY/, new_body)} 1' <(echo "${blog_index_content}") )
-
-    if (${debug}); then
-      _msg debug "${0:t}_msg_8" " ${config[site_root]}/blog/index.html"
-      _msg debug "${0:t}_msg_9" " ${#blog_index_content}"
+    # Get the template
+    local blog_index_tpl=$(<${config[project_root]}/themes/${config[site_theme]}/blog_index.tpl)
+    
+    # Get the blog list content
+    local blog_index_list
+    if [[ ${new_updated_blogs} == "true" ]]; then
+      # If we have new/updated blogs, use the fresh content
+      blog_index_list=$(<${config[project_root]}/blog/index.tmp.html)
+    else
+      # Otherwise try to load from cache
+      blog_index_list=$(_load_blog_cache) || {
+        # If cache load fails, use the fresh content
+        blog_index_list=$(<${config[project_root]}/blog/index.tmp.html)
+      }
     fi
     
-    # Create blog directory if it doesn't exist
+    # Generate the final content
+    local blog_index_content=$(echo "${blog_index_tpl}" | \
+      perl -pe "s|#sitename|${config[site_name]}|gs; s|#tagline|${config[site_tagline]}|gs")
+    blog_index_content=$(awk -v new_body="$blog_index_list" '{sub(/BODY/, new_body)} 1' <(echo "${blog_index_content}"))
+    
+    # Create output directory if it doesn't exist
     mkdir -p "${config[site_root]}/blog"
+    
+    # Write the index file
     echo "$blog_index_content" > "${config[site_root]}/blog/index.html"
     _f_last_updated "${config[site_root]}/blog/index.html"
     
-    # Update the cache
+    # Update the cache with the new content
     _update_blog_cache
+    
+    if (${debug}); then
+      _msg debug "Generated new blog index at ${config[site_root]}/blog/index.html"
+      _msg debug "Blog index size: ${#blog_index_content} bytes"
+    fi
+  else
+    # Use cached content
+    if (${debug}) _msg debug "Using cached blog index"
+    local cached_content=$(_load_blog_cache)
+    mkdir -p "${config[site_root]}/blog"
+    echo "$cached_content" > "${config[site_root]}/blog/index.html"
   fi
 }
 
 function _add_blog_list_to_index() {
   
+{{ ... }}
   if [[ ${globaldebug} == "true" ]]; then
     local debug=true
   else
