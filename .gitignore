@@ -20,6 +20,7 @@ include/qsgen2/lang/*.en
 
 # Scripts directory (temporary/conversion scripts)
 /scripts/
+/tools/
 
 # Build output
 /build/
