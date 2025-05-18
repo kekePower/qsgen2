@@ -1040,7 +1040,6 @@ function _blog_index() {
 
 function _add_blog_list_to_index() {
   
-{{ ... }}
   if [[ ${globaldebug} == "true" ]]; then
     local debug=true
   else
