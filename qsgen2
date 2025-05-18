@@ -352,13 +352,13 @@ function _is_blog_cache_stale() {
   if [[ ${new_updated_blogs} == "true" ]]; then
     if (${debug}) _msg debug "Blog cache stale: New or updated blogs detected"
     return 0
-  }
+  fi
 
   # If cache file doesn't exist, it's stale
   if [[ ! -f "${blog_cache_file}" ]]; then
     if (${debug}) _msg debug "Blog cache stale: Cache file does not exist"
     return 0
-  }
+  fi
 
   # Check if cache is older than 1 hour (3600 seconds)
   local cache_mtime=$(stat -c %Y "${blog_cache_file}" 2>/dev/null || echo 0)
